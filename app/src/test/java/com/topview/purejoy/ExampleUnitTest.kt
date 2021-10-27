@@ -1,4 +1,4 @@
-package com.example.purejoy
+package com.topview.purejoy
 
 import org.junit.Test
 

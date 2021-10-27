@@ -1,4 +1,4 @@
-package com.example.purejoy
+package com.topview.purejoy
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
