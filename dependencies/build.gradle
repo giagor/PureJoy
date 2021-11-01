@@ -39,4 +39,15 @@ dependencies {
     
     // KTX
     api('androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0')
+
+    // OkHttp
+    api('com.squareup.okhttp3:okhttp:4.9.2')
+    // Retrofit
+    api('com.squareup.retrofit2:retrofit:2.9.0')
+    // Retrofit的gson转换器
+    api('com.squareup.retrofit2:converter-gson:2.9.0')
+
+    // Kotlin Coroutines
+    api('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2')
+    api('org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2')
 }
