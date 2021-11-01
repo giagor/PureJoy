@@ -1,9 +1,9 @@
-package com.topview.purejoy.common.mvvm.util
+package com.topview.purejoy.common.util
 
 import android.content.Context
 import android.preference.PreferenceManager
 import com.topview.purejoy.common.R
-import com.topview.purejoy.common.mvvm.entity.TextSizeScale
+import com.topview.purejoy.common.entity.TextSizeScale
 
 /**
  * 储存能够读取设置项的相对应的键。使用SharedPreference储存。

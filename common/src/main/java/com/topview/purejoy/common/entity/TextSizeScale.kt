@@ -1,4 +1,4 @@
-package com.topview.purejoy.common.mvvm.entity
+package com.topview.purejoy.common.entity
 
 enum class TextSizeScale(val sizeName: String, val scale: Float) {
     MIN("最小", 0.9F),

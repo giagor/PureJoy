@@ -1,4 +1,4 @@
-package com.topview.purejoy.common.mvvm.base
+package com.topview.purejoy.common.base
 
 import android.content.Context
 import android.os.Build
@@ -7,8 +7,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.topview.purejoy.common.mvvm.entity.TextSizeScale
-import com.topview.purejoy.common.mvvm.util.PreferenceKey
+import com.topview.purejoy.common.entity.TextSizeScale
+import com.topview.purejoy.common.util.PreferenceKey
+
 
 /**
  * @author lanlin-code
