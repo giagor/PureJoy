@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "PureJoy"
 include ':app'
+include ':dependencies'
