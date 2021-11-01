@@ -19,7 +19,7 @@ abstract class CommonActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutId())
+        setContentView()
         supportActionBar?.hide()
     }
 
@@ -49,6 +49,10 @@ abstract class CommonActivity : AppCompatActivity() {
         super.attachBaseContext(context)
     }
 
+    protected open fun setContentView() {
+        setContentView(getLayoutId())
+    }
+
     // 当前Activity布局文件的ID
     protected abstract fun getLayoutId(): Int
 
@@ -58,12 +62,15 @@ abstract class CommonActivity : AppCompatActivity() {
      * @param hideFragment 当前正在显示的Fragment
      * 添加Fragment到容器中并显示它
      */
-    protected fun addAndShowFragment(frameLayoutId: Int,
-                                     targetFragment: Fragment,
-                                     hideFragment: Fragment
+    protected fun addAndShowFragment(
+        frameLayoutId: Int,
+        targetFragment: Fragment,
+        hideFragment: Fragment
     ) {
-        beginTransaction().hide(hideFragment).add(frameLayoutId,
-            targetFragment, targetFragment::class.java.simpleName).show(targetFragment).commit()
+        beginTransaction().hide(hideFragment).add(
+            frameLayoutId,
+            targetFragment, targetFragment::class.java.simpleName
+        ).show(targetFragment).commit()
     }
 
     /**
@@ -72,8 +79,10 @@ abstract class CommonActivity : AppCompatActivity() {
      * 添加Fragment到容器中
      */
     protected fun addFragment(containerId: Int, fragment: Fragment) {
-        beginTransaction().add(containerId, fragment,
-            fragment::class.java.simpleName).commit()
+        beginTransaction().add(
+            containerId, fragment,
+            fragment::class.java.simpleName
+        ).commit()
     }
 
     /**
@@ -126,8 +135,10 @@ abstract class CommonActivity : AppCompatActivity() {
 
 
     private fun changeFontSize(context: Context): Context {
-        context.resources.updateConfiguration(context.resources.configuration,
-            context.resources.displayMetrics)
+        context.resources.updateConfiguration(
+            context.resources.configuration,
+            context.resources.displayMetrics
+        )
         return context
     }
 }

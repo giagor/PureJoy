@@ -4,13 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
+import androidx.databinding.ViewDataBinding
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 
 /**
  * 使用MVVM设计模式绑定服务的通用Activity
  */
-abstract class ServiceActivity<VM : MVVMViewModel, C : ServiceConnection, S : Service> :
-    MVVMActivity<VM>() {
+abstract class ServiceActivity<VM : MVVMViewModel, VB : ViewDataBinding, C : ServiceConnection, S : Service> :
+    MVVMActivity<VM, VB>() {
     protected lateinit var connection: C
 
     override fun onCreate(savedInstanceState: Bundle?) {

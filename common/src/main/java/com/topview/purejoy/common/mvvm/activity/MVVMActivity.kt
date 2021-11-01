@@ -1,6 +1,8 @@
 package com.topview.purejoy.common.mvvm.activity
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
@@ -10,8 +12,9 @@ import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
  *
  * MVVM的通用Activity
  * */
-abstract class MVVMActivity<VM : MVVMViewModel> : CommonActivity() {
+abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonActivity() {
     protected lateinit var viewModel: VM
+    protected lateinit var binding: VB
 
     // 返回当前Activity绑定的ViewModel类型
     protected abstract fun getViewModelClass(): Class<VM>
@@ -23,7 +26,16 @@ abstract class MVVMActivity<VM : MVVMViewModel> : CommonActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 绑定生命周期
+        binding.lifecycleOwner = this
+
         viewModel = createViewModel()
+    }
+
+    override fun setContentView() {
+        // 绑定布局，获取DataBinding
+        binding = DataBindingUtil.setContentView(this, getLayoutId())
     }
 
     // 提供一个Factory实例
