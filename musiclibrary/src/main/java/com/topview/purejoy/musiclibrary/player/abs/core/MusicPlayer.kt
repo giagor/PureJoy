@@ -1,4 +1,4 @@
-package com.topview.purejoy.musiclibrary.player.abs
+package com.topview.purejoy.musiclibrary.player.abs.core
 
 interface MusicPlayer {
     fun isPrepared(): Boolean
