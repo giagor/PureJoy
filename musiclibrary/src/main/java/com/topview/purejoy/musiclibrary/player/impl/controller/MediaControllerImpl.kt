@@ -2,17 +2,20 @@ package com.topview.purejoy.musiclibrary.player.impl.controller
 
 import android.text.TextUtils
 import com.topview.purejoy.musiclibrary.data.Item
+import com.topview.purejoy.musiclibrary.player.abs.MediaListenerManger
 import com.topview.purejoy.musiclibrary.player.abs.controller.MediaController
 import com.topview.purejoy.musiclibrary.player.abs.core.MusicPlayer
 import com.topview.purejoy.musiclibrary.player.abs.core.Position
 import com.topview.purejoy.musiclibrary.player.abs.listener.CompleteListener
 import com.topview.purejoy.musiclibrary.player.abs.listener.ErrorListener
 import com.topview.purejoy.musiclibrary.player.abs.listener.PreparedListener
+import com.topview.purejoy.musiclibrary.player.impl.listener.ItemFilter
 
 open class MediaControllerImpl<T : Item>(
     private val player: MusicPlayer,
     private val list: MutableList<T> = mutableListOf(),
     var position: Position,
+    var listenerManger: MediaListenerManger,
     var preparedListener: PreparedListener<T>? = null,
     var errorListener: ErrorListener<T>? = null,
     var completeListener: CompleteListener<T>? = null,
@@ -24,10 +27,14 @@ open class MediaControllerImpl<T : Item>(
     override fun last() {
         val last = position.current()
         setDataSource(list[position.last()])
-
+        if (isItemChange(last)) {
+            notifyItemChange()
+        }
     }
 
-
+    private fun notifyItemChange() {
+        listenerManger.invokeChangeListener(list[position.current()], ItemFilter)
+    }
 
     private fun isItemChange(last: Int): Boolean {
         return last != position.current()
@@ -36,8 +43,9 @@ open class MediaControllerImpl<T : Item>(
     override fun next() {
         val last = position.current()
         setDataSource(list[position.next()])
-        // maybe notify client
-
+        if (isItemChange(last)) {
+            notifyItemChange()
+        }
     }
 
     private fun setDataSource(item: Item) {
@@ -54,7 +62,7 @@ open class MediaControllerImpl<T : Item>(
             player.playOrPause()
         } else {
             setDataSource(list[position.current()])
-            // maybe notify client the current playing songs has changed
+            notifyItemChange()
         }
     }
 
