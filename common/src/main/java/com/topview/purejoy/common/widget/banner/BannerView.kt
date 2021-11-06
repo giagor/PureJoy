@@ -44,6 +44,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
     private val scheduleRunnable = ScheduleRunnable(this)
 
+    /**
+     * 表明当前用户是否正在"拖拽"轮播图
+     * */
+    private var isDragging: Boolean = false
+
     init {
         initViews()
     }
@@ -116,8 +121,12 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 return
             }
 
-            val vp: ViewPager = bannerView.viewPager
-            vp.currentItem = vp.currentItem + 1
+            // 如果用户没有在"拖拽"轮播图，那么就切换到下一张
+            if (!isDragging) {
+                val vp: ViewPager = bannerView.viewPager
+                vp.currentItem = vp.currentItem + 1
+            }
+            // 推送任务
             startSchedule()
         }
     }
@@ -127,12 +136,18 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     override fun onPageSelected(position: Int) {
-        
+
     }
 
     override fun onPageScrollStateChanged(state: Int) {
         when (state) {
+            ViewPager.SCROLL_STATE_DRAGGING -> {
+                isDragging = true
+            }
+
             ViewPager.SCROLL_STATE_IDLE -> {
+                isDragging = false
+
                 val curPosition = viewPager.currentItem // 获取当前ViewPager的位置
                 if (curPosition == bannerItems.size - 1) {
                     viewPager.setCurrentItem(1, false)
