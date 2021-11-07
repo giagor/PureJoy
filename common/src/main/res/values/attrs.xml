@@ -14,5 +14,6 @@
         <attr name="indicator_margin_bottom" format="dimension" />
         <attr name="indicator_margin_left" format="dimension" />
         <attr name="indicator_margin_right" format="dimension" />
+        <attr name="indicator_spacing" format="dimension" />
     </declare-styleable>
 </resources>

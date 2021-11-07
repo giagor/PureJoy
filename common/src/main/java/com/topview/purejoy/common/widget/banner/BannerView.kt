@@ -80,6 +80,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private var indicatorMarginBottom: Int = 0
     private var indicatorMarginLeft: Int = 0
     private var indicatorMarginRight: Int = 0
+    private var indicatorSpacing: Int = 0
 
     init {
         initAttrs(attrs)
@@ -109,6 +110,9 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         indicatorMarginRight = typedArray.getDimensionPixelSize(
             R.styleable.BannerView_indicator_margin_right, 0
         )
+        indicatorSpacing = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_spacing, dpToPx(2.5f).toInt()
+        )
         typedArray.recycle()
     }
 
@@ -133,7 +137,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 indicatorMarginBottom
             )
         }
-        
+
         addView(viewPager, vpParams)
         addView(indicatorLayout, indicatorParams)
     }
@@ -159,8 +163,8 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         ).apply {
             width = indicatorSize
             height = indicatorSize
-            leftMargin = 10
-            rightMargin = 10
+            leftMargin = indicatorSpacing
+            rightMargin = indicatorSpacing
         }
 
         for (i in 0 until displayBannerCounts) {
