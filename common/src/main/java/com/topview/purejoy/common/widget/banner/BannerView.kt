@@ -81,6 +81,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private var indicatorMarginLeft: Int = 0
     private var indicatorMarginRight: Int = 0
     private var indicatorSpacing: Int = 0
+    private var showIndicator: Boolean = true
 
     init {
         initAttrs(attrs)
@@ -113,39 +114,44 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         indicatorSpacing = typedArray.getDimensionPixelSize(
             R.styleable.BannerView_indicator_spacing, dpToPx(2.5f).toInt()
         )
+        showIndicator = typedArray.getBoolean(
+            R.styleable.BannerView_show_indicator, true
+        )
         typedArray.recycle()
     }
 
     private fun initViews() {
         viewPager = ViewPager(context)
-        indicatorLayout = LinearLayout(context)
-
         val vpParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-
-        val indicatorParams = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = indicatorGravity
-            setMargins(
-                indicatorMarginLeft,
-                indicatorMarginTop,
-                indicatorMarginRight,
-                indicatorMarginBottom
-            )
-        }
-
         addView(viewPager, vpParams)
-        addView(indicatorLayout, indicatorParams)
+
+        if (showIndicator) {
+            indicatorLayout = LinearLayout(context)
+            val indicatorParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = indicatorGravity
+                setMargins(
+                    indicatorMarginLeft,
+                    indicatorMarginTop,
+                    indicatorMarginRight,
+                    indicatorMarginBottom
+                )
+            }
+            addView(indicatorLayout, indicatorParams)
+        }
     }
 
     fun setBanners(banners: List<Drawable>) {
         displayBannerCounts = banners.size
 
-        initIndicators()
+        if (showIndicator) {
+            initIndicators()
+        }
         getShowImage(banners)
 
         val adapter = BannerAdapter()
@@ -212,7 +218,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      *
      * @param cur 对应的指示器图标变成 "选中"
      * */
-    private fun switchIndicator(cur: Int) {
+    private fun switchIndicatorTo(cur: Int) {
+        if (!showIndicator) {
+            return
+        }
+
         // 先全部置为"未选中"状态
         for (indicator in indicatorIvs) {
             indicator.setBackgroundResource(R.drawable.common_banner_def_indicator_unselect)
@@ -233,8 +243,10 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             else -> position - 1
         }
 
-        // 切换指示器
-        switchIndicator(curIndicator)
+        if (showIndicator) {
+            // 切换指示器
+            switchIndicatorTo(curIndicator)
+        }
     }
 
     override fun onPageScrollStateChanged(state: Int) {
