@@ -76,6 +76,10 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     //    private var indicatorShape : Int
     private var indicatorSize: Int = 0
     private var indicatorGravity: Int = 0
+    private var indicatorMarginTop: Int = 0
+    private var indicatorMarginBottom: Int = 0
+    private var indicatorMarginLeft: Int = 0
+    private var indicatorMarginRight: Int = 0
 
     init {
         initAttrs(attrs)
@@ -92,6 +96,19 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             R.styleable.BannerView_indicator_gravity,
             Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         )
+        indicatorMarginTop = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_margin_top, 0
+        )
+        indicatorMarginBottom = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_margin_bottom,
+            dpToPx(2f).toInt()
+        )
+        indicatorMarginLeft = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_margin_left, 0
+        )
+        indicatorMarginRight = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_margin_right, 0
+        )
         typedArray.recycle()
     }
 
@@ -107,12 +124,16 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         val indicatorParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
-        indicatorParams.apply {
+        ).apply {
             gravity = indicatorGravity
+            setMargins(
+                indicatorMarginLeft,
+                indicatorMarginTop,
+                indicatorMarginRight,
+                indicatorMarginBottom
+            )
         }
-
+        
         addView(viewPager, vpParams)
         addView(indicatorLayout, indicatorParams)
     }

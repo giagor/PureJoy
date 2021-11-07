@@ -10,5 +10,9 @@
             <flag name="right" value="5" />
             <flag name="center_horizontal" value="1" />
         </attr>
+        <attr name="indicator_margin_top" format="dimension" />
+        <attr name="indicator_margin_bottom" format="dimension" />
+        <attr name="indicator_margin_left" format="dimension" />
+        <attr name="indicator_margin_right" format="dimension" />
     </declare-styleable>
 </resources>
