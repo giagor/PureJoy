@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BannerView">
+        <!--        <attr name="indicator_shape" format="reference"/>-->
+        <attr name="indicator_size" format="dimension" />
+        <attr name="indicator_gravity" format="flags">
+            <flag name="top" value="48" />
+            <flag name="bottom" value="80" />
+            <flag name="left" value="3" />
+            <flag name="right" value="5" />
+            <flag name="center_horizontal" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

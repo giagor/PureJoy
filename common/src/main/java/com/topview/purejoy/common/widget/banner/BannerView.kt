@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.topview.purejoy.common.R
+import com.topview.purejoy.common.util.dpToPx
 import java.lang.ref.WeakReference
 
 /**
@@ -72,8 +73,26 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * */
     private var indicatorIvs = mutableListOf<ImageView>()
 
+    //    private var indicatorShape : Int
+    private var indicatorSize: Int = 0
+    private var indicatorGravity: Int = 0
+
     init {
+        initAttrs(attrs)
         initViews()
+    }
+
+    private fun initAttrs(attrs: AttributeSet?) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BannerView)
+        indicatorSize = typedArray.getDimensionPixelSize(
+            R.styleable.BannerView_indicator_size,
+            dpToPx(15f).toInt()
+        )
+        indicatorGravity = typedArray.getInt(
+            R.styleable.BannerView_indicator_gravity,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        )
+        typedArray.recycle()
     }
 
     private fun initViews() {
@@ -91,7 +110,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         )
 
         indicatorParams.apply {
-            gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+            gravity = indicatorGravity
         }
 
         addView(viewPager, vpParams)
@@ -117,8 +136,8 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         ).apply {
-//            width = 20
-//            height = 20
+            width = indicatorSize
+            height = indicatorSize
             leftMargin = 10
             rightMargin = 10
         }
