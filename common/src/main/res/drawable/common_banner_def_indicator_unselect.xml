@@ -3,8 +3,8 @@
     android:shape="oval">
 
     <size
-        android:width="20dp"
-        android:height="20dp" />
+        android:width="15dp"
+        android:height="15dp" />
 
     <solid android:color="@color/common_banner_def_indicator_unselect"/>
 
