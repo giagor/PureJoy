@@ -136,13 +136,26 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
     private fun getShowImage(banners: List<Drawable>) {
         bannerItems.clear()
-        bannerItems.add(ImageView(context).apply { setImageDrawable(banners[displayBannerCounts - 1]) })
+
+        val bannerFirst = ImageView(context).apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            setImageDrawable(banners[displayBannerCounts - 1])
+        }
+        bannerItems.add(bannerFirst)
+
         for (drawable in banners) {
-            val imageView = ImageView(context)
-            imageView.setImageDrawable(drawable)
+            val imageView = ImageView(context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageDrawable(drawable)
+            }
             bannerItems.add(imageView)
         }
-        bannerItems.add(ImageView(context).apply { setImageDrawable(banners[0]) })
+
+        val bannerEnd = ImageView(context).apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            setImageDrawable(banners[0])
+        }
+        bannerItems.add(bannerEnd)
     }
 
     private fun startSchedule() {
