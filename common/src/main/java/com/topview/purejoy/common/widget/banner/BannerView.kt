@@ -22,7 +22,13 @@ import java.lang.ref.WeakReference
 /**
  * 轮播图自动滚动的时间间隔
  * */
-private const val autoScrollTimeSpac = 1500L
+private const val AUTO_SCROLL_TIME_SPAC = 1500L
+
+/**
+ * 允许轮播图自动"滚动"到下一张的一个时间间隔，这个值的主要目的是判断，用户在手动"滑动"了轮播图之后，当下一个任务到来
+ * 时，是否要"自动滚动"到下一张图片
+ * */
+private const val ALLOW_AUTO_SCROLL_SPAC = AUTO_SCROLL_TIME_SPAC - 500L
 
 private const val TAG = "BannerView"
 
@@ -54,6 +60,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * 表明当前用户是否正在"拖拽"轮播图
      * */
     private var isDragging: Boolean = false
+
+    /**
+     * 记录用户"拖拽"轮播图的时间，可以利用该值，判断是否要让轮播图的"自动滚动"到下一张图片
+     * */
+    private var draggingTime: Long = 0
 
     /**
      * 存放"指示器"对应的ImageView
@@ -135,7 +146,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     private fun startSchedule() {
-        scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
+        scheduleHandler.postDelayed(scheduleRunnable, AUTO_SCROLL_TIME_SPAC)
     }
 
     /**
@@ -172,6 +183,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         when (state) {
             ViewPager.SCROLL_STATE_DRAGGING -> {
                 isDragging = true
+                draggingTime = System.currentTimeMillis()
             }
 
             ViewPager.SCROLL_STATE_IDLE -> {
@@ -217,8 +229,17 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 return
             }
 
-            // 如果用户没有在"拖拽"轮播图，那么就切换到下一张
-            if (!isDragging) {
+            // 如果任务触发时，用户正在"拖拽"轮播图，那么就取消此次图片的"自动滚动"，推送下一次的任务
+            if (isDragging) {
+                // 推送任务
+                startSchedule()
+                return
+            }
+
+            val now = System.currentTimeMillis()
+            // 判断用户前一个阶段周期中是否有去"拖拽"轮播图，以及计算 "现在 - 拖拽轮播图" 的时间差
+            if (now - draggingTime > ALLOW_AUTO_SCROLL_SPAC) {
+                // 正常触发任务
                 val vp: ViewPager = bannerView.viewPager
                 vp.currentItem = vp.currentItem + 1
             }
