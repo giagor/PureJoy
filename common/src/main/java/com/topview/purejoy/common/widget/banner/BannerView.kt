@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -90,7 +91,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         )
 
         indicatorParams.apply {
-//            gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+            gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
         }
 
         addView(viewPager, vpParams)
