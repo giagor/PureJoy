@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -140,12 +138,34 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
     }
 
+    /**
+     * 切换指示器
+     *
+     * @param cur 对应的指示器图标变成 "选中"
+     * */
+    private fun switchIndicator(cur: Int) {
+        // 先全部置为"未选中"状态
+        for (indicator in indicatorIvs) {
+            indicator.setBackgroundResource(R.drawable.common_banner_def_indicator_unselect)
+        }
+        // 置指定项为"选中"状态
+        indicatorIvs[cur].setBackgroundResource(R.drawable.common_banner_def_indicator_select)
+    }
+
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
     }
 
     override fun onPageSelected(position: Int) {
+        // 根据不同的情况，获取当前的指示器的下标
+        val curIndicator = when (position) {
+            0 -> bannerItems.size - 3
+            bannerItems.size - 1 -> 0
+            else -> position - 1
+        }
 
+        // 切换指示器
+        switchIndicator(curIndicator)
     }
 
     override fun onPageScrollStateChanged(state: Int) {
