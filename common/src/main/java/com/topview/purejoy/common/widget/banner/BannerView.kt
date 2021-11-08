@@ -63,6 +63,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * */
     private var indicatorIvs = mutableListOf<ImageView>()
 
+    /**
+     * 表示是否是「单张图片」
+     * */
+    private var isSingleImage: Boolean = false
+
     private var indicatorSize: Int = 0
     private var indicatorGravity: Int = 0
     private var indicatorMarginTop: Int = 0
@@ -166,8 +171,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
     fun setBanners(banners: List<Drawable>) {
         displayBannerCounts = banners.size
+        if (displayBannerCounts == 1) {
+            isSingleImage = true
+        }
 
-        if (showIndicator) {
+        if (showIndicator && !isSingleImage) {
             initIndicators()
         }
         getShowImage(banners)
@@ -177,7 +185,9 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         viewPager.addOnPageChangeListener(this)
         viewPager.currentItem = 1
 
-        startSchedule()
+        if (!isSingleImage) {
+            startSchedule()
+        }
     }
 
     private fun initIndicators() {
@@ -203,12 +213,14 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private fun getShowImage(banners: List<Drawable>) {
         bannerItems.clear()
 
-        val bannerFirst = ImageView(context).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            setImageDrawable(banners[displayBannerCounts - 1])
+        if (!isSingleImage) {
+            val bannerFirst = ImageView(context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageDrawable(banners[displayBannerCounts - 1])
+            }
+            bannerItems.add(bannerFirst)
         }
-        bannerItems.add(bannerFirst)
-
+        
         for (drawable in banners) {
             val imageView = ImageView(context).apply {
                 scaleType = ImageView.ScaleType.CENTER_CROP
@@ -217,15 +229,19 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             bannerItems.add(imageView)
         }
 
-        val bannerEnd = ImageView(context).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            setImageDrawable(banners[0])
+        if (!isSingleImage) {
+            val bannerEnd = ImageView(context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageDrawable(banners[0])
+            }
+            bannerItems.add(bannerEnd)
         }
-        bannerItems.add(bannerEnd)
     }
 
     private fun startSchedule() {
-        scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
+        if (!isSingleImage) {
+            scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
+        }
     }
 
     /**
@@ -234,7 +250,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * @param cur 对应的指示器图标变成 "选中"
      * */
     private fun switchIndicatorTo(cur: Int) {
-        if (!showIndicator) {
+        if (!showIndicator || isSingleImage) {
             return
         }
 
@@ -258,7 +274,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             else -> position - 1
         }
 
-        if (showIndicator) {
+        if (showIndicator && !isSingleImage) {
             // 切换指示器
             switchIndicatorTo(curIndicator)
         }
