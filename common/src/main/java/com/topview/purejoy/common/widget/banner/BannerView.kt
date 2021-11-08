@@ -170,6 +170,10 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     fun setBanners(banners: List<Drawable>) {
+        if (banners.isEmpty()) {
+            return
+        }
+
         displayBannerCounts = banners.size
         if (displayBannerCounts == 1) {
             isSingleImage = true
@@ -220,7 +224,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             }
             bannerItems.add(bannerFirst)
         }
-        
+
         for (drawable in banners) {
             val imageView = ImageView(context).apply {
                 scaleType = ImageView.ScaleType.CENTER_CROP
