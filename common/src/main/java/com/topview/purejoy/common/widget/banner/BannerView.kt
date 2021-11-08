@@ -21,16 +21,6 @@ import java.lang.ref.WeakReference
  * Created by giagor at 2021/11/05
  * */
 
-/**
- * 轮播图自动滚动的时间间隔
- * */
-private const val AUTO_SCROLL_TIME_SPAC = 1500L
-
-/**
- * 允许轮播图自动"滚动"到下一张的一个时间间隔，这个值的主要目的是判断，用户在手动"滑动"了轮播图之后，当下一个任务到来
- * 时，是否要"自动滚动"到下一张图片
- * */
-private const val ALLOW_AUTO_SCROLL_SPAC = AUTO_SCROLL_TIME_SPAC - 500L
 
 private const val TAG = "BannerView"
 
@@ -83,6 +73,17 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private var indicatorSpacing: Int = 0
     private var showIndicator: Boolean = true
 
+    /**
+     * 轮播图自动滚动的时间间隔
+     * */
+    private var autoScrollTimeSpac: Long = 0L
+
+    /**
+     * 允许轮播图自动"滚动"到下一张的一个时间间隔，这个值的主要目的是判断，用户在手动"滑动"了轮播图之后，当下一个任务到来
+     * 时，是否要"自动滚动"到下一张图片
+     * */
+    private var allowAutoScrollSpac: Long = 0L
+
     init {
         initAttrs(attrs)
         initViews()
@@ -117,7 +118,14 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         showIndicator = typedArray.getBoolean(
             R.styleable.BannerView_show_indicator, true
         )
+        autoScrollTimeSpac = typedArray.getInt(
+            R.styleable.BannerView_auto_scroll_time_spacing, 3000
+        ).toLong()
+        allowAutoScrollSpac = autoScrollTimeSpac * 2 / 3
+
         typedArray.recycle()
+
+
     }
 
     private fun initViews() {
@@ -210,7 +218,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     private fun startSchedule() {
-        scheduleHandler.postDelayed(scheduleRunnable, AUTO_SCROLL_TIME_SPAC)
+        scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
     }
 
     /**
@@ -308,7 +316,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
             val now = System.currentTimeMillis()
             // 判断用户前一个阶段周期中是否有去"拖拽"轮播图，以及计算 "现在 - 拖拽轮播图" 的时间差
-            if (now - draggingTime > ALLOW_AUTO_SCROLL_SPAC) {
+            if (now - draggingTime > allowAutoScrollSpac) {
                 // 正常触发任务
                 val vp: ViewPager = bannerView.viewPager
                 vp.currentItem = vp.currentItem + 1
