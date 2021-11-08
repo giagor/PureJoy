@@ -63,7 +63,6 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * */
     private var indicatorIvs = mutableListOf<ImageView>()
 
-    //    private var indicatorShape : Int
     private var indicatorSize: Int = 0
     private var indicatorGravity: Int = 0
     private var indicatorMarginTop: Int = 0
@@ -72,6 +71,9 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private var indicatorMarginRight: Int = 0
     private var indicatorSpacing: Int = 0
     private var showIndicator: Boolean = true
+    private var indicatorShape: Int = 0
+    private var indicatorSelectColor: Int = 0
+    private var indicatorUnselectColor: Int = 0
 
     /**
      * 轮播图自动滚动的时间间隔
@@ -93,7 +95,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BannerView)
         indicatorSize = typedArray.getDimensionPixelSize(
             R.styleable.BannerView_indicator_size,
-            dpToPx(15f).toInt()
+            dpToPx(11f).toInt()
         )
         indicatorGravity = typedArray.getInt(
             R.styleable.BannerView_indicator_gravity,
@@ -118,14 +120,22 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         showIndicator = typedArray.getBoolean(
             R.styleable.BannerView_show_indicator, true
         )
+
         autoScrollTimeSpac = typedArray.getInt(
             R.styleable.BannerView_auto_scroll_time_spacing, 3000
         ).toLong()
         allowAutoScrollSpac = autoScrollTimeSpac * 2 / 3
 
+        indicatorShape = typedArray.getResourceId(
+            R.styleable.BannerView_indicator_shape,
+            R.drawable.common_banner_indicator_select_point
+        )
+        indicatorSelectColor =
+            typedArray.getColor(R.styleable.BannerView_indicator_select_color, 0xFFF8F8FF.toInt())
+        indicatorUnselectColor =
+            typedArray.getColor(R.styleable.BannerView_indicator_unselect_color, 0xFF696969.toInt())
+
         typedArray.recycle()
-
-
     }
 
     private fun initViews() {
@@ -183,14 +193,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
         for (i in 0 until displayBannerCounts) {
             val indicator = ImageView(context)
-            if (i == 0) {
-                indicator.setBackgroundResource(R.drawable.common_banner_def_indicator_select)
-            } else {
-                indicator.setBackgroundResource(R.drawable.common_banner_def_indicator_unselect)
-            }
+            indicator.setImageResource(indicatorShape)
             indicatorIvs.add(indicator)
             indicatorLayout.addView(indicator, indicatorParams)
         }
+        switchIndicatorTo(0)
     }
 
     private fun getShowImage(banners: List<Drawable>) {
@@ -233,10 +240,10 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
         // 先全部置为"未选中"状态
         for (indicator in indicatorIvs) {
-            indicator.setBackgroundResource(R.drawable.common_banner_def_indicator_unselect)
+            indicator.setColorFilter(indicatorUnselectColor)
         }
         // 置指定项为"选中"状态
-        indicatorIvs[cur].setBackgroundResource(R.drawable.common_banner_def_indicator_select)
+        indicatorIvs[cur].setColorFilter(indicatorSelectColor)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

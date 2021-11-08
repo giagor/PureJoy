@@ -7,8 +7,4 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
-    <!--banner-->
-    <color name="common_banner_def_indicator_select">#F8F8FF</color>
-    <color name="common_banner_def_indicator_unselect">#696969</color>
 </resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="BannerView">
-        <!--        <attr name="indicator_shape" format="reference"/>-->
         <attr name="indicator_size" format="dimension" />
         <attr name="indicator_gravity" format="flags">
             <flag name="top" value="48" />
@@ -17,5 +16,8 @@
         <attr name="indicator_spacing" format="dimension" />
         <attr name="show_indicator" format="boolean" />
         <attr name="auto_scroll_time_spacing" format="integer" />
+        <attr name="indicator_shape" format="reference" />
+        <attr name="indicator_select_color" format="color" />
+        <attr name="indicator_unselect_color" format="color" />
     </declare-styleable>
 </resources>
