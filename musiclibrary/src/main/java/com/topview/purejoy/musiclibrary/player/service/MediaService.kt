@@ -74,7 +74,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
             }
             dataSource.addAll(local)
         }
-
+        position.max = dataSource.size
         val dataController = IPCDataControllerImpl(
             handler = mainHandler,
             source = wrappers,
@@ -260,7 +260,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
                 for(i in 0 until source.size) {
                     if (value.isSame(source[i].value)) {
                         listenerController.invokeItemChangeListener(source[i])
-                        showForeground(value.cast()!!)
+                        showForeground(value.cast()!!, realController.isPlaying())
                         break
                     }
                 }
@@ -269,7 +269,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         realController.listenerManger.registerChangeListener(object : PlayStateChangeListener {
             override fun onChange(value: Boolean) {
                 listenerController.invokePlayStateChangeListener(value)
-                showForeground(source[realController.position.current()].value?.cast<T>()!!)
+                showForeground(source[realController.position.current()].value?.cast()!!, realController.isPlaying())
             }
         })
 
@@ -306,9 +306,10 @@ abstract class MediaService<T : Item> : Service(), Loader {
 
     /**
      * @param value 当前播放音乐对应的实体
+     * @param state 播放状态
      * 应在这个方法中生成通知等
      */
-    abstract fun showForeground(value: T)
+    abstract fun showForeground(value: T, state: Boolean)
 
     /**
      * 加载初始化时所用到的音乐数据集合，默认为一个空的MutableList
