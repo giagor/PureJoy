@@ -34,11 +34,6 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private val adapter: BannerAdapter = BannerAdapter()
 
     /**
-     * 用户看到的"Banner"的数量
-     * */
-    private var displayBannerCounts: Int = 0
-
-    /**
      * 获取主线程的Handler，用于控制图片的自动滚动
      * */
     private val scheduleHandler: Handler = Handler(Looper.getMainLooper())
@@ -59,11 +54,6 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * 存放"指示器"对应的ImageView
      * */
     private var indicatorIvs = mutableListOf<ImageView>()
-
-    /**
-     * 表示是否是「单张图片」
-     * */
-    private var isSingleImage: Boolean = false
 
     private var indicatorSize: Int = 0
     private var indicatorGravity: Int = 0
@@ -176,21 +166,15 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         if (items.isEmpty()) {
             return
         }
-
-        // 记录用户看到的"Banner"的数量
-        displayBannerCounts = items.size
-        if (displayBannerCounts == 1) {
-            isSingleImage = true
-        }
-
-        // 判断是否要显示"指示器"
-        if (showIndicator && !isSingleImage) {
-            initIndicators()
-        }
+        
         // 适配器中设置BannerItem
         adapter.setBanners(items)
+        // 判断是否要显示"指示器"
+        if (showIndicator && !adapter.isSingleImage()) {
+            initIndicators()
+        }
 
-        if (!isSingleImage) {
+        if (!adapter.isSingleImage()) {
             viewPager.currentItem = 1
             startSchedule()
         }
@@ -207,7 +191,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             rightMargin = indicatorSpacing
         }
 
-        for (i in 0 until displayBannerCounts) {
+        for (i in 0 until adapter.getDisplayCounts()) {
             val indicator = ImageView(context)
             indicator.setImageResource(indicatorShape)
             indicatorIvs.add(indicator)
@@ -217,7 +201,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     private fun startSchedule() {
-        if (!isSingleImage) {
+        if (!adapter.isSingleImage()) {
             scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
         }
     }
@@ -228,7 +212,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
      * @param cur 对应的指示器图标变成 "选中"
      * */
     private fun switchIndicatorTo(cur: Int) {
-        if (!showIndicator || isSingleImage) {
+        if (!showIndicator || adapter.isSingleImage()) {
             return
         }
 
@@ -252,7 +236,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             else -> position - 1
         }
 
-        if (showIndicator && !isSingleImage) {
+        if (showIndicator && !adapter.isSingleImage()) {
             // 切换指示器
             switchIndicatorTo(curIndicator)
         }
@@ -269,7 +253,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 isDragging = false
 
                 val curPosition = viewPager.currentItem // 获取当前ViewPager的位置
-                if (!isSingleImage) {
+                if (!adapter.isSingleImage()) {
                     if (curPosition == adapter.getSize() - 1) {
                         viewPager.setCurrentItem(1, false)
                     } else if (curPosition == 0) {
@@ -290,7 +274,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
          * 存放BannerItem对应的View，是bannerItems对应的View
          * */
         private lateinit var bannerViews: Array<View?>
-
+        
         override fun getCount(): Int {
             return bannerItems.size
         }
@@ -314,19 +298,23 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         }
 
         internal fun setBanners(items: List<BannerItem>) {
+            if (items.isEmpty()) {
+                return
+            }
+
             // 存储BannerItem
             bannerItems.clear()
 
-            if (!isSingleImage) {
-                bannerItems.add(items[displayBannerCounts - 1])
+            if (items.size != 1) {
+                bannerItems.add(items.last())
             }
 
             for (item in items) {
                 bannerItems.add(item)
             }
 
-            if (!isSingleImage) {
-                bannerItems.add(items[0])
+            if (items.size != 1) {
+                bannerItems.add(items.first())
             }
 
             // 创建存储View的数组，用于保存BannerItem对应的View
@@ -337,6 +325,22 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         }
 
         internal fun getSize(): Int = bannerItems.size
+
+        /**
+         * 获取展示的Banner的数量，即用户看得到的Banner的数量
+         * */
+        internal fun getDisplayCounts(): Int {
+            return when (getSize()) {
+                0 -> 0
+                1 -> 1
+                else -> getSize() - 2
+            }
+        }
+
+        /**
+         * 表示是否是「单张图片」
+         * */
+        internal fun isSingleImage(): Boolean = if (getSize() == 1) true else false
     }
 
     inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
