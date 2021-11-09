@@ -1,5 +1,6 @@
 package com.topview.purejoy.musiclibrary.service
 
+import android.content.IntentFilter
 import com.topview.purejoy.musiclibrary.IPCPlayerController
 import com.topview.purejoy.musiclibrary.data.Item
 import com.topview.purejoy.musiclibrary.data.Wrapper
@@ -51,7 +52,12 @@ class MusicService : MediaService<MusicItem>() {
                 }
             }
         })
-
+        val filter = IntentFilter()
+        filter.addAction(MusicNotificationReceiver.CLEAR_ACTION)
+        filter.addAction(MusicNotificationReceiver.STATE_ACTION)
+        filter.addAction(MusicNotificationReceiver.NEXT_ACTION)
+        filter.addAction(MusicNotificationReceiver.PREVIOUS_ACTION)
+        registerReceiver(receiver, filter)
     }
 
     override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
@@ -75,6 +81,11 @@ class MusicService : MediaService<MusicItem>() {
         }
         val maxSize = Runtime.getRuntime().freeMemory() / 8
         return CacheStrategyImpl(cacheDirectory = file, maxMemorySize = maxSize.toInt())
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(receiver)
+        super.onDestroy()
     }
 
     companion object {
