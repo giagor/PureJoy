@@ -18,6 +18,8 @@ import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotification
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotificationReceiver
+import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModel
+import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModelImpl
 import java.io.File
 
 class MusicService : MediaService<MusicItem>() {
@@ -35,6 +37,10 @@ class MusicService : MediaService<MusicItem>() {
                 }
             }
         })
+    }
+
+    private val viewModel: MusicURLViewModel by lazy {
+        MusicURLViewModelImpl()
     }
 
     override fun onCreate() {
@@ -61,7 +67,7 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
-
+        viewModel.requestMusicURL(item.cast()!!, itemIndex, callback)
     }
 
     override fun showForeground(value: MusicItem, state: Boolean) {
