@@ -187,7 +187,9 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         val adapter = BannerAdapter()
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(this)
-        viewPager.currentItem = 1
+        if (!isSingleImage) {
+            viewPager.currentItem = 1
+        }
 
         if (!isSingleImage) {
             startSchedule()
@@ -295,10 +297,12 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 isDragging = false
 
                 val curPosition = viewPager.currentItem // 获取当前ViewPager的位置
-                if (curPosition == bannerItems.size - 1) {
-                    viewPager.setCurrentItem(1, false)
-                } else if (curPosition == 0) {
-                    viewPager.setCurrentItem(bannerItems.size - 2, false)
+                if (!isSingleImage) {
+                    if (curPosition == bannerItems.size - 1) {
+                        viewPager.setCurrentItem(1, false)
+                    } else if (curPosition == 0) {
+                        viewPager.setCurrentItem(bannerItems.size - 2, false)
+                    }
                 }
             }
         }
