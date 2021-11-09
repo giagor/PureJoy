@@ -27,7 +27,17 @@ class DiskCache(
                 file.delete()
             }
             runCatching {
-                file = File.createTempFile(path, suffix, parent)
+                val sf: String? = if (suffix != null) {
+                    suffix
+                } else {
+                    val index = key.lastIndexOf('.')
+                    if (index != -1) {
+                        key.substring(index)
+                    } else {
+                        null
+                    }
+                }
+                file = File.createTempFile(path, sf, parent)
                 val stream = BufferedOutputStream(file.outputStream())
                 val array = ByteArray(1024)
                 var len = value.read(array)

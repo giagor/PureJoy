@@ -35,10 +35,8 @@ open class MediaControllerImpl<T : Item>(
 
     private val callback = DefaultCallback(onSuccess = { index, item ->
         callbackSuccess(index, item)
-        itemCallback?.onSuccess(index, item)
-    }, handler, onFailure = { msg ->
-        itemCallback?.onFailure(msg)
-    })
+        itemCallback?.callback(index, item)
+    }, handler)
 
     open fun callbackSuccess(itemIndex: Int, item: Item) {
         if (list[position.current()].isSame(item)) {
@@ -127,17 +125,13 @@ open class MediaControllerImpl<T : Item>(
 
     private class DefaultCallback(
         val onSuccess: (Int, Item) -> Unit,
-        val handler: Handler,
-        val onFailure: ((String?) -> Unit)? = null) : Loader.Callback<Item> {
-        override fun onSuccess(itemIndex: Int, value: Item) {
+        val handler: Handler) : Loader.Callback<Item> {
+        override fun callback(itemIndex: Int, value: Item) {
             handler.post {
                 onSuccess.invoke(itemIndex, value)
             }
         }
 
-        override fun onFailure(msg: String?) {
-            onFailure?.invoke(msg)
-        }
 
     }
 

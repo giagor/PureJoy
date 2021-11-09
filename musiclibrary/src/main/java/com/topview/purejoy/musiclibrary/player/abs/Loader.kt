@@ -11,7 +11,7 @@ interface Loader {
     fun onLoadItem(itemIndex: Int, item: Item, callback: Callback<Item>)
 
     interface Callback<T> {
-        fun onSuccess(itemIndex: Int, value: T)
-        fun onFailure(msg: String?)
+        fun callback(itemIndex: Int, value: T)
+//        fun onFailure(msg: String?)
     }
 }
