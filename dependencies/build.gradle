@@ -50,4 +50,8 @@ dependencies {
     // Kotlin Coroutines
     api('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2')
     api('org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2')
+
+    // glide
+    api('com.github.bumptech.glide:glide:4.12.0')
+
 }

@@ -8,8 +8,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.entity.MusicItem
 
@@ -64,6 +70,16 @@ class MusicNotification(
         remoteViews.setTextViewText(R.id.music_notification_author_tx,
             "${item.getAuthors()} - ${item.al.name}")
         // 更新歌曲图片
+        Glide.with(context).asBitmap().load(item.al.picUrl).into(object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                remoteViews.setImageViewBitmap(R.id.music_notification_img, resource)
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+
+        })
         val id = if (state) {
             R.drawable.music_notification_pause_24
         } else {
