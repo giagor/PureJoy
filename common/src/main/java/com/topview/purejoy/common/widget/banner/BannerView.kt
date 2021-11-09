@@ -299,7 +299,7 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         }
     }
 
-    inner class BannerAdapter : PagerAdapter() {
+    private inner class BannerAdapter : PagerAdapter() {
         /**
          * 存放BannerItem，内容为："最后一个Banner" + "用户看得见的Banner" + "第一个Banner"
          * */
@@ -332,7 +332,7 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             container.removeView(any as View)
         }
 
-        internal fun setBanners(items: List<BannerItem>) {
+        fun setBanners(items: List<BannerItem>) {
             if (items.isEmpty()) {
                 return
             }
@@ -362,12 +362,12 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         /**
          * 获取bannerItems的大小
          * */
-        internal fun getSize(): Int = bannerItems.size
+        fun getSize(): Int = bannerItems.size
 
         /**
          * 获取展示的Banner的数量，即用户看得到的Banner的数量
          * */
-        internal fun getDisplayCounts(): Int {
+        fun getDisplayCounts(): Int {
             return when (getSize()) {
                 0 -> 0
                 1 -> 1
@@ -378,10 +378,10 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         /**
          * 表示是否是「单张图片」
          * */
-        internal fun isSingleImage(): Boolean = if (getSize() == 1) true else false
+        fun isSingleImage(): Boolean = if (getSize() == 1) true else false
     }
 
-    inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
+    private inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
 
         /**
          * 通过"弱引用"的方式持有BannerView，有效地防止内存泄漏
