@@ -185,7 +185,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         val source = dataController.source
 
         val callback = object : Loader.Callback<Item> {
-            override fun onSuccess(itemIndex: Int, value: Item) {
+            override fun callback(itemIndex: Int, value: Item) {
                 val wrapper = source[itemIndex]
                 if (wrapper.value?.isSame(value) == true) {
                     wrapper.value = value
@@ -196,10 +196,6 @@ abstract class MediaService<T : Item> : Service(), Loader {
                         }
                     }
                 }
-            }
-
-            override fun onFailure(msg: String?) {
-
             }
         }
 
