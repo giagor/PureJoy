@@ -10,4 +10,8 @@ rootProject.name = "PureJoy"
 include ':app'
 include ':dependencies'
 include ':common'
+
+include ':musiclibrary'
+
 include ':home'
+
