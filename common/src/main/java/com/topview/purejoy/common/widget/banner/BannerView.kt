@@ -24,9 +24,12 @@ import java.lang.ref.WeakReference
 
 private const val TAG = "BannerView"
 
-class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
-    ViewPager.OnPageChangeListener {
+class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    FrameLayout(context, attrs, defStyleAttr), ViewPager.OnPageChangeListener {
 
+    constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    
     private lateinit var viewPager: ViewPager
 
     private lateinit var indicatorLayout: LinearLayout
@@ -166,7 +169,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         if (items.isEmpty()) {
             return
         }
-        
+
         // 适配器中设置BannerItem
         adapter.setBanners(items)
         // 判断是否要显示"指示器"
@@ -274,7 +277,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
          * 存放BannerItem对应的View，是bannerItems对应的View
          * */
         private lateinit var bannerViews: Array<View?>
-        
+
         override fun getCount(): Int {
             return bannerItems.size
         }
