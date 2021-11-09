@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,20 @@ import java.lang.ref.WeakReference
 
 /**
  * Created by giagor at 2021/11/05
+ *
+ * 使用方式：实体类 继承 BannerItem，实现具体的 View的 加载与显示逻辑
+ * 自定义属性：
+ * auto_scroll_time_spacing 轮播的时间
+ * indicator_shape 指示器的图案
+ * indicator_select_color 指示器选中时的颜色
+ * indicator_unselect_color 指示器未选中颜色
+ * indicator_size 指示器的大小
+ * indicator_spacing 指示器之间的左右间隔
+ * indicator_margin_xxx 指示器距离外部的margin
+ * indicator_gravity 指示器的位置
+ * show_indicator 是否显示指示器
+ *
+ * todo 支持多次setBanners的调用
  * */
 
 private const val TAG = "BannerView"
@@ -29,9 +42,12 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    
+
     private lateinit var viewPager: ViewPager
 
+    /**
+     * 用于存放指示器
+     * */
     private lateinit var indicatorLayout: LinearLayout
 
     private val adapter: BannerAdapter = BannerAdapter()
@@ -41,6 +57,9 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
      * */
     private val scheduleHandler: Handler = Handler(Looper.getMainLooper())
 
+    /**
+     * 控制BannerView自动滚动的任务
+     * */
     private val scheduleRunnable = ScheduleRunnable(this)
 
     /**
@@ -58,6 +77,9 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
      * */
     private var indicatorIvs = mutableListOf<ImageView>()
 
+    /**
+     * 自定义属性
+     * */
     private var indicatorSize: Int = 0
     private var indicatorGravity: Int = 0
     private var indicatorMarginTop: Int = 0
@@ -177,12 +199,16 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             initIndicators()
         }
 
+        // 如果不止一张图片，那么就开启"自动滚动"的任务
         if (!adapter.isSingleImage()) {
             viewPager.currentItem = 1
             startSchedule()
         }
     }
 
+    /**
+     * 初始化指示器
+     * */
     private fun initIndicators() {
         val indicatorParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -200,11 +226,13 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             indicatorIvs.add(indicator)
             indicatorLayout.addView(indicator, indicatorParams)
         }
+        // 选中第0个指示器
         switchIndicatorTo(0)
     }
 
     private fun startSchedule() {
         if (!adapter.isSingleImage()) {
+            // 通过Handler推送延迟任务
             scheduleHandler.postDelayed(scheduleRunnable, autoScrollTimeSpac)
         }
     }
@@ -248,6 +276,7 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     override fun onPageScrollStateChanged(state: Int) {
         when (state) {
             ViewPager.SCROLL_STATE_DRAGGING -> {
+                // 记录用户的「拖拽状态」及「拖拽时间」
                 isDragging = true
                 draggingTime = System.currentTimeMillis()
             }
@@ -255,11 +284,14 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             ViewPager.SCROLL_STATE_IDLE -> {
                 isDragging = false
 
-                val curPosition = viewPager.currentItem // 获取当前ViewPager的位置
+                // 获取当前ViewPager的位置
+                val curPosition = viewPager.currentItem
                 if (!adapter.isSingleImage()) {
+                    // 如果滚动到"最后1张"(假图)，迅速切换到"第1张"，让用户认为当前看的是"第1张"
                     if (curPosition == adapter.getSize() - 1) {
                         viewPager.setCurrentItem(1, false)
                     } else if (curPosition == 0) {
+                        // 如果滚动到"第0张"(假图)，迅速切换到"最后1张"，让用户认为当前看的是"最后1张"
                         viewPager.setCurrentItem(adapter.getSize() - 2, false)
                     }
                 }
@@ -327,6 +359,9 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             notifyDataSetChanged()
         }
 
+        /**
+         * 获取bannerItems的大小
+         * */
         internal fun getSize(): Int = bannerItems.size
 
         /**
@@ -348,10 +383,14 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
 
+        /**
+         * 通过"弱引用"的方式持有BannerView，有效地防止内存泄漏
+         * */
         private val viewWef = WeakReference(bannerView)
 
         override fun run() {
             val bannerView: BannerView? = viewWef.get()
+            // 为null，说明BannerView已经被GC，直接return
             if (bannerView === null) {
                 return
             }
