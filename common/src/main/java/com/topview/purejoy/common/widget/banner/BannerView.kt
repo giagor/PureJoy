@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,6 @@ import java.lang.ref.WeakReference
  * Created by giagor at 2021/11/05
  * */
 
-
 private const val TAG = "BannerView"
 
 class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
@@ -31,15 +31,7 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
     private lateinit var indicatorLayout: LinearLayout
 
-    /**
-     * 存放BannerItem，内容为："最后一个Banner" + "用户看得见的Banner" + "第一个Banner"
-     * */
-    private val bannerItems: MutableList<BannerItem> = mutableListOf()
-
-    /**
-     * 存放BannerItem对应的View，是bannerItems对应的View
-     * */
-    private lateinit var bannerViews: Array<View?>
+    private val adapter: BannerAdapter = BannerAdapter()
 
     /**
      * 用户看到的"Banner"的数量
@@ -154,6 +146,9 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+        // 配置ViewPager
+        viewPager.adapter = adapter
+        viewPager.addOnPageChangeListener(this)
         addView(viewPager, vpParams)
 
         if (showIndicator) {
@@ -192,20 +187,11 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         if (showIndicator && !isSingleImage) {
             initIndicators()
         }
-        // 存储BannerItem
-        storeBannerItems(items)
-        // 创建数组，用于保存BannerItem对应的子View
-        bannerViews = arrayOfNulls(bannerItems.size)
+        // 适配器中设置BannerItem
+        adapter.setBanners(items)
 
-        
-        val adapter = BannerAdapter()
-        viewPager.adapter = adapter
-        viewPager.addOnPageChangeListener(this)
         if (!isSingleImage) {
             viewPager.currentItem = 1
-        }
-
-        if (!isSingleImage) {
             startSchedule()
         }
     }
@@ -228,22 +214,6 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
             indicatorLayout.addView(indicator, indicatorParams)
         }
         switchIndicatorTo(0)
-    }
-
-    private fun storeBannerItems(items: List<BannerItem>) {
-        bannerItems.clear()
-
-        if (!isSingleImage) {
-            bannerItems.add(items[displayBannerCounts - 1])
-        }
-
-        for (item in items) {
-            bannerItems.add(item)
-        }
-
-        if (!isSingleImage) {
-            bannerItems.add(items[0])
-        }
     }
 
     private fun startSchedule() {
@@ -277,8 +247,8 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     override fun onPageSelected(position: Int) {
         // 根据不同的情况，获取当前的指示器的下标
         val curIndicator = when (position) {
-            0 -> bannerItems.size - 3
-            bannerItems.size - 1 -> 0
+            0 -> adapter.getSize() - 3
+            adapter.getSize() - 1 -> 0
             else -> position - 1
         }
 
@@ -300,10 +270,10 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
                 val curPosition = viewPager.currentItem // 获取当前ViewPager的位置
                 if (!isSingleImage) {
-                    if (curPosition == bannerItems.size - 1) {
+                    if (curPosition == adapter.getSize() - 1) {
                         viewPager.setCurrentItem(1, false)
                     } else if (curPosition == 0) {
-                        viewPager.setCurrentItem(bannerItems.size - 2, false)
+                        viewPager.setCurrentItem(adapter.getSize() - 2, false)
                     }
                 }
             }
@@ -311,6 +281,16 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     inner class BannerAdapter : PagerAdapter() {
+        /**
+         * 存放BannerItem，内容为："最后一个Banner" + "用户看得见的Banner" + "第一个Banner"
+         * */
+        private val bannerItems: MutableList<BannerItem> = mutableListOf()
+
+        /**
+         * 存放BannerItem对应的View，是bannerItems对应的View
+         * */
+        private lateinit var bannerViews: Array<View?>
+
         override fun getCount(): Int {
             return bannerItems.size
         }
@@ -332,6 +312,31 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
             container.removeView(any as View)
         }
+
+        internal fun setBanners(items: List<BannerItem>) {
+            // 存储BannerItem
+            bannerItems.clear()
+
+            if (!isSingleImage) {
+                bannerItems.add(items[displayBannerCounts - 1])
+            }
+
+            for (item in items) {
+                bannerItems.add(item)
+            }
+
+            if (!isSingleImage) {
+                bannerItems.add(items[0])
+            }
+
+            // 创建存储View的数组，用于保存BannerItem对应的View
+            bannerViews = arrayOfNulls(bannerItems.size)
+
+            // 通知数据已经改变
+            notifyDataSetChanged()
+        }
+
+        internal fun getSize(): Int = bannerItems.size
     }
 
     inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
