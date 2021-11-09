@@ -1,11 +1,11 @@
 package com.topview.purejoy.common.widget.banner
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -32,9 +32,14 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     private lateinit var indicatorLayout: LinearLayout
 
     /**
-     * 存放要展示的View，内容为："最后一个Banner" + "用户看得见的Banner" + "第一个Banner"
+     * 存放BannerItem，内容为："最后一个Banner" + "用户看得见的Banner" + "第一个Banner"
      * */
-    private val bannerItems: MutableList<View> = mutableListOf()
+    private val bannerItems: MutableList<BannerItem> = mutableListOf()
+
+    /**
+     * 存放BannerItem对应的View，是bannerItems对应的View
+     * */
+    private lateinit var bannerViews: Array<View?>
 
     /**
      * 用户看到的"Banner"的数量
@@ -169,21 +174,30 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         }
     }
 
-    fun setBanners(banners: List<Drawable>) {
-        if (banners.isEmpty()) {
+    /**
+     * 提供给外界调用，外界通过该方法，设置要显示的BannerItem
+     * */
+    fun setBanners(items: List<BannerItem>) {
+        if (items.isEmpty()) {
             return
         }
 
-        displayBannerCounts = banners.size
+        // 记录用户看到的"Banner"的数量
+        displayBannerCounts = items.size
         if (displayBannerCounts == 1) {
             isSingleImage = true
         }
 
+        // 判断是否要显示"指示器"
         if (showIndicator && !isSingleImage) {
             initIndicators()
         }
-        getShowImage(banners)
+        // 存储BannerItem
+        storeBannerItems(items)
+        // 创建数组，用于保存BannerItem对应的子View
+        bannerViews = arrayOfNulls(bannerItems.size)
 
+        
         val adapter = BannerAdapter()
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(this)
@@ -216,31 +230,19 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         switchIndicatorTo(0)
     }
 
-    private fun getShowImage(banners: List<Drawable>) {
+    private fun storeBannerItems(items: List<BannerItem>) {
         bannerItems.clear()
 
         if (!isSingleImage) {
-            val bannerFirst = ImageView(context).apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                setImageDrawable(banners[displayBannerCounts - 1])
-            }
-            bannerItems.add(bannerFirst)
+            bannerItems.add(items[displayBannerCounts - 1])
         }
 
-        for (drawable in banners) {
-            val imageView = ImageView(context).apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                setImageDrawable(drawable)
-            }
-            bannerItems.add(imageView)
+        for (item in items) {
+            bannerItems.add(item)
         }
 
         if (!isSingleImage) {
-            val bannerEnd = ImageView(context).apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                setImageDrawable(banners[0])
-            }
-            bannerItems.add(bannerEnd)
+            bannerItems.add(items[0])
         }
     }
 
@@ -318,9 +320,13 @@ class BannerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val item = bannerItems[position]
-            container.addView(item)
-            return item
+            if (bannerViews[position] === null) {
+                bannerViews[position] =
+                    bannerItems[position].onCreateView(LayoutInflater.from(context), container)
+            }
+            container.addView(bannerViews[position])
+
+            return bannerViews[position]!!
         }
 
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
