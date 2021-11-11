@@ -8,10 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * 通过该单例类，可以获取Retrofit接口.
  * */
 object ServiceCreator {
-    /**
-     * TODO 添加具体的服务器地址
-     * */
-    private const val BASE_URL = ""
+    private const val BASE_URL = "https://music.gochiusa.top"
 
     private val httpClient = OkHttpClient.Builder()
 
