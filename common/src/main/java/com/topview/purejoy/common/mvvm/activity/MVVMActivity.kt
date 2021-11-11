@@ -13,7 +13,10 @@ import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
  * MVVM的通用Activity
  * */
 abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonActivity() {
-    protected lateinit var viewModel: VM
+    protected val viewModel: VM by lazy {
+        createViewModel()
+    }
+
     protected lateinit var binding: VB
 
     /**
@@ -33,8 +36,6 @@ abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonAc
 
         // 绑定生命周期
         binding.lifecycleOwner = this
-
-        viewModel = createViewModel()
     }
 
     override fun setContentView() {
