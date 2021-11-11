@@ -11,7 +11,9 @@ import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 abstract class MVVMFragment<VM : MVVMViewModel> : CommonFragment() {
     protected lateinit var viewModel: VM
 
-    // 返回当前Fragment绑定的ViewModel类型
+    /**
+     * 返回当前Fragment绑定的ViewModel类型
+     * */
     protected abstract fun getViewModelClass(): Class<VM>
 
 
@@ -20,12 +22,16 @@ abstract class MVVMFragment<VM : MVVMViewModel> : CommonFragment() {
         viewModel = createViewModel()
     }
 
-    // 创建与当前Fragment相关联的ViewModel
+    /**
+     * 创建与当前Fragment相关联的ViewModel
+     * */
     protected fun createViewModel(): VM {
         return ViewModelProvider(this, createFactory()).get(getViewModelClass())
     }
 
-    // 提供一个Factory实例
+    /**
+     * 提供一个Factory实例
+     * */
     protected abstract fun createFactory(): ViewModelProvider.Factory
 
 

@@ -16,10 +16,14 @@ abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonAc
     protected lateinit var viewModel: VM
     protected lateinit var binding: VB
 
-    // 返回当前Activity绑定的ViewModel类型
+    /**
+     * 返回当前Activity绑定的ViewModel类型
+     * */
     protected abstract fun getViewModelClass(): Class<VM>
 
-    // 创建与当前Activity相关联的ViewModel
+    /**
+     * 创建与当前Activity相关联的ViewModel
+     * */
     protected fun createViewModel(): VM {
         return ViewModelProvider(this, createFactory()).get(getViewModelClass())
     }
@@ -38,7 +42,9 @@ abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonAc
         binding = DataBindingUtil.setContentView(this, getLayoutId())
     }
 
-    // 提供一个Factory实例
+    /**
+     * 提供一个Factory实例
+     * */
     protected abstract fun createFactory(): ViewModelProvider.Factory
 
 }
