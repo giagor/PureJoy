@@ -29,22 +29,32 @@ abstract class ServiceActivity<VM : MVVMViewModel, VB : ViewDataBinding, C : Ser
         disconnectService()
     }
 
-    // 提供服务连接实例
+    /**
+     * 提供服务连接实例
+     * */
     protected abstract fun createConnection(): C
 
-    // 绑定服务
+    /**
+     * 绑定服务
+     * */
     protected fun connectService() {
         val intent = Intent(this, serviceClass())
         bindService(intent, connection, serviceFlag())
     }
 
-    // 提供要绑定的服务类型
+    /**
+     * 提供要绑定的服务类型
+     * */
     protected abstract fun serviceClass(): Class<S>
 
-    // 服务的启动模式
+    /**
+     * 服务的启动模式
+     * */
     protected abstract fun serviceFlag(): Int
 
-    // 解绑服务
+    /**
+     * 解绑服务
+     * */
     protected fun disconnectService() {
         unbindService(connection)
     }
