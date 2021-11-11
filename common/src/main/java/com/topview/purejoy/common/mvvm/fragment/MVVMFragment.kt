@@ -21,7 +21,7 @@ abstract class MVVMFragment<VM : MVVMViewModel> : CommonFragment() {
     /**
      * 创建与当前Fragment相关联的ViewModel
      * */
-    protected fun createViewModel(): VM {
+    private fun createViewModel(): VM {
         return ViewModelProvider(this, createFactory()).get(getViewModelClass())
     }
 

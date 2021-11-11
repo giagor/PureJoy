@@ -27,7 +27,7 @@ abstract class MVVMActivity<VM : MVVMViewModel, VB : ViewDataBinding> : CommonAc
     /**
      * 创建与当前Activity相关联的ViewModel
      * */
-    protected fun createViewModel(): VM {
+    private fun createViewModel(): VM {
         return ViewModelProvider(this, createFactory()).get(getViewModelClass())
     }
 
