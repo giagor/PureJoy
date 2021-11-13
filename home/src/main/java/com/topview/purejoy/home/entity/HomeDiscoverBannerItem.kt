@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.topview.purejoy.common.app.CommonApplication
+import com.bumptech.glide.request.RequestOptions
 import com.topview.purejoy.common.widget.banner.BannerItem
 import com.topview.purejoy.home.R
 
@@ -18,10 +18,9 @@ data class HomeDiscoverBannerItem(val imgUrl: String?, val link: String?) : Bann
         )
         val imageView: ImageView = view.findViewById(R.id.common_iv_banner_card_image)
         imgUrl?.let {
-            Glide.with(CommonApplication.getContext())
+            Glide.with(imageView)
                 .load(it)
-                .placeholder(R.drawable.home_ic_bottom_navi_mine)
-                .error(R.drawable.home_bg_bottom_navi_item)
+                .apply(RequestOptions().override(imageView.width,imageView.height))
                 .into(imageView)
         }
         return view
