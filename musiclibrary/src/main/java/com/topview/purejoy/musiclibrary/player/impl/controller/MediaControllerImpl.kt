@@ -151,4 +151,30 @@ open class MediaControllerImpl<T : Item>(
         player.release()
     }
 
+    override fun jumpTo(index: Int) {
+        val p = TempPosition(max = position.max, current = index)
+        position.with(p)
+        val item = list[position.current()]
+        setDataSource(item)
+    }
+
+    private class TempPosition(override var max: Int, val current: Int) : Position {
+        override fun current(): Int {
+            return current
+        }
+
+        override fun next(): Int {
+            return 0
+        }
+
+        override fun last(): Int {
+            return 0
+        }
+
+        override fun with(position: Position) {
+
+        }
+
+    }
+
 }
