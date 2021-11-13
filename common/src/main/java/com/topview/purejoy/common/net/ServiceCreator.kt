@@ -11,7 +11,7 @@ object ServiceCreator {
     /**
      * TODO 添加具体的服务器地址
      * */
-    private const val BASE_URL = ""
+    private const val BASE_URL = "https://music.gochiusa.top/"
 
     private val httpClient = OkHttpClient.Builder()
 
