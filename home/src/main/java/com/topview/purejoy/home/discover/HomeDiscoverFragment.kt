@@ -1,8 +1,6 @@
 package com.topview.purejoy.home.discover
 
-import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
@@ -15,13 +13,7 @@ private const val TAG = "HomeDiscoverFragment"
 class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel.bannerLiveData.observe(this, {
-            it.forEach {
-                Log.d(TAG, "onCreate: pic:${it.pic},url:${it.url}")
-            }
-        })
-
+        
         viewModel.status.observe(this, {
 
         })
@@ -29,6 +21,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.viewModel = viewModel
         viewModel.getBanners()
     }
 
@@ -41,7 +34,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     }
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
-
+    
     companion object {
         @JvmStatic
         fun newInstance() = HomeDiscoverFragment()
