@@ -20,4 +20,13 @@
         <attr name="indicator_select_color" format="color" />
         <attr name="indicator_unselect_color" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="RoundImageView">
+        <attr name="draw_type">
+            <flag name="circle" value="1"/>
+            <flag name="round_rect" value="2"/>
+        </attr>
+        <attr name="round_rect_radius" format="float"/>
+        <attr name="thumb" format="boolean" />
+    </declare-styleable>
 </resources>

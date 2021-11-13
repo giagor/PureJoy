@@ -8,11 +8,8 @@ import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.player.abs.Loader
 import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
 import com.topview.purejoy.musiclibrary.player.impl.cache.CacheStrategyImpl
-import com.topview.purejoy.musiclibrary.player.impl.controller.MediaControllerImpl
 import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCDataControllerImpl
-import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCPlayerControllerImpl
-import com.topview.purejoy.musiclibrary.player.impl.listener.PlayStateChangeListener
 import com.topview.purejoy.musiclibrary.player.service.MediaService
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
