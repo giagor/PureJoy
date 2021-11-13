@@ -10,4 +10,5 @@ interface IPCPlayerController {
     void seekTo(int progress);
     boolean isPlaying();
     int progress();
+    void jumpTo(int index);
 }

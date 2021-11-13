@@ -45,5 +45,11 @@ class IPCPlayerControllerImpl(
         return realController.progress()
     }
 
+    override fun jumpTo(index: Int) {
+        handler.post { 
+            realController.jumpTo(index)
+        }
+    }
+
 
 }

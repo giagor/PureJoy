@@ -20,5 +20,11 @@ interface MediaController {
     // 释放资源
     fun release()
 
+    /**
+     * @param index 想要播放歌曲的位置
+     * 跳转到列表index位置播放
+     */
+    fun jumpTo(index: Int)
+
 
 }
