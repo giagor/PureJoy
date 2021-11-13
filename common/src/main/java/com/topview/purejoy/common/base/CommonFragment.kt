@@ -1,4 +1,4 @@
-package com.topview.purejoy.common.mvvm.fragment
+package com.topview.purejoy.common.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,8 +13,16 @@ abstract class CommonFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(getLayoutId(), container, false)
+        return createView(inflater, container, savedInstanceState)
     }
 
     abstract fun getLayoutId(): Int
+
+    protected open fun createView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(getLayoutId(), container, false)
+    }
 }

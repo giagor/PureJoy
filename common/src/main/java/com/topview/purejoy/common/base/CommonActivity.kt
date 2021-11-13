@@ -53,7 +53,9 @@ abstract class CommonActivity : AppCompatActivity() {
         setContentView(getLayoutId())
     }
 
-    // 当前Activity布局文件的ID
+    /**
+     * 当前Activity布局文件的ID
+     * */
     protected abstract fun getLayoutId(): Int
 
     /**
