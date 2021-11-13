@@ -9,9 +9,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
@@ -70,16 +72,25 @@ class MusicNotification(
         remoteViews.setTextViewText(R.id.music_notification_author_tx,
             "${item.getAuthors()} - ${item.al.name}")
         // 更新歌曲图片
-        Glide.with(context).asBitmap().load(item.al.picUrl).into(object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                remoteViews.setImageViewBitmap(R.id.music_notification_img, resource)
-            }
+        Glide.with(context).asBitmap().placeholder(R.drawable.white_holder)
+            .error(R.drawable.white_holder).load(item.al.picUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    remoteViews.setImageViewBitmap(R.id.music_notification_img, resource)
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    placeholder?.toBitmap()?.let {
+                        remoteViews.setImageViewBitmap(R.id.music_notification_img, it)
+                    }
+                }
 
-            }
-
-        })
+                override fun onLoadStarted(placeholder: Drawable?) {
+                    placeholder?.toBitmap()?.let {
+                        remoteViews.setImageViewBitmap(R.id.music_notification_img, it)
+                    }
+                }
+            })
         val id = if (state) {
             R.drawable.music_notification_pause_24
         } else {
