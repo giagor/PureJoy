@@ -1,5 +1,8 @@
 package com.topview.purejoy.home.entity
 
+import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +21,9 @@ data class HomeDiscoverBannerItem(val imgUrl: String?, val link: String?) : Bann
         )
         val imageView: ImageView = view.findViewById(R.id.common_iv_banner_card_image)
         imgUrl?.let {
-            Glide.with(imageView)
+            Glide.with(imageView.context as Activity)
                 .load(it)
-                .apply(RequestOptions().override(imageView.width,imageView.height))
+                .apply(RequestOptions().override(imageView.width, imageView.height))
                 .into(imageView)
         }
         return view
