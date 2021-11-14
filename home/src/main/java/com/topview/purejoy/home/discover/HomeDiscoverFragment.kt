@@ -1,6 +1,7 @@
 package com.topview.purejoy.home.discover
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
@@ -19,6 +20,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         binding.viewModel = viewModel
         observe()
         viewModel.getBanners()
+        viewModel.getDailyRecommendPlayList()
     }
 
     override fun getLayoutId(): Int {
@@ -35,10 +37,15 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         showToast(requireContext(), "请求轮播图出错")
     }
 
+    private fun showDailyRecommendPlayListError() {
+        showToast(requireContext(), "请求每日推荐歌单出错")
+    }
+
     private fun observe() {
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 Status.HOME_DISCOVER_BANNER_NET_ERROR -> showBannerError()
+                Status.HOME_DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
     }
