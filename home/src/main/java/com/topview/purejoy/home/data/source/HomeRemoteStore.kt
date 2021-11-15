@@ -36,12 +36,8 @@ class HomeRemoteStore {
             if (result != null) {
                 val list = mutableListOf<DailyRecommendPlayList>()
                 result.forEach {
-                    val dailyRecommendPlayList = DailyRecommendPlayList().apply {
-                        id = it.id
-                        name = it.name
-                        playCount = it.playCount
-                        picUrl = it.picUrl
-                    }
+                    val dailyRecommendPlayList =
+                        DailyRecommendPlayList(it.id, it.name, it.picUrl, it.playCount)
                     list.add(dailyRecommendPlayList)
                 }
                 return list
