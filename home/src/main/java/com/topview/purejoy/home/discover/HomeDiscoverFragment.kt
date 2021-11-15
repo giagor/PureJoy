@@ -1,14 +1,15 @@
 package com.topview.purejoy.home.discover
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeDiscoverBinding
+import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeDiscoverFragment"
@@ -18,6 +19,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
+        initRecyclerView()
         observe()
         viewModel.getBanners()
         viewModel.getDailyRecommendPlayList()
@@ -32,6 +34,15 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     }
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    private fun initRecyclerView() {
+        val layoutManager = LinearLayoutManager(requireContext()).apply {
+            orientation = LinearLayoutManager.HORIZONTAL
+        }
+        val adapter = DailyRecommendPlayListAdapter()
+        binding.layoutManager = layoutManager
+        binding.adapter = adapter
+    }
 
     private fun showBannerError() {
         showToast(requireContext(), "请求轮播图出错")
