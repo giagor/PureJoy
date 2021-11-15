@@ -5,20 +5,36 @@
 
     <data>
         <import type="com.topview.purejoy.home.discover.HomeDiscoverViewModel"/>
+        <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <import type="com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
+        <variable
+            name="layoutManager"
+            type="LinearLayoutManager" />
+        <variable
+            name="adapter"
+            type="DailyRecommendPlayListAdapter" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".discover.HomeDiscoverFragment">
         
         <com.topview.purejoy.common.widget.banner.BannerView
             android:layout_width="match_parent"
             android:layout_height="160dp"
             app:loadBanners="@{viewModel.bannerLiveData}"/>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="@{layoutManager}"
+            app:dailyRecommendPlayListAdapter="@{adapter}"
+            app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"/>
         
     </LinearLayout>
 </layout>
