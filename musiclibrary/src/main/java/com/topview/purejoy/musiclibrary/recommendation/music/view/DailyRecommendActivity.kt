@@ -42,9 +42,10 @@ class DailyRecommendActivity : CommonActivity() {
         val adapter = DailyRecommendAdapter()
         recyclerView.adapter = adapter
         viewModel.data.observe(this, {
-            adapter.dailySongs = it
-            adapter.notifyItemRangeChanged(0, it.dailySongs.size)
-            Glide.with(this).asBitmap().load(it.dailySongs[0].al.picUrl)
+            adapter.data.clear()
+            adapter.data.addAll(it)
+            adapter.notifyItemRangeChanged(0, adapter.data.size)
+            Glide.with(this).asBitmap().load(it[0].item.al.picUrl)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
