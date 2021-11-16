@@ -7,6 +7,7 @@ import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.data.repo.HomeRepository
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
+import com.topview.purejoy.home.entity.RecommendNewSong
 
 class HomeDiscoverViewModel : MVVMViewModel() {
     private val repository = HomeRepository
@@ -17,6 +18,10 @@ class HomeDiscoverViewModel : MVVMViewModel() {
 
     val dailyRecommendPlayListLiveData: MutableLiveData<List<DailyRecommendPlayList>> by lazy {
         MutableLiveData<List<DailyRecommendPlayList>>()
+    }
+
+    val recommendNewSongLiveData: MutableLiveData<List<RecommendNewSong>> by lazy {
+        MutableLiveData<List<RecommendNewSong>>()
     }
 
     fun getBanners() {
@@ -30,7 +35,7 @@ class HomeDiscoverViewModel : MVVMViewModel() {
             }
 
             onError = {
-                status.value = Status.HOME_DISCOVER_BANNER_NET_ERROR
+                status.value = Status.DISCOVER_BANNER_NET_ERROR
             }
         }
     }
@@ -46,7 +51,23 @@ class HomeDiscoverViewModel : MVVMViewModel() {
             }
 
             onError = {
-                status.value = Status.HOME_DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR
+                status.value = Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR
+            }
+        }
+    }
+
+    fun getRecommendNewSong() {
+        viewModelScope.rxLaunch<List<RecommendNewSong>> {
+            onRequest = {
+                repository.getRecommendNewSong()
+            }
+
+            onSuccess = {
+                recommendNewSongLiveData.value = it
+            }
+
+            onError = {
+                status.value = Status.DISCOVER_RECOMMEND_NEW_SONG_NET_ERROR
             }
         }
     }
