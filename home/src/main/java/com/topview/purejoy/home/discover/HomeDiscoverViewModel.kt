@@ -40,10 +40,10 @@ class HomeDiscoverViewModel : MVVMViewModel() {
         }
     }
 
-    fun getDailyRecommendPlayList() {
+    fun getDailyRecommendPlayList(limit : Int = 6) {
         viewModelScope.rxLaunch<List<DailyRecommendPlayList>> {
             onRequest = {
-                repository.getDailyRecommendPlayList()
+                repository.getDailyRecommendPlayList(limit)
             }
 
             onSuccess = {
@@ -56,10 +56,10 @@ class HomeDiscoverViewModel : MVVMViewModel() {
         }
     }
 
-    fun getRecommendNewSong() {
+    fun getRecommendNewSong(limit : Int = 12) {
         viewModelScope.rxLaunch<List<RecommendNewSong>> {
             onRequest = {
-                repository.getRecommendNewSong()
+                repository.getRecommendNewSong(limit)
             }
 
             onSuccess = {

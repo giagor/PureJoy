@@ -30,7 +30,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         observe()
         viewModel.getBanners()
         viewModel.getDailyRecommendPlayList()
-        viewModel.getRecommendNewSong()
+        viewModel.getRecommendNewSong(RECOMMEND_NEW_SONG_ROW_COUNT * 4)
     }
 
     override fun getLayoutId(): Int {

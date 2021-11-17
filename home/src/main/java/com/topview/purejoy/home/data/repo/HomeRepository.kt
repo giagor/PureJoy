@@ -16,12 +16,12 @@ internal object HomeRepository {
         homeRemoteStore.getBanners()
     }
 
-    suspend fun getDailyRecommendPlayList(limit: Int = 6): List<DailyRecommendPlayList>? =
+    suspend fun getDailyRecommendPlayList(limit: Int): List<DailyRecommendPlayList>? =
         withContext(Dispatchers.IO) {
             homeRemoteStore.getDailyRecommendPlayList(limit)
         }
 
-    suspend fun getRecommendNewSong(limit: Int = 12): List<RecommendNewSong>? =
+    suspend fun getRecommendNewSong(limit: Int): List<RecommendNewSong>? =
         withContext(Dispatchers.IO) {
             homeRemoteStore.getRecommendNewSong(limit)
         }
