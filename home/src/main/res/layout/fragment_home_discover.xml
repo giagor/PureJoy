@@ -6,16 +6,24 @@
     <data>
         <import type="com.topview.purejoy.home.discover.HomeDiscoverViewModel"/>
         <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <import type="androidx.recyclerview.widget.GridLayoutManager"/>
         <import type="com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter"/>
+        <import type="com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
         <variable
-            name="layoutManager"
+            name="dailyRecommendNewSongLayoutManager"
             type="LinearLayoutManager" />
         <variable
-            name="adapter"
+            name="dailyRecommendPlayListAdapter"
             type="DailyRecommendPlayListAdapter" />
+        <variable
+            name="recommendNewSongLayoutManager"
+            type="GridLayoutManager" />
+        <variable
+            name="recommendNewSongAdapter"
+            type="RecommendNewSongAdapter" />
     </data>
 
     <LinearLayout
@@ -32,9 +40,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="@{layoutManager}"
-            app:dailyRecommendPlayListAdapter="@{adapter}"
+            app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
+            app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
             app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"/>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="@{recommendNewSongLayoutManager}"
+            app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
+            app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"/>
         
     </LinearLayout>
 </layout>

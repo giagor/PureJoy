@@ -3,6 +3,7 @@ package com.topview.purejoy.home.discover
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.util.showToast
@@ -10,9 +11,15 @@ import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeDiscoverBinding
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
+import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeDiscoverFragment"
+
+/**
+ * 表示展示"推荐新歌曲"的行数
+ * */
+private const val RECOMMEND_NEW_SONG_ROW_COUNT = 3
 
 class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -23,6 +30,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         observe()
         viewModel.getBanners()
         viewModel.getDailyRecommendPlayList()
+        viewModel.getRecommendNewSong()
     }
 
     override fun getLayoutId(): Int {
@@ -36,12 +44,27 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
 
     private fun initRecyclerView() {
+        initDailyRecommendPlayListRecycler()
+        initRecommendNewSongRecycler()
+    }
+
+    private fun initDailyRecommendPlayListRecycler() {
         val layoutManager = LinearLayoutManager(requireContext()).apply {
             orientation = LinearLayoutManager.HORIZONTAL
         }
         val adapter = DailyRecommendPlayListAdapter()
-        binding.layoutManager = layoutManager
-        binding.adapter = adapter
+        binding.dailyRecommendNewSongLayoutManager = layoutManager
+        binding.dailyRecommendPlayListAdapter = adapter
+    }
+
+    private fun initRecommendNewSongRecycler() {
+        val layoutManager =
+            GridLayoutManager(requireContext(), RECOMMEND_NEW_SONG_ROW_COUNT).apply {
+                orientation = GridLayoutManager.HORIZONTAL
+            }
+        val adapter = RecommendNewSongAdapter()
+        binding.recommendNewSongLayoutManager = layoutManager
+        binding.recommendNewSongAdapter = adapter
     }
 
     private fun showBannerError() {
@@ -55,8 +78,8 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     private fun observe() {
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
-                Status.HOME_DISCOVER_BANNER_NET_ERROR -> showBannerError()
-                Status.HOME_DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
+                Status.DISCOVER_BANNER_NET_ERROR -> showBannerError()
+                Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
     }
