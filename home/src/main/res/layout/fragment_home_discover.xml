@@ -9,6 +9,7 @@
         <import type="androidx.recyclerview.widget.GridLayoutManager"/>
         <import type="com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter"/>
         <import type="com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter"/>
+        <import type="com.topview.purejoy.home.discover.RecommendNewSongDecoration"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
@@ -24,6 +25,9 @@
         <variable
             name="recommendNewSongAdapter"
             type="RecommendNewSongAdapter" />
+        <variable
+            name="recommendNewSongDecoration"
+            type="RecommendNewSongDecoration" />
     </data>
 
     <LinearLayout
@@ -49,7 +53,8 @@
             android:layout_height="wrap_content"
             app:layoutManager="@{recommendNewSongLayoutManager}"
             app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
-            app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"/>
+            app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
+            app:recommendNewSongDecoration="@{recommendNewSongDecoration}"/>
         
     </LinearLayout>
 </layout>

@@ -63,8 +63,10 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
                 orientation = GridLayoutManager.HORIZONTAL
             }
         val adapter = RecommendNewSongAdapter()
+        val decoration = RecommendNewSongDecoration()
         binding.recommendNewSongLayoutManager = layoutManager
         binding.recommendNewSongAdapter = adapter
+        binding.recommendNewSongDecoration = decoration
     }
 
     private fun showBannerError() {
