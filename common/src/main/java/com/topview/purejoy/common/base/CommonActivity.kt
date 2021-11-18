@@ -1,14 +1,9 @@
 package com.topview.purejoy.common.base
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.topview.purejoy.common.entity.TextSizeScale
-import com.topview.purejoy.common.util.PreferenceKey
 
 
 /**
@@ -21,32 +16,6 @@ abstract class CommonActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView()
         supportActionBar?.hide()
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        var context = newBase
-        newBase?.let {
-            // 缓存原来的字体放大倍数
-            val originScale: Float
-            it.resources.configuration.apply {
-                originScale = fontScale
-                fontScale = if (allowAdjustFontScale()) {
-                    PreferenceKey.globalTextSizeScale
-                } else {
-                    TextSizeScale.STANDARD.scale
-                }
-                // 仅当字体放大倍数被真正改变时，更新字体大小
-                if (originScale != fontScale) {
-                    // 根据版本不同使用不同的策略更新字体大小
-                    context = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        createFontScaleContext(it)
-                    } else {
-                        changeFontSize(it)
-                    }
-                }
-            }
-        }
-        super.attachBaseContext(context)
     }
 
     protected open fun setContentView() {
@@ -124,23 +93,5 @@ abstract class CommonActivity : AppCompatActivity() {
      */
     protected fun show(fragment: Fragment) {
         beginTransaction().show(fragment).commit()
-    }
-
-    /**
-     * 是否允许放大该Activity内控件的字体大小，默认不允许。允许修改字体大小的界面应当重写该方法
-     */
-    protected open fun allowAdjustFontScale() = false
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun createFontScaleContext(context: Context): Context =
-        context.createConfigurationContext(context.resources.configuration)
-
-
-    private fun changeFontSize(context: Context): Context {
-        context.resources.updateConfiguration(
-            context.resources.configuration,
-            context.resources.displayMetrics
-        )
-        return context
     }
 }
