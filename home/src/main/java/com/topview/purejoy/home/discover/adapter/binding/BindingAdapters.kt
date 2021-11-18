@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.topview.purejoy.common.widget.banner.BannerView
+import com.topview.purejoy.home.discover.RecommendNewSongDecoration
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
@@ -67,5 +68,11 @@ fun setRecommendNewSong(
     }
 }
 
-
+@BindingAdapter("recommendNewSongDecoration")
+fun setRecommendNewSongDecoration(
+    recyclerView: RecyclerView,
+    decoration: RecommendNewSongDecoration
+) {
+    recyclerView.addItemDecoration(decoration)
+}
 
