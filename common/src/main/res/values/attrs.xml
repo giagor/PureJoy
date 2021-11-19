@@ -29,4 +29,10 @@
         <attr name="round_rect_radius" format="float"/>
         <attr name="thumb" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="RoundedCornerImageView">
+        <attr name="percent" format="integer"/>
+        <attr name="android:src" format="reference"/>
+        <attr name="android:contentDescription" format="string" />
+    </declare-styleable>
 </resources>

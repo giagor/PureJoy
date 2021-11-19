@@ -33,6 +33,13 @@ android {
     dataBinding{
         enabled = true
     }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion '1.5.31'
+    }
 }
 
 dependencies {
