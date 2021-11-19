@@ -1,11 +1,14 @@
 package com.topview.purejoy.home.discover
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
+import com.topview.purejoy.common.util.getWindowWidth
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
@@ -55,6 +58,10 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         val adapter = DailyRecommendPlayListAdapter()
         binding.dailyRecommendNewSongLayoutManager = layoutManager
         binding.dailyRecommendPlayListAdapter = adapter
+        binding.dailyRecommendPlayListSnapHelper = GravitySnapHelper(Gravity.START).apply {
+            // 限制最大的抛掷距离
+            maxFlingDistance = getWindowWidth(requireContext())
+        }
     }
 
     private fun initRecommendNewSongRecycler() {
@@ -67,6 +74,10 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         binding.recommendNewSongLayoutManager = layoutManager
         binding.recommendNewSongAdapter = adapter
         binding.recommendNewSongDecoration = decoration
+        binding.recommendNewSongSnapHelper = GravitySnapHelper(Gravity.START).apply {
+            // 限制最大的抛掷距离
+            maxFlingDistance = getWindowWidth(requireContext())
+        }
     }
 
     private fun showBannerError() {
