@@ -54,8 +54,10 @@ dependencies {
     // glide
     api('com.github.bumptech.glide:glide:4.12.0')
 
-    // BaseRecyclerViewAdapterHelper
+    // RecyclerView - BaseRecyclerViewAdapterHelper
     api('com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7')
+    // RecyclerView - GravitySnapHelper
+    api('com.github.rubensousa:gravitysnaphelper:2.2.2')
 
     // compose
     api("androidx.compose.ui:ui:$compose_version")
