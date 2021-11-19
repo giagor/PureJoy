@@ -45,8 +45,17 @@
         
         <com.topview.purejoy.common.widget.banner.BannerView
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="145dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:indicator_size="9dp"
+            app:indicator_margin_bottom="3dp"
             app:loadBanners="@{viewModel.bannerLiveData}"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
