@@ -3,6 +3,7 @@ package com.topview.purejoy.home.discover.adapter.binding
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.topview.purejoy.common.widget.banner.BannerView
@@ -74,5 +75,13 @@ fun setRecommendNewSongDecoration(
     decoration: RecommendNewSongDecoration
 ) {
     recyclerView.addItemDecoration(decoration)
+}
+
+@BindingAdapter("attachSnapHelper")
+fun attachSnapHelper(
+    recyclerView: RecyclerView,
+    snapHelper: SnapHelper
+) {
+    snapHelper.attachToRecyclerView(recyclerView)
 }
 
