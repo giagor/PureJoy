@@ -44,6 +44,25 @@
         android:layout_marginStart="@dimen/home_discover_margin_left"
         android:layout_marginEnd="@dimen/home_discover_margin_right"
         tools:context=".discover.HomeDiscoverFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/hone_ic_side_navi"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/home_bg_search"
+                android:text="我是搜索栏"/>
+
+        </LinearLayout>
         
         <com.topview.purejoy.common.widget.banner.BannerView
             android:layout_width="match_parent"
@@ -52,7 +71,7 @@
             app:indicator_size="9dp"
             app:indicator_margin_bottom="3dp"
             app:loadBanners="@{viewModel.bannerLiveData}"/>
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
