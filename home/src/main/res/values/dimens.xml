@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Discover界面-->
-    <dimen name="home_discover_margin_left">15dp</dimen>
-    <dimen name="home_discover_margin_right">15dp</dimen>
+    <dimen name="home_discover_padding_left">15dp</dimen>
+    <dimen name="home_discover_padding_right">15dp</dimen>
 </resources>

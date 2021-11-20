@@ -41,12 +41,12 @@ class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
             outRect.right = DISCOVER_RECOMMEND_NEW_SONG_ITEM_HORIZONTAL_SPACING
         } else {
             // 最后一列
-            val discoverMarginLeft =
-                parent.context.resources.getDimension(R.dimen.home_discover_margin_left)
-            val discoverMarginRight =
-                parent.context.resources.getDimension(R.dimen.home_discover_margin_right)
+            val discoverPaddingLeft =
+                parent.context.resources.getDimension(R.dimen.home_discover_padding_left)
+            val discoverPaddingRight =
+                parent.context.resources.getDimension(R.dimen.home_discover_padding_right)
             outRect.right = (DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN -
-                    discoverMarginLeft - discoverMarginRight).toInt()
+                    discoverPaddingLeft - discoverPaddingRight).toInt()
         }
     }
 }
