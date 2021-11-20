@@ -9,7 +9,7 @@
         <import type="androidx.recyclerview.widget.GridLayoutManager"/>
         <import type="com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter"/>
         <import type="com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter"/>
-        <import type="com.topview.purejoy.home.discover.RecommendNewSongDecoration"/>
+        <import type="com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration"/>
         <import type="androidx.recyclerview.widget.SnapHelper"/>
         <variable
             name="viewModel"
@@ -28,7 +28,7 @@
             type="RecommendNewSongAdapter" />
         <variable
             name="recommendNewSongDecoration"
-            type="RecommendNewSongDecoration" />
+            type="com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration" />
         <variable
             name="dailyRecommendPlayListSnapHelper"
             type="SnapHelper" />
@@ -41,21 +41,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginStart="@dimen/home_discover_margin_left"
+        android:layout_marginEnd="@dimen/home_discover_margin_right"
         tools:context=".discover.HomeDiscoverFragment">
         
         <com.topview.purejoy.common.widget.banner.BannerView
             android:layout_width="match_parent"
             android:layout_height="145dp"
             android:layout_marginTop="60dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             app:indicator_size="9dp"
             app:indicator_margin_bottom="3dp"
             app:loadBanners="@{viewModel.bannerLiveData}"/>
         
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

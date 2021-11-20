@@ -15,6 +15,7 @@ import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeDiscoverBinding
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
+import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeDiscoverFragment"
