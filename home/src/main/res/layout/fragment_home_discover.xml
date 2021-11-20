@@ -74,7 +74,12 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="110dp"
+            android:textColor="#363636"
+            android:text="@string/home_discover_daily_recommend_playlist"/>
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -83,6 +88,15 @@
             app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
             app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
             app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            android:textColor="#363636"
+            android:text="@string/home_discover_recommend_new_song"/>
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
