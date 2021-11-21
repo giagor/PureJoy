@@ -41,6 +41,17 @@ dependencies {
     implementation(project(":dependencies"))
     implementation(project(":common"))
 
+    implementation(Deps.Compose.composeUi)
+    implementation(Deps.Compose.composeMaterial)
+    implementation(Deps.Compose.composeUiToolingPreview)
+    implementation(Deps.Compose.livedataRuntime)
+    implementation(Deps.Compose.composeNavigation)
+    implementation(Deps.Compose.composeActivity)
+    implementation(Deps.Compose.composeViewBinding)
+
+    implementation(Deps.Navigation.fragmentKtx)
+    implementation(Deps.Navigation.navigationUiKtx)
+
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)

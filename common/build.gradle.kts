@@ -40,6 +40,10 @@ android {
 dependencies {
     implementation(project(":dependencies"))
 
+    // compose
+    implementation(Deps.Compose.composeUi)
+    implementation(Deps.Compose.composeMaterial)
+    implementation(Deps.Compose.composeUiToolingPreview)
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)

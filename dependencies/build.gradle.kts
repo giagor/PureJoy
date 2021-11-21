@@ -51,9 +51,4 @@ dependencies {
     api(Deps.baseRecyclerViewAdapterHelper)
     // RecyclerView - GravitySnapHelper
     api(Deps.gravitySnapHelper)
-
-    // compose UI
-    api(Deps.Compose.composeUi)
-    api(Deps.Compose.composeMaterial)
-    api(Deps.Compose.composeUiToolingPreview)
 }

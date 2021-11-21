@@ -22,6 +22,8 @@ object Deps {
         const val composeNavigation = "androidx.navigation:navigation-compose:2.4.0-beta02"
         const val composeActivity = "androidx.activity:activity-compose:1.4.0"
         const val composeViewBinding = "androidx.compose.ui:ui-viewbinding:$version"
+
+        const val composeRuntime = "androidx.compose.runtime:runtime:$version"
     }
 
     object Navigation {
