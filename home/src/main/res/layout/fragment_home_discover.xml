@@ -84,6 +84,73 @@
             app:indicator_margin_bottom="3dp"
             app:loadBanners="@{viewModel.bannerLiveData}"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp">
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/home_discover_single_row_icon_size"
+                    android:layout_height="@dimen/home_discover_single_row_icon_size"
+                    android:src="@drawable/home_ic_single_row_recommend"/>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/home_discover_single_row_text_daily_recommend" />
+                
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:layout_marginStart="10dp">
+
+                <ImageView
+                    android:layout_width="@dimen/home_discover_single_row_icon_size"
+                    android:layout_height="@dimen/home_discover_single_row_icon_size"
+                    android:src="@drawable/home_ic_single_row_playlist"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/home_discover_single_row_text_playlist" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/home_discover_single_row_icon_size"
+                    android:layout_height="@dimen/home_discover_single_row_icon_size"
+                    android:src="@drawable/home_ic_single_row_ranking"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/home_discover_single_row_text_ranking" />
+
+            </LinearLayout>
+            
+        </RelativeLayout>
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
