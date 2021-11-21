@@ -3,4 +3,6 @@
     <!--Discover界面-->
     <dimen name="home_discover_padding_left">15dp</dimen>
     <dimen name="home_discover_padding_right">15dp</dimen>
+    <dimen name="home_search_ic_width">15dp</dimen>
+    <dimen name="home_search_ic_height">15dp</dimen>
 </resources>

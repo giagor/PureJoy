@@ -3,6 +3,7 @@ package com.topview.purejoy.home.discover
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,12 +30,11 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initIcon()
         binding.viewModel = viewModel
         initRecyclerView()
         observe()
-        viewModel.getBanners()
-        viewModel.getDailyRecommendPlayList()
-        viewModel.getRecommendNewSong(RECOMMEND_NEW_SONG_ROW_COUNT * 4)
+        initData()
     }
 
     override fun getLayoutId(): Int {
@@ -46,6 +46,23 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     }
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    private fun initIcon() {
+        val searchIcon =
+            ResourcesCompat.getDrawable(requireContext().resources, R.drawable.home_ic_search, null)
+        searchIcon?.let {
+            val iconWidth = requireContext().resources.getDimension(R.dimen.home_search_ic_width)
+            val iconHeight = requireContext().resources.getDimension(R.dimen.home_search_ic_height)
+            it.setBounds(0, 0, iconWidth.toInt(), iconHeight.toInt())
+            binding.icSearch = it
+        }
+    }
+
+    private fun initData() {
+        viewModel.getBanners()
+        viewModel.getDailyRecommendPlayList()
+        viewModel.getRecommendNewSong(RECOMMEND_NEW_SONG_ROW_COUNT * 4)
+    }
 
     private fun initRecyclerView() {
         initDailyRecommendPlayListRecycler()

@@ -1,6 +1,8 @@
 package com.topview.purejoy.home.discover.adapter.binding
 
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -85,3 +87,10 @@ fun attachSnapHelper(
     snapHelper.attachToRecyclerView(recyclerView)
 }
 
+@BindingAdapter("compoundDrawable")
+fun setTextViewIc(
+    textView: TextView,
+    drawable: Drawable
+) {
+    textView.setCompoundDrawables(drawable, null, null, null)
+}

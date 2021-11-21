@@ -9,4 +9,5 @@
     <!--Discover界面相关-->
     <string name="home_discover_daily_recommend_playlist">推荐歌单</string>
     <string name="home_discover_recommend_new_song">推荐新歌</string>
+    <string name="home_discover_search_hint">歌曲搜索</string>
 </resources>

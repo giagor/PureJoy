@@ -11,6 +11,7 @@
         <import type="com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter"/>
         <import type="com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration"/>
         <import type="androidx.recyclerview.widget.SnapHelper"/>
+        <import type="android.graphics.drawable.Drawable"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
@@ -35,6 +36,9 @@
         <variable
             name="recommendNewSongSnapHelper"
             type="SnapHelper" />
+        <variable
+            name="icSearch"
+            type="Drawable" />
     </data>
 
     <LinearLayout
@@ -49,18 +53,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/hone_ic_side_navi"/>
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:src="@drawable/hone_ic_side_navi" />
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:background="@drawable/home_bg_search"
-                android:text="我是搜索栏"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="4dp"
+                android:paddingStart="13dp"
+                android:paddingEnd="13dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="@string/home_discover_search_hint"
+                app:compoundDrawable="@{icSearch}"/>
 
         </LinearLayout>
         
