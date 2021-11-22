@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MusicProgressBar">
+        <attr name="progress_color" format="color"/>
+        <attr name="progress_width" format="float"/>
+        <attr name="progress_value" format="integer"/>
+        <attr name="progress_max" format="integer"/>
+        <attr name="thumb_color" format="color"/>
+        <attr name="progress_second_color" format="color"/>
+        <attr name="shadow_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="LrcView">
+
+        <attr name="row_interval" format="dimension"/>
+        <attr name="common_color" format="color"/>
+        <attr name="highlight_color" format="color"/>
+        <attr name="thumb_color" format="color"/>
+        <attr name="empty_text" format="string"/>
+        <attr name="show_after_release" format="integer"/>
+        <attr name="str_size" format="float"/>
+        <attr name="time_str_size" format="float"/>
+        <attr name="time_str_color" format="color"/>
+        <attr name="animate_duration" format="integer"/>
+        <attr name="outer_indicator_color" format="color"/>
+
+    </declare-styleable>
+</resources>
