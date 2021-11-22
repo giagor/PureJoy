@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
-import com.topview.purejoy.home.util.Common.DISCOVER_RECOMMEND_NEW_SONG_ITEM_HORIZONTAL_SPACING
-import com.topview.purejoy.home.util.Common.DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN
 
 class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
 
@@ -39,15 +37,20 @@ class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
         // 调整水平间距
         // 不是最后一列
         if (position < itemCounts - lastColumnCount) {
-            outRect.right = DISCOVER_RECOMMEND_NEW_SONG_ITEM_HORIZONTAL_SPACING
+            outRect.right =
+                parent.context.resources
+                    .getDimension(R.dimen.home_discover_recommend_new_song_item_horizontal_spacing)
+                    .toInt()
         } else {
             // 最后一列
             val discoverPaddingLeft =
                 parent.context.resources.getDimension(R.dimen.home_discover_padding_left)
             val discoverPaddingRight =
                 parent.context.resources.getDimension(R.dimen.home_discover_padding_right)
-            outRect.right = (DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN -
-                    discoverPaddingLeft - discoverPaddingRight).toInt()
+            val itemWidthSmallerThanScreen = parent.context.resources
+                .getDimension(R.dimen.home_discover_recommend_new_song_item_width_smaller_than_screen)
+            outRect.right =
+                (itemWidthSmallerThanScreen - discoverPaddingLeft - discoverPaddingRight).toInt()
         }
 
         // 调整纵向间距
