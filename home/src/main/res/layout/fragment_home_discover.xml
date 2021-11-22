@@ -44,154 +44,160 @@
             name="dailyRecommendPlayListDecoration"
             type="DailyRecommendPlayListDecoration" />
     </data>
-
-    <LinearLayout
+    
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:paddingStart="@dimen/home_discover_padding_left"
         android:paddingEnd="@dimen/home_discover_padding_right"
-        tools:context=".discover.HomeDiscoverFragment">
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            tools:context=".discover.HomeDiscoverFragment">
 
-            <ImageView
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:src="@drawable/hone_ic_side_navi" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
+                    android:src="@drawable/hone_ic_side_navi" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@drawable/home_bg_search"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="4dp"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/home_discover_search_hint"
+                    app:compoundDrawable="@{icSearch}"/>
+
+            </LinearLayout>
+
+            <com.topview.purejoy.common.widget.banner.BannerView
+                android:layout_width="match_parent"
+                android:layout_height="145dp"
+                android:layout_marginTop="20dp"
+                app:indicator_size="9dp"
+                app:indicator_margin_bottom="3dp"
+                app:loadBanners="@{viewModel.bannerLiveData}"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="18dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/home_discover_single_row_icon_size"
+                        android:layout_height="@dimen/home_discover_single_row_icon_size"
+                        android:src="@drawable/home_ic_single_row_recommend"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/home_discover_single_row_text_daily_recommend" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:layout_marginStart="10dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/home_discover_single_row_icon_size"
+                        android:layout_height="@dimen/home_discover_single_row_icon_size"
+                        android:src="@drawable/home_ic_single_row_playlist"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/home_discover_single_row_text_playlist" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/home_discover_single_row_icon_size"
+                        android:layout_height="@dimen/home_discover_single_row_icon_size"
+                        android:src="@drawable/home_ic_single_row_ranking"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/home_discover_single_row_text_ranking" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:textColor="#363636"
+                android:text="@string/home_discover_daily_recommend_playlist"/>
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:background="@drawable/home_bg_search"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="4dp"
-                android:paddingStart="13dp"
-                android:paddingEnd="13dp"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/home_discover_search_hint"
-                app:compoundDrawable="@{icSearch}"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
+                app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
+                app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
+                app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"
+                app:itemDecoration="@{dailyRecommendPlayListDecoration}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="53dp"
+                android:textColor="#363636"
+                android:text="@string/home_discover_recommend_new_song"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layoutManager="@{recommendNewSongLayoutManager}"
+                app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
+                app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
+                app:itemDecoration="@{recommendNewSongDecoration}"
+                app:attachSnapHelper="@{recommendNewSongSnapHelper}" />
 
         </LinearLayout>
-        
-        <com.topview.purejoy.common.widget.banner.BannerView
-            android:layout_width="match_parent"
-            android:layout_height="145dp"
-            android:layout_marginTop="20dp"
-            app:indicator_size="9dp"
-            app:indicator_margin_bottom="3dp"
-            app:loadBanners="@{viewModel.bannerLiveData}"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginTop="18dp"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp">
-            
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_alignParentStart="true"
-                android:gravity="center">
-                
-                <ImageView
-                    android:layout_width="@dimen/home_discover_single_row_icon_size"
-                    android:layout_height="@dimen/home_discover_single_row_icon_size"
-                    android:src="@drawable/home_ic_single_row_recommend"/>
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/home_discover_single_row_text_daily_recommend" />
-                
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:layout_marginStart="10dp">
-
-                <ImageView
-                    android:layout_width="@dimen/home_discover_single_row_icon_size"
-                    android:layout_height="@dimen/home_discover_single_row_icon_size"
-                    android:src="@drawable/home_ic_single_row_playlist"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/home_discover_single_row_text_playlist" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_alignParentEnd="true"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="@dimen/home_discover_single_row_icon_size"
-                    android:layout_height="@dimen/home_discover_single_row_icon_size"
-                    android:src="@drawable/home_ic_single_row_ranking"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/home_discover_single_row_text_ranking" />
-
-            </LinearLayout>
-            
-        </RelativeLayout>
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:textColor="#363636"
-            android:text="@string/home_discover_daily_recommend_playlist"/>
-        
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
-            app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
-            app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
-            app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"
-            app:itemDecoration="@{dailyRecommendPlayListDecoration}"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="53dp"
-            android:textColor="#363636"
-            android:text="@string/home_discover_recommend_new_song"/>
-        
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:layoutManager="@{recommendNewSongLayoutManager}"
-            app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
-            app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
-            app:itemDecoration="@{recommendNewSongDecoration}"
-            app:attachSnapHelper="@{recommendNewSongSnapHelper}" />
-        
-    </LinearLayout>
+    </ScrollView>
 </layout>
