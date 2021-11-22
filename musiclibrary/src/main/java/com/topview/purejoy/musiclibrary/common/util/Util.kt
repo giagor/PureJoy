@@ -35,7 +35,7 @@ fun buildSwatch(bitmap: Bitmap, action: (Int) -> Unit) {
                     mutedSwatch
                 }
             }
-            val c = s?.rgb ?: R.color.design_default_color_primary
+            val c = s?.rgb ?: R.color.wathet
 //                    view.setBackgroundColor(c)
             action.invoke(c)
 
