@@ -3,4 +3,5 @@
     <string name="unknown">未知</string>
     <string name="play_all">播放全部</string>
     <string name="daily_recommend">每日推荐</string>
+    <string name="zero_progress">00:00</string>
 </resources>

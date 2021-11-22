@@ -2,4 +2,7 @@
 <resources>
     <color name="orange">#F17C2C</color>
     <color name="wathet">#A2D1F1</color>
+    <color name="lrc_common_color">#CBCACA</color>
+    <color name="lrc_highlight_color">#ECECEC</color>
+    <color name="lrc_outer_indicated_color">#FFFFFF</color>
 </resources>

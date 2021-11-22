@@ -13,16 +13,165 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/music_playing_layout"
-        app:colorUrl="@{playingItem.al.picUrl}">
+        blurUrl="@{playingItem.al.picUrl}"
+        blurRadius="25"
+        blurSample="1"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="8dp"
             android:orientation="horizontal">
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_back_bt"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:src="@drawable/music_playing_exit_48" />
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/music_playing_name_tx"
+                    android:text="@{playingItem.name}"
+                    android:gravity="center"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/music_playing_author_tx"
+                    android:gravity="center"
+                    android:text="@{playingItem.authors}"
+                    android:maxLines="1"
+                    android:textColor="@android:color/secondary_text_dark"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_marginVertical="8dp"
+            android:layout_height="0dp"
+            android:id="@+id/music_playing_fragment"
+            android:layout_weight="1"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_progress_tx"
+                android:text="@string/zero_progress"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:textColor="#ECEAEA"/>
+
+            <com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/music_playing_progress_bar"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_max_progress_tx"
+                android:layout_gravity="center_vertical"
+                android:text="@string/zero_progress"
+                android:textColor="#DBDADA"
+                />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="8dp">
+
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_control_bt"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/music_playing_play_64"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_next_bt"
+                android:background="@android:color/transparent"
+                android:layout_toEndOf="@id/music_playing_control_bt"
+                android:layout_centerVertical="true"
+                android:src="@drawable/music_playing_next_48"
+                android:layout_marginHorizontal="8dp"/>
+
+
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_playing_previous_bt"
+                android:background="@android:color/transparent"
+                android:layout_toStartOf="@id/music_playing_control_bt"
+                android:layout_centerVertical="true"
+                android:src="@drawable/music_playing_previous_48"
+                android:layout_marginHorizontal="8dp"/>
+
+            <ImageButton
+                android:id="@+id/music_playing_list_bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="8dp"
+                android:layout_toEndOf="@id/music_playing_next_bt"
+                android:background="@android:color/transparent"
+                android:src="@drawable/music_playing_playlist_48" />
+
+            <ImageButton
+                android:id="@+id/music_playing_mode_bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="8dp"
+                android:layout_toStartOf="@id/music_playing_previous_bt"
+                android:background="@android:color/transparent"
+                android:src="@drawable/music_playing_order_48" />
+
+
+        </RelativeLayout>
+
+
 
 
     </LinearLayout>
