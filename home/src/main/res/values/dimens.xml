@@ -6,4 +6,6 @@
     <dimen name="home_search_ic_width">15dp</dimen>
     <dimen name="home_search_ic_height">15dp</dimen>
     <dimen name="home_discover_single_row_icon_size">35dp</dimen>
+    <dimen name="home_discover_daily_recommend_playlist_horizontal_spacing">10dp</dimen>
+    <dimen name="home_discover_daily_recommend_playlist_img_size">108dp</dimen>
 </resources>

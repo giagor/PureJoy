@@ -16,6 +16,7 @@ import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeDiscoverBinding
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
+import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
@@ -74,8 +75,10 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
             orientation = LinearLayoutManager.HORIZONTAL
         }
         val adapter = DailyRecommendPlayListAdapter()
+        val decoration = DailyRecommendPlayListDecoration()
         binding.dailyRecommendNewSongLayoutManager = layoutManager
         binding.dailyRecommendPlayListAdapter = adapter
+        binding.dailyRecommendPlayListDecoration = decoration
         binding.dailyRecommendPlayListSnapHelper = GravitySnapHelper(Gravity.START).apply {
             // 限制最大的抛掷距离
             maxFlingDistance = getWindowWidth(requireContext())

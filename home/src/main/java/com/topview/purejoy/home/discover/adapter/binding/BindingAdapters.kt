@@ -71,10 +71,10 @@ fun setRecommendNewSong(
     }
 }
 
-@BindingAdapter("recommendNewSongDecoration")
-fun setRecommendNewSongDecoration(
+@BindingAdapter("itemDecoration")
+fun setItemDecoration(
     recyclerView: RecyclerView,
-    decoration: RecommendNewSongDecoration
+    decoration: RecyclerView.ItemDecoration
 ) {
     recyclerView.addItemDecoration(decoration)
 }

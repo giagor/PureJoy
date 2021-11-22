@@ -12,6 +12,7 @@
         <import type="com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration"/>
         <import type="androidx.recyclerview.widget.SnapHelper"/>
         <import type="android.graphics.drawable.Drawable"/>
+        <import type="com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
@@ -39,6 +40,9 @@
         <variable
             name="icSearch"
             type="Drawable" />
+        <variable
+            name="dailyRecommendPlayListDecoration"
+            type="DailyRecommendPlayListDecoration" />
     </data>
 
     <LinearLayout
@@ -167,7 +171,8 @@
             app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
             app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
             app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
-            app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"/>
+            app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"
+            app:itemDecoration="@{dailyRecommendPlayListDecoration}"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -184,8 +189,8 @@
             app:layoutManager="@{recommendNewSongLayoutManager}"
             app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
             app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
-            app:recommendNewSongDecoration="@{recommendNewSongDecoration}"
-            app:attachSnapHelper="@{recommendNewSongSnapHelper}"/>
+            app:itemDecoration="@{recommendNewSongDecoration}"
+            app:attachSnapHelper="@{recommendNewSongSnapHelper}" />
         
     </LinearLayout>
 </layout>
