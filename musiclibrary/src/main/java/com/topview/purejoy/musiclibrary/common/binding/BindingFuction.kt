@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.topview.purejoy.musiclibrary.common.util.buildSwatch
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 @BindingAdapter(value = ["imageUrl", "holder", "error"])
 fun setImageUrl(view: ImageView, imageUrl: String, holder: Drawable?, error: Drawable?) {
@@ -29,4 +31,22 @@ fun setColorUrl(view: View, colorUrl: String) {
         }
 
     })
+
 }
+
+@BindingAdapter(value = ["blurUrl", "blurRadius", "blurSample"])
+fun setBlurUrlBg(view: View, blurUrl: String, blurRadius: Int = 13, blurSample: Int = 1) {
+    Glide.with(view.context).asDrawable().apply(
+        RequestOptions.bitmapTransform(BlurTransformation(25, 1)))
+        .load(blurUrl).into(object : CustomTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                view.background = resource
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+
+        })
+}
+

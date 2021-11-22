@@ -14,10 +14,7 @@ import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.CommonBindingAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 
-@BindingAdapter(value = ["imageUrl", "holder", "error"])
-fun setImageUrl(view: ImageView, imageUrl: String, holder: Drawable?, error: Drawable?) {
-    Glide.with(view.context).asBitmap().load(imageUrl).placeholder(holder).error(error).into(view)
-}
+
 
 class DailyRecommendAdapter() :
     CommonBindingAdapter<SongWithReason,
