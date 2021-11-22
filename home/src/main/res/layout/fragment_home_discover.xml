@@ -179,13 +179,14 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="47dp"
+            android:layout_marginTop="53dp"
             android:textColor="#363636"
             android:text="@string/home_discover_recommend_new_song"/>
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             app:layoutManager="@{recommendNewSongLayoutManager}"
             app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
             app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
