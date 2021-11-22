@@ -160,14 +160,14 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             android:textColor="#363636"
             android:text="@string/home_discover_daily_recommend_playlist"/>
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
             app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
             app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
@@ -179,7 +179,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="47dp"
             android:textColor="#363636"
             android:text="@string/home_discover_recommend_new_song"/>
         

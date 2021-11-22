@@ -36,6 +36,7 @@ class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
         // 获取子View在Adapter中的位置
         val position = parent.getChildAdapterPosition(view)
 
+        // 调整水平间距
         // 不是最后一列
         if (position < itemCounts - lastColumnCount) {
             outRect.right = DISCOVER_RECOMMEND_NEW_SONG_ITEM_HORIZONTAL_SPACING
@@ -47,6 +48,14 @@ class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
                 parent.context.resources.getDimension(R.dimen.home_discover_padding_right)
             outRect.right = (DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN -
                     discoverPaddingLeft - discoverPaddingRight).toInt()
+        }
+
+        // 调整纵向间距
+        // 若Item所在位置不是最后一行
+        if (position % row != row - 1) {
+            val verticalSpacing =
+                parent.context.resources.getDimension(R.dimen.home_discover_recommend_new_song_vertical_spacing)
+            outRect.bottom = verticalSpacing.toInt()
         }
     }
 }

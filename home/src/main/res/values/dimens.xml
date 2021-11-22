@@ -8,4 +8,5 @@
     <dimen name="home_discover_single_row_icon_size">35dp</dimen>
     <dimen name="home_discover_daily_recommend_playlist_horizontal_spacing">10dp</dimen>
     <dimen name="home_discover_daily_recommend_playlist_img_size">108dp</dimen>
+    <dimen name="home_discover_recommend_new_song_vertical_spacing">10dp</dimen>
 </resources>
