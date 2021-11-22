@@ -35,7 +35,8 @@ android {
 
 dependencies {
 
-    implementation("com.android.support:palette-v7:28.0.0")
+    implementation("androidx.palette:palette-ktx:1.0.0")
+    implementation("jp.wasabeef:glide-transformations:3.3.0")
     implementation(project(":common"))
     implementation(project(":dependencies"))
     testImplementation(TestDeps.Local.junit)
