@@ -1,0 +1,36 @@
+# built application files
+*.apk
+*.ap_
+
+# files for the dex vm
+*.dex
+
+# java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# local configuration file
+local.properties
+
+# macos files
+.DS_Store
+
+# android studio
+*.iml
+.navigation
+output.json
+.idea/
+.gradle/
+build/*
+captures/
+
+# proguard
+proguard-rules.pro
+
+# ndk
+.externalNativeBuild
+.cxx
+obj/
