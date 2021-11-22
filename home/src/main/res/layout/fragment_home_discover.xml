@@ -6,16 +6,35 @@
     <data>
         <import type="com.topview.purejoy.home.discover.HomeDiscoverViewModel"/>
         <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <import type="androidx.recyclerview.widget.GridLayoutManager"/>
         <import type="com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter"/>
+        <import type="com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter"/>
+        <import type="com.topview.purejoy.home.discover.RecommendNewSongDecoration"/>
+        <import type="androidx.recyclerview.widget.SnapHelper"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
         <variable
-            name="layoutManager"
+            name="dailyRecommendNewSongLayoutManager"
             type="LinearLayoutManager" />
         <variable
-            name="adapter"
+            name="dailyRecommendPlayListAdapter"
             type="DailyRecommendPlayListAdapter" />
+        <variable
+            name="recommendNewSongLayoutManager"
+            type="GridLayoutManager" />
+        <variable
+            name="recommendNewSongAdapter"
+            type="RecommendNewSongAdapter" />
+        <variable
+            name="recommendNewSongDecoration"
+            type="RecommendNewSongDecoration" />
+        <variable
+            name="dailyRecommendPlayListSnapHelper"
+            type="SnapHelper" />
+        <variable
+            name="recommendNewSongSnapHelper"
+            type="SnapHelper" />
     </data>
 
     <LinearLayout
@@ -32,9 +51,19 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="@{layoutManager}"
-            app:dailyRecommendPlayListAdapter="@{adapter}"
-            app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"/>
+            app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
+            app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
+            app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
+            app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"/>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="@{recommendNewSongLayoutManager}"
+            app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
+            app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
+            app:recommendNewSongDecoration="@{recommendNewSongDecoration}"
+            app:attachSnapHelper="@{recommendNewSongSnapHelper}"/>
         
     </LinearLayout>
 </layout>

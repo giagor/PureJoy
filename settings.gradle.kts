@@ -4,15 +4,19 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
-        maven { url 'https://jitpack.io' }
+        maven {
+            isAllowInsecureProtocol = true
+            setUrl("https://jitpack.io")
+        }
     }
 }
+
 rootProject.name = "PureJoy"
-include ':app'
-include ':dependencies'
-include ':common'
+include(":app")
+include(":dependencies")
+include(":common")
 
-include ':musiclibrary'
+include(":musiclibrary")
 
-include ':home'
+include(":home")
 
