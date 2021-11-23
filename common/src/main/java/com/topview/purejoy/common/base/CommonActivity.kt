@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.topview.purejoy.common.util.StatusBarUtil
+import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
 import com.topview.purejoy.common.util.StatusBarUtil.setBlackTextToStatusBar
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackground
+import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 
 
 /**
@@ -32,10 +34,10 @@ abstract class CommonActivity : AppCompatActivity() {
      * 设置状态栏的背景、文字颜色等
      * */
     protected open fun setStatusBarStyle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.initWindow(window).setStatusBarBackground(Color.WHITE)
-                .setBlackTextToStatusBar()
-        }
+        window.setAutoFitSystemWindows(false)
+            .setStatusBarBackground(Color.WHITE)
+            .setStatusBarTextColor(true)
+        StatusBarUtil.fitSystemBar(window.decorView)
     }
 
     /**
