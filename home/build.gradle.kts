@@ -41,7 +41,6 @@ dependencies {
     implementation(project(":dependencies"))
     implementation(project(":common"))
 
-    implementation(Deps.Compose.composeUi)
     implementation(Deps.Compose.composeMaterial)
     implementation(Deps.Compose.composeUiToolingPreview)
     implementation(Deps.Compose.livedataRuntime)

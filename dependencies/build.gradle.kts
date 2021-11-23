@@ -46,6 +46,9 @@ dependencies {
 
     // glide
     api(Deps.gilde)
+    // compose UI
+    api(Deps.Compose.composeUi)
+    api(Deps.Compose.composeMaterial)
 
     // RecyclerView - BaseRecyclerViewAdapterHelper
     api(Deps.baseRecyclerViewAdapterHelper)

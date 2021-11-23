@@ -37,7 +37,7 @@ object Deps {
     }
 
     object Ktx {
-        const val coreKtx = "androidx.core:core-ktx:1.6.0"
+        const val coreKtx = "androidx.core:core-ktx:1.7.0"
         const val fragment = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     }
 

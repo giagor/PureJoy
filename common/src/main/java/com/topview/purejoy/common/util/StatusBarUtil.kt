@@ -8,22 +8,33 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 /**
- * 改变状态栏颜色的工具类
- * 典型调用方式，将背景颜色设置为黑色，字体设置为白色
- * StatusBarUtil.initWindow(window).setStatusBarBackground(Color.BLACK).setWhiteTextToStatusBar()
+ * 对状态栏进行修改的工具类
  */
 object StatusBarUtil {
     /**
      * 在改变状态栏颜色之前，必须对Window做一些必要的设置。
      */
+    @Deprecated("不再需要调用这个方法")
     fun initWindow(window: Window): Window {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         return window
+    }
+
+    /**
+     * 是否允许DecorView自动适应SystemWindow的高度。注意，关闭适应同时影响StatusBar和NavigationBar
+     */
+    fun Window.setAutoFitSystemWindows(decorFitsSystemWindows: Boolean): Window {
+        WindowCompat.setDecorFitsSystemWindows(this, decorFitsSystemWindows)
+        return this
     }
 
     fun Window.setStatusBarBackground(@ColorInt color: Int): Window {
@@ -35,8 +46,18 @@ object StatusBarUtil {
      * 将状态栏的字符改为黑色，这是原生的设置方法，但仅支持6.0以上的系统
      */
     @RequiresApi(Build.VERSION_CODES.M)
+    @Deprecated("deprecated in API 30", ReplaceWith("setStatusBarTextColor()"))
     fun Window.setBlackTextToStatusBar() {
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    }
+
+    /**
+     * 修改状态栏的字符的颜色。设置为黑色的调用在API 23以下不起作用
+     * @param dark 传入true以将状态栏颜色修改为黑色
+     */
+    fun Window.setStatusBarTextColor(dark: Boolean) {
+        WindowCompat.getInsetsController(
+                this, decorView)?.isAppearanceLightStatusBars = dark
     }
 
     /**
@@ -61,6 +82,7 @@ object StatusBarUtil {
     /**
      * 将状态栏的字符改为白色
      */
+    @Deprecated("deprecated in API 30", ReplaceWith("setStatusBarTextColor()"))
     fun Window.setWhiteTextToStatusBar() {
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
@@ -73,6 +95,7 @@ object StatusBarUtil {
      * 不使用这个方法也可以做出沉浸效果，可以在每次Fragment切换时，及时更新背景颜色。
      * @param dark 指定状态栏文字的颜色，为true时表示设置为黑色
      */
+    @Deprecated("don't use this function any more")
     fun Window.immersiveStatusBar(dark: Boolean) {
         this.statusBarColor = Color.TRANSPARENT
         if (dark) {
@@ -88,5 +111,21 @@ object StatusBarUtil {
         // 设置为全屏模式
         decorView.systemUiVisibility = decorView.systemUiVisibility or
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    }
+
+    /**
+     * 为传入的[view]设置全局的top padding和bottom padding，以消除StatusBar、NavigationBar与界面的重叠
+     * 注意，这个方法为简单适应策略，所有Inset都已经被消费了，不再派发。
+     * 若并不希望阻塞Insets的传递，请在根布局使用android:fitsSystemWindows="true"属性而不是使用这个函数
+     */
+    fun fitSystemBar(view : View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBar = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars()
+                    or WindowInsetsCompat.Type.navigationBars())
+            v.updatePadding(top = systemBar.top, bottom = systemBar.bottom)
+            // TODO 仅挑选一部分Inset进行消费，其他的继续传递
+            WindowInsetsCompat.CONSUMED
+        }
     }
 }
