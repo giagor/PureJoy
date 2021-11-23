@@ -7,7 +7,6 @@ import com.topview.purejoy.common.util.getWindowWidth
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ItemHomeRecommendNewSongBinding
 import com.topview.purejoy.home.entity.RecommendNewSong
-import com.topview.purejoy.home.util.Common.DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN
 
 class RecommendNewSongAdapter :
     BaseQuickAdapter<RecommendNewSong, BaseDataBindingHolder<ItemHomeRecommendNewSongBinding>>(
@@ -24,8 +23,10 @@ class RecommendNewSongAdapter :
             val sourcePrams = it.root.layoutParams
             // 使得item的宽度比屏幕宽度小一些
             it.root.layoutParams = RecyclerView.LayoutParams(sourcePrams).apply {
+                val itemWidthSmallerThanScreen = it.root.context.resources
+                    .getDimension(R.dimen.home_discover_recommend_new_song_item_width_smaller_than_screen)
                 width =
-                    getWindowWidth(it.root.context) - DISCOVER_RECOMMEND_NEW_SONG_ITEM_WIDTH_SMALLER_THAN_SCREEN
+                    (getWindowWidth(it.root.context) - itemWidthSmallerThanScreen).toInt()
             }
         }
     }

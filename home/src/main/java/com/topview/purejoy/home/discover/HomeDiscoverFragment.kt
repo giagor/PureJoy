@@ -3,6 +3,7 @@ package com.topview.purejoy.home.discover
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,8 @@ import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeDiscoverBinding
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
+import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
+import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeDiscoverFragment"
@@ -28,12 +31,11 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initIcon()
         binding.viewModel = viewModel
         initRecyclerView()
         observe()
-        viewModel.getBanners()
-        viewModel.getDailyRecommendPlayList()
-        viewModel.getRecommendNewSong(RECOMMEND_NEW_SONG_ROW_COUNT * 4)
+        initData()
     }
 
     override fun getLayoutId(): Int {
@@ -46,6 +48,23 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
 
+    private fun initIcon() {
+        val searchIcon =
+            ResourcesCompat.getDrawable(requireContext().resources, R.drawable.home_ic_search, null)
+        searchIcon?.let {
+            val iconWidth = requireContext().resources.getDimension(R.dimen.home_search_ic_width)
+            val iconHeight = requireContext().resources.getDimension(R.dimen.home_search_ic_height)
+            it.setBounds(0, 0, iconWidth.toInt(), iconHeight.toInt())
+            binding.icSearch = it
+        }
+    }
+
+    private fun initData() {
+        viewModel.getBanners()
+        viewModel.getDailyRecommendPlayList()
+        viewModel.getRecommendNewSong(RECOMMEND_NEW_SONG_ROW_COUNT * 4)
+    }
+
     private fun initRecyclerView() {
         initDailyRecommendPlayListRecycler()
         initRecommendNewSongRecycler()
@@ -56,8 +75,10 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
             orientation = LinearLayoutManager.HORIZONTAL
         }
         val adapter = DailyRecommendPlayListAdapter()
+        val decoration = DailyRecommendPlayListDecoration()
         binding.dailyRecommendNewSongLayoutManager = layoutManager
         binding.dailyRecommendPlayListAdapter = adapter
+        binding.dailyRecommendPlayListDecoration = decoration
         binding.dailyRecommendPlayListSnapHelper = GravitySnapHelper(Gravity.START).apply {
             // 限制最大的抛掷距离
             maxFlingDistance = getWindowWidth(requireContext())
