@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.topview.purejoy.home">
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
     <application
         android:theme="@style/Theme.PureJoy"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".search.SearchActivity"
+            android:exported="false" />
         <activity
             android:name=".HomeActivity"
             android:exported="true">
@@ -17,4 +20,5 @@
             </intent-filter>
         </activity>
     </application>
+    
 </manifest>
