@@ -1,12 +1,19 @@
 package com.topview.purejoy.home.search
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.SearchView
+import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.home.R
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_search)
+
+        val searchView: SearchView = findViewById(R.id.search_view)
+        searchView.onActionViewExpanded()
+    }
+
+    override fun getLayoutId(): Int {
+        return R.layout.activity_home_search
     }
 }
