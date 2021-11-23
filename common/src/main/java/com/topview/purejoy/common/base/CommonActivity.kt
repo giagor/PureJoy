@@ -1,9 +1,14 @@
 package com.topview.purejoy.common.base
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.topview.purejoy.common.util.StatusBarUtil
+import com.topview.purejoy.common.util.StatusBarUtil.setBlackTextToStatusBar
+import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackground
 
 
 /**
@@ -15,11 +20,22 @@ abstract class CommonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView()
+        setStatusBarStyle()
         supportActionBar?.hide()
     }
 
     protected open fun setContentView() {
         setContentView(getLayoutId())
+    }
+
+    /**
+     * 设置状态栏的背景、文字颜色等
+     * */
+    protected open fun setStatusBarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.initWindow(window).setStatusBarBackground(Color.WHITE)
+                .setBlackTextToStatusBar()
+        }
     }
 
     /**
