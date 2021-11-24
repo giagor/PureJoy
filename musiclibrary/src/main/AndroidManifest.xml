@@ -4,6 +4,7 @@
     package="com.topview.purejoy.musiclibrary">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:usesCleartextTraffic="true"
@@ -14,7 +15,9 @@
             android:exported="false" />
         <activity
             android:name=".recommendation.music.view.DailyRecommendActivity"
+            android:enabled="true"
             android:exported="false" />
+        <service android:name=".service.MusicService"/>
     </application>
 
 
