@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".search.content.song.SearchContentSongFragment">
+    tools:context=".search.content.song.SearchContentSongFragment"
+    android:paddingStart="@dimen/home_search_padding_left"
+    android:paddingEnd="@dimen/home_search_padding_right">
 
     <TextView
         android:layout_width="match_parent"

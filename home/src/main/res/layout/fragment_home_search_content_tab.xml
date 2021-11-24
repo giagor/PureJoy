@@ -4,7 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="com.topview.purejoy.home.search.content.tab.SearchContentTabFragment.SearchContentPagerAdapter"/>
+        <variable
+            name="pagerAdapter"
+            type="SearchContentPagerAdapter" />
     </data>
 
     <LinearLayout
@@ -19,7 +22,9 @@
             app:tabTextColor="#696969"
             app:tabSelectedTextColor="@color/black"
             app:tabIndicatorColor="#CD5C5C"
-            app:tabIndicatorFullWidth="false">
+            app:tabIndicatorFullWidth="false"
+            android:layout_marginStart="@dimen/home_search_padding_left"
+            android:layout_marginEnd="@dimen/home_search_padding_right">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -35,7 +40,8 @@
 
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:vp2Adapter="@{pagerAdapter}"/>
 
     </LinearLayout>
 </layout>
