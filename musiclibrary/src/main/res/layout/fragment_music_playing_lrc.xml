@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:id="@+id/music_playing_lrc_view"
         app:animate_duration="100"
+        app:row_interval="50dp"
         app:highlight_color="@color/lrc_highlight_color"
         app:outer_indicator_color="@color/lrc_outer_indicated_color"
         app:common_color="@color/lrc_common_color"/>
