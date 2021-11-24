@@ -35,6 +35,7 @@ class MusicService : MediaService<MusicItem>() {
             }
         })
     }
+    private val TAG = "MusicService"
 
     private val viewModel: MusicURLViewModel by lazy {
         MusicURLViewModelImpl()
@@ -69,11 +70,11 @@ class MusicService : MediaService<MusicItem>() {
 
     override fun showForeground(value: MusicItem, state: Boolean) {
         musicNotification.updateNotification(value, state)
-        if (!musicNotification.showForeground) {
-            startForeground(NOTIFICATION_ID, musicNotification.notification)
-            musicNotification.showForeground = true
-        } else {
+        if (musicNotification.showForeground) {
             musicNotification.send()
+        } else {
+            musicNotification.showForeground = true
+            startForeground(NOTIFICATION_ID, musicNotification.notification)
         }
     }
 
