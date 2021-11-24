@@ -2,27 +2,20 @@ package com.topview.purejoy.home.search.content
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.home.R
+import com.topview.purejoy.home.databinding.FragmentHomeSearchContentTabBinding
 import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 
 private const val SEARCH_CONTENT_PAGER_COUNTS = 2
 
-class SearchContentTabFragment : Fragment() {
+class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_search_content_tab, container, false)
-    }
+    
+    override fun getLayoutId(): Int = R.layout.fragment_home_search_content_tab
 
     private inner class SearchContentPagerAdapter : FragmentStateAdapter(this) {
         override fun getItemCount(): Int {
