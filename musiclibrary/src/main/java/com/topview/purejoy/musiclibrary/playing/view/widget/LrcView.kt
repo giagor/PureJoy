@@ -60,10 +60,13 @@ class LrcView : View {
     private val scroller: Scroller by lazy {
         Scroller(this.context)
     }
+    var canDrag: Boolean = true
 
 
 
     var listener: ThumbClickListener? = null
+
+    var lrcClickListener: LrcViewClickListener? = null
 
     private val thumbPaint: Paint by lazy {
         Paint()
@@ -122,7 +125,7 @@ class LrcView : View {
         emptyText = typedArray.getString(R.styleable.LrcView_empty_text) ?: ""
         commonColor = typedArray.getColor(R.styleable.LrcView_common_color, Color.DKGRAY)
         highlightColor = typedArray.getColor(R.styleable.LrcView_highlight_color, Color.GRAY)
-        thumbColor = typedArray.getColor(R.styleable.LrcView_thumb_color, commonColor)
+        thumbColor = typedArray.getColor(R.styleable.LrcView_lrc_thumb_color, commonColor)
         timeStrColor = typedArray.getColor(R.styleable.LrcView_time_str_color, highlightColor)
         outerIndicatorColor = typedArray.getColor(R.styleable.LrcView_outer_indicator_color, Color.WHITE)
 
@@ -162,31 +165,39 @@ class LrcView : View {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
                 animation?.cancel()
-                lastY = event.y
-                if (state != State.NORMAL && shouldNotifyThumbClick(event.x, event.y)) {
-                    state = State.NORMAL
-                    listener?.onClick(source[lrcIndex])
-                    invalidate()
-                    return false
+                if (canDrag) {
+                    lastY = event.y
+                    if (state != State.NORMAL && shouldNotifyThumbClick(event.x, event.y)) {
+                        state = State.NORMAL
+                        listener?.onClick(source[lrcIndex])
+                        invalidate()
+                        return false
+                    }
                 }
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-                removeCallbacks(checkStateRunnable)
-                state = State.DRAG
-                val y = event.y
-                val offset = y - lastY
-                val row = (-offset / (rowInterval + textHeight)).roundToInt()
-                val endIndex = min(max(0, lrcIndex + row), source.size - 1)
-                if (endIndex != lrcIndex) {
-                    animation = IndexAnimation(view = this, startIndex = lrcIndex, endIndex = endIndex, duration = duration)
-                    animation?.start()
+                if (canDrag) {
+                    removeCallbacks(checkStateRunnable)
+                    state = State.DRAG
+                    val y = event.y
+                    val offset = y - lastY
+                    val row = (-offset / (rowInterval + textHeight)).roundToInt()
+                    val endIndex = min(max(0, lrcIndex + row), source.size - 1)
+                    if (endIndex != lrcIndex) {
+                        animation = IndexAnimation(view = this, startIndex = lrcIndex, endIndex = endIndex, duration = duration)
+                        animation?.start()
+                    }
+                    return true
                 }
-                return true
             }
             MotionEvent.ACTION_UP -> {
-                state = State.RELEASE
-                postDelayed(checkStateRunnable, showAfterRelease.toLong())
+                if (state != State.NORMAL) {
+                    state = State.RELEASE
+                    postDelayed(checkStateRunnable, showAfterRelease.toLong())
+                } else {
+                    lrcClickListener?.onClick()
+                }
                 return true
             }
         }
@@ -195,6 +206,10 @@ class LrcView : View {
 
     interface ThumbClickListener {
         fun onClick(item: LrcItem)
+    }
+
+    interface LrcViewClickListener {
+        fun onClick()
     }
 
 

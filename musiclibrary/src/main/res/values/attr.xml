@@ -5,7 +5,7 @@
         <attr name="progress_width" format="float"/>
         <attr name="progress_value" format="integer"/>
         <attr name="progress_max" format="integer"/>
-        <attr name="thumb_color" format="color"/>
+        <attr name="progress_thumb_color" format="color"/>
         <attr name="progress_second_color" format="color"/>
         <attr name="shadow_color" format="color"/>
     </declare-styleable>
@@ -15,7 +15,7 @@
         <attr name="row_interval" format="dimension"/>
         <attr name="common_color" format="color"/>
         <attr name="highlight_color" format="color"/>
-        <attr name="thumb_color" format="color"/>
+        <attr name="lrc_thumb_color" format="color"/>
         <attr name="empty_text" format="string"/>
         <attr name="show_after_release" format="integer"/>
         <attr name="str_size" format="float"/>

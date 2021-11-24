@@ -59,7 +59,7 @@ class MusicProgressBar : View {
         max = array.getInt(R.styleable.MusicProgressBar_progress_max, 100)
         progressWidth = array.getFloat(R.styleable.MusicProgressBar_progress_width, 4f)
         secondColor = array.getColor(R.styleable.MusicProgressBar_progress_second_color, Color.GRAY)
-        thumbColor = array.getColor(R.styleable.MusicProgressBar_thumb_color, Color.WHITE)
+        thumbColor = array.getColor(R.styleable.MusicProgressBar_progress_thumb_color, Color.WHITE)
         paint = Paint()
         paint.strokeWidth = progressWidth
         radius = (progressWidth / 2 + 4.0f)
@@ -67,6 +67,10 @@ class MusicProgressBar : View {
         paint.style = Paint.Style.STROKE
         paint.isAntiAlias = true
         array.recycle()
+    }
+
+    fun getTouched(): Boolean {
+        return touched
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -146,5 +150,19 @@ class MusicProgressBar : View {
         fun onProgressChange(value: Int)
         fun onStartTracking(musicProgressBar: MusicProgressBar)
         fun onStopTracking(musicProgressBar: MusicProgressBar)
+    }
+
+    interface MusicProgressBarListenerAdapter : MusicProgressBarListener {
+        override fun onStartTracking(musicProgressBar: MusicProgressBar) {
+
+        }
+
+        override fun onStopTracking(musicProgressBar: MusicProgressBar) {
+
+        }
+
+        override fun onProgressChange(value: Int) {
+
+        }
     }
 }
