@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.search.content.SearchContentTabFragment
+import com.topview.purejoy.home.search.content.tab.SearchContentTabFragment
 
 class SearchActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

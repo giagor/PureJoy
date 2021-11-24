@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.search.content
+package com.topview.purejoy.home.search.content.tab
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
