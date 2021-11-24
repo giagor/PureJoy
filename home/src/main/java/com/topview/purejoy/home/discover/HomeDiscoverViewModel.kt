@@ -7,7 +7,7 @@ import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.data.repo.HomeRepository
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.RecommendNewSong
+import com.topview.purejoy.home.entity.Song
 
 class HomeDiscoverViewModel : MVVMViewModel() {
     private val repository = HomeRepository
@@ -20,8 +20,8 @@ class HomeDiscoverViewModel : MVVMViewModel() {
         MutableLiveData<List<DailyRecommendPlayList>>()
     }
 
-    val recommendNewSongLiveData: MutableLiveData<List<RecommendNewSong>> by lazy {
-        MutableLiveData<List<RecommendNewSong>>()
+    val recommendNewSongLiveData: MutableLiveData<List<Song>> by lazy {
+        MutableLiveData<List<Song>>()
     }
 
     fun getBanners() {
@@ -57,7 +57,7 @@ class HomeDiscoverViewModel : MVVMViewModel() {
     }
 
     fun getRecommendNewSong(limit : Int = 12) {
-        viewModelScope.rxLaunch<List<RecommendNewSong>> {
+        viewModelScope.rxLaunch<List<Song>> {
             onRequest = {
                 repository.getRecommendNewSong(limit)
             }

@@ -8,7 +8,7 @@ import com.topview.purejoy.home.data.bean.DailyRecommendPlayListJson
 import com.topview.purejoy.home.data.bean.RecommendNewSongJson
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.RecommendNewSong
+import com.topview.purejoy.home.entity.Song
 
 private const val BANNER_TYPE: Int = 1
 
@@ -48,13 +48,13 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun getRecommendNewSong(limit: Int): List<RecommendNewSong>? {
+    suspend fun getRecommendNewSong(limit: Int): List<Song>? {
         val recommendNewSongJson: RecommendNewSongJson? =
             homeService.getRecommendNewSong(limit).await()
         if (recommendNewSongJson != null) {
             val result = recommendNewSongJson.result
             if (result != null) {
-                val list = mutableListOf<RecommendNewSong>()
+                val list = mutableListOf<Song>()
                 result.forEach {
                     val artistNameBuilder = StringBuilder()
 
@@ -64,7 +64,7 @@ class HomeRemoteStore {
                         artistNameBuilder.append(artist.name + " ")
                     }
                     list.add(
-                        RecommendNewSong(
+                        Song(
                             it.id,
                             it.name,
                             it.picUrl,

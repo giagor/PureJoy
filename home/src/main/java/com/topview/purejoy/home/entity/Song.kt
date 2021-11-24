@@ -6,7 +6,7 @@ package com.topview.purejoy.home.entity
  * picUrl：歌曲的封面图
  * artistName：歌手名字
  * */
-data class RecommendNewSong(
+data class Song(
     var id: Long?,
     var name: String? = null,
     var picUrl: String? = null,

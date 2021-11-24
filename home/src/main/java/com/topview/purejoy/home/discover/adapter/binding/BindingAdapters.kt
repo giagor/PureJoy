@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.SnapHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.topview.purejoy.common.widget.banner.BannerView
-import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.RecommendNewSong
+import com.topview.purejoy.home.entity.Song
 
 @BindingAdapter("loadBanners")
 fun loadBanners(bannerView: BannerView, items: List<HomeDiscoverBannerItem>?) {
@@ -63,7 +62,7 @@ fun setDailyRecommendPlayList(
 @BindingAdapter("recommendNewSong")
 fun setRecommendNewSong(
     recyclerView: RecyclerView,
-    list: List<RecommendNewSong>?
+    list: List<Song>?
 ) {
     list?.let {
         val adapter = recyclerView.adapter as RecommendNewSongAdapter

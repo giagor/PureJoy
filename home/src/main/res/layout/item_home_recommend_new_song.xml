@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.topview.purejoy.home.entity.RecommendNewSong"/>
+        <import type="com.topview.purejoy.home.entity.Song"/>
         <variable
             name="recommendNewSong"
-            type="RecommendNewSong" />
+            type="Song" />
     </data>
 
     <LinearLayout

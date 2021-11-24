@@ -4,7 +4,7 @@ import com.topview.purejoy.home.data.source.HomeLocalStore
 import com.topview.purejoy.home.data.source.HomeRemoteStore
 import com.topview.purejoy.home.entity.DailyRecommendPlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.RecommendNewSong
+import com.topview.purejoy.home.entity.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,7 +21,7 @@ internal object HomeRepository {
             homeRemoteStore.getDailyRecommendPlayList(limit)
         }
 
-    suspend fun getRecommendNewSong(limit: Int): List<RecommendNewSong>? =
+    suspend fun getRecommendNewSong(limit: Int): List<Song>? =
         withContext(Dispatchers.IO) {
             homeRemoteStore.getRecommendNewSong(limit)
         }
