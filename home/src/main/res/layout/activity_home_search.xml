@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".search.SearchActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/home_search_padding_left"
+    android:paddingEnd="@dimen/home_search_padding_right">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingStart="@dimen/home_search_padding_left"
-        android:paddingEnd="@dimen/home_search_padding_right">
+        android:gravity="center">
 
         <ImageView
             android:layout_width="25dp"
@@ -29,6 +29,11 @@
             app:iconifiedByDefault="false"/>
 
     </LinearLayout>
+    
+    <FrameLayout
+        android:id="@+id/home_fl_fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     
     
 </LinearLayout>
