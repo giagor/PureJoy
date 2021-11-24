@@ -7,7 +7,7 @@ package com.topview.purejoy.home.entity
  * artistName：歌手名字
  * */
 data class Song(
-    var id: Long?,
+    var id: Long? = null,
     var name: String? = null,
     var picUrl: String? = null,
     var artistName: String? = null
