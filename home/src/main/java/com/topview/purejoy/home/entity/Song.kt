@@ -12,3 +12,8 @@ data class Song(
     var picUrl: String? = null,
     var artistName: String? = null
 )
+
+/**
+ * 该类是对Song类的封装，主要用于分页加载的初次请求中，用于记录"歌曲的总数量"
+ * */
+data class SongPagerWrapper(val songs: List<Song>? = null, val songCount: Int? = null)
