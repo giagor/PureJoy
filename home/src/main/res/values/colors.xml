@@ -3,4 +3,7 @@
     <!--底部栏的颜色-->
     <color name="home_bottom_navi_selected_color">#FF6A6A</color>
     <color name="home_bottom_navi_unselected_color">#696969</color>
+    
+    <!--搜索相关-->
+    <color name="home_search_song_name_color">#6A5ACD</color>
 </resources>
