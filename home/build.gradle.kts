@@ -51,6 +51,11 @@ dependencies {
     implementation(Deps.Navigation.fragmentKtx)
     implementation(Deps.Navigation.navigationUiKtx)
 
+    implementation(Deps.accompanistInsets)
+
+    debugImplementation(Deps.Compose.uiDebugTool)
+    androidTestImplementation(Deps.Compose.junitTest)
+
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
