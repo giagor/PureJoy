@@ -1,6 +1,7 @@
 package com.topview.purejoy.musiclibrary.player.util
 
 import com.topview.purejoy.musiclibrary.data.Item
+import com.topview.purejoy.musiclibrary.player.abs.core.Position
 
 inline fun <reified T> Any.cast(block: (T) -> Unit) {
     cast<T>()?.let {
@@ -25,5 +26,11 @@ fun <T : Item> Item.cast() : T? {
 fun <T : Item> Item.cast(action: (T) -> Unit) {
     this.cast<T>()?.let {
         action.invoke(it)
+    }
+}
+
+fun ensureSecurity(source: MutableList<*>, position: Position, action: () -> Unit) {
+    if (position.current() < source.size) {
+        action.invoke()
     }
 }

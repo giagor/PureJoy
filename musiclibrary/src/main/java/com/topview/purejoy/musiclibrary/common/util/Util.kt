@@ -1,7 +1,11 @@
 package com.topview.purejoy.musiclibrary.common.util
 
+import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.palette.graphics.Palette
@@ -97,6 +101,17 @@ fun CommonActivity.getAndConnectService(clazz: Class<*>): BinderPoolClient {
     val client = BinderPoolClientInstance.getInstance().getClient(clazz)
     client.connectService()
     return client
+}
+
+
+fun CommonActivity.getDisplaySize(): Rect {
+    val rect = Rect()
+    rect.left = 0
+    rect.top = 0
+    val metrics = resources.displayMetrics
+    rect.right = metrics.widthPixels
+    rect.bottom = metrics.heightPixels
+    return rect
 }
 
 /**
