@@ -4,4 +4,12 @@
     <string name="play_all">播放全部</string>
     <string name="daily_recommend">每日推荐</string>
     <string name="zero_progress">00:00</string>
+    <string name="current_playing">当前播放</string>
+    <string name="zero_playing">(0)</string>
+    <string name="order_mode">顺序播放</string>
+    <string name="random_mode">随机播放</string>
+    <string name="loop_mode">单曲循环</string>
+    <string name="clear_playing_msg">确定要清空播放列表吗?</string>
+    <string name="ensure">确定</string>
+    <string name="cancel">取消</string>
 </resources>
