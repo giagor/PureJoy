@@ -67,10 +67,12 @@ open class MediaControllerImpl<T : Item>(
     }
 
     override fun last() {
-        val last = position.current()
-        setDataSource(list[position.last()])
-        if (isItemChange(last)) {
-            notifyItemChange()
+        if (list.isNotEmpty()) {
+            val last = position.current()
+            setDataSource(list[position.last()])
+            if (isItemChange(last)) {
+                notifyItemChange()
+            }
         }
     }
 
@@ -83,10 +85,12 @@ open class MediaControllerImpl<T : Item>(
     }
 
     override fun next() {
-        val last = position.current()
-        setDataSource(list[position.next()])
-        if (isItemChange(last)) {
-            notifyItemChange()
+        if (list.isNotEmpty()) {
+            val last = position.current()
+            setDataSource(list[position.next()])
+            if (isItemChange(last)) {
+                notifyItemChange()
+            }
         }
 
     }
