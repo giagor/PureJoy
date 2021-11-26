@@ -1,34 +1,26 @@
 package com.topview.purejoy.musiclibrary.playing.view
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.FrameLayout
+import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.topview.purejoy.common.base.CommonActivity
-import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.musiclibrary.*
 import com.topview.purejoy.musiclibrary.common.MusicBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
 import com.topview.purejoy.musiclibrary.common.util.*
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.entity.removeAll
-import com.topview.purejoy.musiclibrary.player.client.BinderPoolClient
-import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.playing.view.pop.MusicPopUpWrapper
+import com.topview.purejoy.musiclibrary.playing.view.pop.PopAdapter
 import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
-import com.topview.purejoy.musiclibrary.service.MusicService
-import java.util.*
 
 class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>() {
 
@@ -92,11 +84,12 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
             modeBt.post {
                 val resId = when(mode) {
                     MediaModeSetting.ORDER -> R.drawable.music_playing_order_48
-                    MediaModeSetting.LOOP -> R.drawable.music_playing_circle_48
+                    MediaModeSetting.LOOP -> R.drawable.music_playing_loop_48
                     MediaModeSetting.RANDOM -> R.drawable.music_playing_random_48
                     else -> R.drawable.music_playing_order_48
                 }
                 modeBt.setImageResource(resId)
+                popWrapper.updateMode(mode)
             }
         }
     }
@@ -106,14 +99,20 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
             if (source == null) {
                 viewModel.playingItems.postValue(null)
             } else {
-                viewModel.playingItems.value?.removeAll(source)
-                viewModel.playingItems.postValue(viewModel.playingItems.value)
+                val value = viewModel.playingItems.value!!
+                value.removeAll(source)
+                if (value.isEmpty()) finish()
+                viewModel.playingItems.postValue(value)
             }
         }
 
     }
 
-
+    private val popWrapper: MusicPopUpWrapper by lazy {
+        val bound = getDisplaySize()
+        val w = MusicPopUpWrapper(this, bound.width(), bound.height() / 2)
+        w
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -121,12 +120,12 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
         viewModel.progress.postValue(playerController?.progress() ?: 0)
         viewModel.playState.postValue(playerController?.isPlaying ?: false)
         val items = dataController?.allItems()?.map { it.value?.cast<MusicItem>()!! }!!
+        viewModel.playingItems.value?.clear()
         viewModel.playingItems.value?.addAll(items)
         viewModel.playingItems.postValue(viewModel.playingItems.value)
         viewModel.duration.observe(this) {
             progressBar.max = it
         }
-        Log.d("PlayingActivity", "onServiceConnected: value = ")
         listenerController?.apply {
             addItemChangeListener(itemChangeListener)
             addModeChangeListener(modeChangeListener)
@@ -181,8 +180,41 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
         modeBt.setOnClickListener {
             modeController?.nextMode()
         }
+
+        popWrapper.adapter.itemClickListener = object : PopAdapter.PopItemClickListener {
+            override fun onClick(item: MusicItem) {
+                val i = viewModel.playingItems.value?.indexOf(item)
+                i?.let {
+                    if (i >= 0) {
+                        playerController?.jumpTo(i)
+                    }
+                }
+            }
+        }
+
+        popWrapper.adapter.deleteClickListener = object : PopAdapter.PopItemClickListener {
+            override fun onClick(item: MusicItem) {
+                dataController?.remove(Wrapper(value = item))
+            }
+
+        }
+
+        popWrapper.viewHolder.getView<LinearLayout>(R.id.music_playing_pop_mode_layout)
+            .setOnClickListener {
+            modeController?.nextMode()
+        }
+
+        popWrapper.viewHolder.getView<ImageButton>(R.id.music_playing_pop_clear_bt)
+            .setOnClickListener {
+            showClearDialog()
+        }
+
+
         binding.root.findViewById<ImageButton>(R.id.music_playing_list_bt).setOnClickListener {
             // show playing list
+            popWrapper.updateMode(modeController?.currentMode() ?: MediaModeSetting.RANDOM)
+            updatePopWindow()
+            popWrapper.popWindow.showAtLocation(binding.root, Gravity.BOTTOM, 0, 0)
         }
         progressBar.listener = listener
     }
@@ -195,6 +227,9 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
                     progressBar.color = it
                 }
                 binding.setVariable(BR.playingItem, it)
+                if (popWrapper.popWindow.isShowing) {
+                    popWrapper.adapter.currentItem = it
+                }
             }
         }
         viewModel.progress.observe(this) {
@@ -217,11 +252,27 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
         viewModel.playingItems.observe(this) {
             if (it == null) {
                 finish()
+            } else {
+                if (popWrapper.popWindow.isShowing) {
+                    updatePopWindow()
+                }
             }
         }
     }
 
+
+    private fun updatePopWindow() {
+        val size = popWrapper.adapter.data.size
+        popWrapper.adapter.data.clear()
+        popWrapper.adapter.data.addAll(viewModel.playingItems.value!!)
+        popWrapper.adapter.notifyItemRangeChanged(0, size)
+        popWrapper.updatePlayingCount(popWrapper.adapter.data.size)
+    }
+
     override fun onDestroy() {
+        if (popWrapper.popWindow.isShowing) {
+            popWrapper.popWindow.dismiss()
+        }
         timerWrapper.reset()
         super.onDestroy()
     }
@@ -236,6 +287,19 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     override fun createFactory(): ViewModelProvider.Factory {
         return DefaultFactory.getInstance()
+    }
+
+    private fun showClearDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(R.string.clear_playing_msg)
+            .setPositiveButton(R.string.ensure
+            ) { dialog, _ ->
+                dataController?.clear()
+                dialog?.dismiss()
+            }.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog?.dismiss()
+            }
+        builder.create().show()
     }
 
 }
