@@ -2,14 +2,16 @@ package com.topview.purejoy.musiclibrary.entity
 
 import com.topview.purejoy.musiclibrary.data.Item
 import com.topview.purejoy.musiclibrary.data.Wrapper
+import java.io.Serializable
 
-data class AR(val id: Long, val name: String = "")
+data class AR(val id: Long, val name: String = "") : Serializable
 
 data class AL(val id: Long,
-              val name: String = "",
-              val picUrl: String = "", )
+                       val name: String = "",
+                       val picUrl: String = "", ) : Serializable
 
-data class BR(val br: Int = 0, val fid: Long = 0, val size: Long = 0, val vd: Long = 0)
+data class BR(val br: Int = 0, val fid: Long = 0,
+              val size: Long = 0, val vd: Long = 0) : Serializable
 
 class MusicItem(
     val name: String = "",
@@ -25,12 +27,6 @@ class MusicItem(
         return url
     }
 
-    override fun isSame(other: Item?): Boolean {
-        if (other !is MusicItem) {
-            return false
-        }
-        return other.id == id
-    }
 
     fun getAuthors(): String {
         val builder = StringBuilder()
@@ -41,6 +37,17 @@ class MusicItem(
             builder.append(a.name)
         }
         return builder.toString()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is MusicItem) {
+            return false
+        }
+        return id == other.id && name == other.name && getAuthors() == other.getAuthors() && al == other.al
+    }
+
+    override fun hashCode(): Int {
+        return (id * 37 + 51 * name.hashCode() + 23 * ar.hashCode() + 11 * al.hashCode()).toInt()
     }
 
     override fun toString(): String {

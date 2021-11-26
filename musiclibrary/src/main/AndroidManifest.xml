@@ -15,9 +15,8 @@
             android:exported="false" />
         <activity
             android:name=".recommendation.music.view.DailyRecommendActivity"
-            android:enabled="true"
             android:exported="false" />
-        <service android:name=".service.MusicService"/>
+        <service android:name=".service.MusicService" android:process=":music"/>
     </application>
 
 
