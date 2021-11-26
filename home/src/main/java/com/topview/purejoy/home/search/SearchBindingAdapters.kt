@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.search.content.song.adapter.binding
+package com.topview.purejoy.home.search
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,3 +17,5 @@ fun setSearchSongs(recyclerView: RecyclerView, list: List<Song>?) {
         adapter.setList(list)
     }
 }
+
+
