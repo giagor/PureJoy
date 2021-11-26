@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.search.content.tab.adapter.binding
+package com.topview.purejoy.home.search.tab.adapter.binding
 
 import androidx.databinding.BindingAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter

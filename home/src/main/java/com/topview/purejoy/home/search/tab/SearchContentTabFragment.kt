@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.search.content.tab
+package com.topview.purejoy.home.search.tab
 
 import android.os.Bundle
 import android.view.View

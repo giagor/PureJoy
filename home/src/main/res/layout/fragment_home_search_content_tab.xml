@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.topview.purejoy.home.search.content.tab.SearchContentTabFragment.SearchContentPagerAdapter"/>
+        <import type="com.topview.purejoy.home.search.tab.SearchContentTabFragment.SearchContentPagerAdapter"/>
         <variable
             name="pagerAdapter"
             type="SearchContentPagerAdapter" />

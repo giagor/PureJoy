@@ -5,8 +5,7 @@ import androidx.appcompat.widget.SearchView
 import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
-import com.topview.purejoy.home.databinding.HomeActivityHomeBinding
-import com.topview.purejoy.home.search.content.tab.SearchContentTabFragment
+import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
