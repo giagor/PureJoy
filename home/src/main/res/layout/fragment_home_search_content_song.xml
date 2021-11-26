@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="com.topview.purejoy.home.search.content.song.SearchContentSongViewModel"/>
+        <import type="com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter"/>
+        <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
         <variable
             name="viewModel"
             type="SearchContentSongViewModel" />
+        <variable
+            name="searchContentSongAdapter"
+            type="SearchContentSongAdapter" />
+        <variable
+            name="searchContentSongLayoutManager"
+            type="LinearLayoutManager" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".search.content.song.SearchContentSongFragment"
-        android:paddingStart="@dimen/home_search_padding_left"
-        android:paddingEnd="@dimen/home_search_padding_right">
+        tools:context=".search.content.song.SearchContentSongFragment">
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="展示单曲的碎片" />
+            app:layoutManager="@{searchContentSongLayoutManager}"
+            app:searchSongAdapter="@{searchContentSongAdapter}"
+            app:searchSongs="@{viewModel.searchSongsLiveData}"/>
 
     </FrameLayout>
 </layout>
