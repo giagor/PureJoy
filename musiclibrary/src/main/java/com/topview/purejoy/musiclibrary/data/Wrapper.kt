@@ -30,6 +30,17 @@ class Wrapper(var value: Item?, var bundle: Bundle? = null) : Parcelable {
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is Wrapper) {
+            return false
+        }
+        return value == other.value
+    }
+
+    override fun hashCode(): Int {
+        return value?.hashCode() ?: super.hashCode()
+    }
+
     override fun toString(): String {
         return "[Wrapper value = $value, bundle = $bundle]"
     }

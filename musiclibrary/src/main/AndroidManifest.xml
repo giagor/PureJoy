@@ -3,13 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.topview.purejoy.musiclibrary">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
-    <application android:usesCleartextTraffic="true"
+    <application
+        android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity
+            android:name=".playing.view.PlayingActivity"
+            android:theme="@style/slideAnimationActivity"
+            android:exported="false" />
         <activity
             android:name=".recommendation.music.view.DailyRecommendActivity"
             android:exported="false" />
+        <service android:name=".service.MusicService" android:process=":music"/>
     </application>
+
+
 
 </manifest>
