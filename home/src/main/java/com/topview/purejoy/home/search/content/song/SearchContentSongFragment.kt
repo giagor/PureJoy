@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
+import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
@@ -18,7 +19,6 @@ class SearchContentSongFragment :
         binding.viewModel = viewModel
         initRecyclerView()
         observe()
-        initData()
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_home_search_content_song
@@ -27,11 +27,7 @@ class SearchContentSongFragment :
         SearchContentSongViewModel::class.java
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
-
-    private fun initData() {
-        viewModel.getSearchSongByFirst("光辉岁月")
-    }
-
+    
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(requireContext())
         val adapter = SearchContentSongAdapter()
@@ -40,11 +36,8 @@ class SearchContentSongFragment :
     }
 
     private fun observe() {
-        viewModel.searchSongCountLiveData.observe(viewLifecycleOwner, {
-
-        })
-
-        viewModel.searchSongsLiveData.observe(viewLifecycleOwner, {
+        (requireActivity() as? SearchKeywordListener)?.getKeywordLiveData()?.observe(viewLifecycleOwner,{
+            viewModel.getSearchSongByFirst(it)
         })
     }
 

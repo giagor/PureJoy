@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="androidx.appcompat.widget.SearchView.OnQueryTextListener"/>
+        <variable
+            name="onQueryTextListener"
+            type="OnQueryTextListener" />
     </data>
 
     <LinearLayout
@@ -32,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 style="@style/Style.Home.SearchView"
-                app:iconifiedByDefault="false" />
+                app:iconifiedByDefault="false"
+                app:onQueryTextListener="@{onQueryTextListener}"/>
 
         </LinearLayout>
 
