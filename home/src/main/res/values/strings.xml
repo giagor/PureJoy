@@ -5,7 +5,7 @@
     <string name="home_bottom_navi_discover">发现</string>
     <string name="home_bottom_navi_mine">我的</string>
     <string name="home_bottom_navi_video">视频</string>
-    
+
     <!--Discover界面相关-->
     <string name="home_discover_daily_recommend_playlist">推荐歌单</string>
     <string name="home_discover_recommend_new_song">推荐新歌</string>
@@ -13,4 +13,22 @@
     <string name="home_discover_single_row_text_daily_recommend">每日推荐</string>
     <string name="home_discover_single_row_text_playlist">歌单</string>
     <string name="home_discover_single_row_text_ranking">排行榜</string>
+
+    <!--登录界面字符常量-->
+    <string name="home_login_next_step">下一步</string>
+    <string name="home_login_use_password">密码登录</string>
+    <string name="home_login_phone_title">手机号登录</string>
+    <string name="home_login_phone_input_hint">请输入手机号</string>
+    <string name="home_login_main_title">登录以使用更多功能</string>
+    <string name="home_login_subtitle">未注册手机号登录后将自动创建账号</string>
+    <string name="home_login_input_captcha_title">请输入验证码</string>
+    <string name="home_login_input_captcha_subtitle">已发送至</string>
+    <string name="home_login_send_captcha_again">重新发送</string>
+    <string name="home_login_password_login_option">密码登录</string>
+    <string name="home_login_password_input_hint">请输入密码</string>
+
+    <!--登录界面参数-->
+    <string name="home_label_phone_number">phoneNumber</string>
+    <string name="home_label_captcha">captcha</string>
+    <string name="home_label_password">password</string>
 </resources>

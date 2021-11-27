@@ -24,6 +24,8 @@ object Deps {
         const val composeViewBinding = "androidx.compose.ui:ui-viewbinding:$version"
 
         const val composeRuntime = "androidx.compose.runtime:runtime:$version"
+        const val uiDebugTool = "androidx.compose.ui:ui-tooling:$version"
+        const val junitTest = "androidx.compose.ui:ui-test-junit4:$version"
     }
 
     object Navigation {
