@@ -13,12 +13,7 @@ open class ErrorSetting<T : Item>(
      * 获取错误次数
      */
     fun errorCount(value: T): Int {
-        record.forEach {
-            if (it.key.isSame(value)) {
-                return it.value
-            }
-        }
-        return 0
+        return record[value] ?: 0
     }
 
 
@@ -26,14 +21,7 @@ open class ErrorSetting<T : Item>(
      * 移除记录
      */
     fun remove(value: T) {
-        val iterator = record.iterator()
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            if (value.isSame(entry.key)) {
-                iterator.remove()
-                break
-            }
-        }
+        record.remove(value)
     }
 
 }

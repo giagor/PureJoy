@@ -1,6 +1,7 @@
 package com.topview.purejoy.musiclibrary.service
 
 import android.content.IntentFilter
+import android.widget.Toast
 import com.topview.purejoy.musiclibrary.IPCPlayerController
 import com.topview.purejoy.musiclibrary.data.Item
 import com.topview.purejoy.musiclibrary.data.Wrapper
@@ -85,6 +86,18 @@ class MusicService : MediaService<MusicItem>() {
         }
         val maxSize = Runtime.getRuntime().freeMemory() / 8
         return CacheStrategyImpl(cacheDirectory = file, maxMemorySize = maxSize.toInt())
+    }
+
+    override fun reportOperator(code: Int, value: MusicItem?) {
+        if (code == IPCDataControllerImpl.SUCCESS_CODE) {
+            Toast.makeText(this.applicationContext,
+                "${value?.name}成功添加到播放列表中", Toast.LENGTH_SHORT).show()
+        } else {
+            value?.let {
+                Toast.makeText(this.applicationContext,
+                    "添加歌曲失败", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroy() {

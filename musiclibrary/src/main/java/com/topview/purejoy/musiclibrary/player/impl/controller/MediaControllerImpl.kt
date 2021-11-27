@@ -40,7 +40,7 @@ open class MediaControllerImpl<T : Item>(
     }, handler)
 
     open fun callbackSuccess(itemIndex: Int, item: Item) {
-        if (list[position.current()].isSame(item)) {
+        if (list[position.current()] == item) {
             item.cast<T> {
                 list[position.current()] = it
                 if (it.url() == null) {
@@ -51,13 +51,7 @@ open class MediaControllerImpl<T : Item>(
                 setDataSource(item)
             }
         } else {
-            var index = -1;
-            for (i in 0 until list.size) {
-                if (list[i].isSame(item)) {
-                    index = i
-                    break
-                }
-            }
+            val index = list.indexOf(item)
             if (index != -1) {
                 item.cast<T> {
                     list[index] = it
@@ -97,13 +91,7 @@ open class MediaControllerImpl<T : Item>(
 
     private fun setDataSource(item: Item) {
         if (TextUtils.isEmpty(item.url())) {
-            var index = -1
-            for(i in 0 until list.size) {
-                if (list[i].isSame(item)) {
-                    index = i
-                    break
-                }
-            }
+            var index = list.indexOf(item)
             loader.get()?.onLoadItem(index, item, callback)
         } else {
             val path = cacheStrategy?.getRecord(item.url()!!)

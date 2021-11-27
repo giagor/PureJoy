@@ -34,3 +34,9 @@ fun ensureSecurity(source: MutableList<*>, position: Position, action: () -> Uni
         action.invoke()
     }
 }
+
+fun ensureSecurity(source: MutableList<*>, index: Int, action: () -> Unit) {
+    if (index < source.size) {
+        action.invoke()
+    }
+}
