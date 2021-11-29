@@ -42,6 +42,7 @@ dependencies {
 
     // compose
     implementation(Deps.Compose.composeUiToolingPreview)
+    implementation(Deps.Compose.glideAccompanist)
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)

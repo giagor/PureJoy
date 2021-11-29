@@ -26,6 +26,8 @@ object Deps {
         const val composeRuntime = "androidx.compose.runtime:runtime:$version"
         const val uiDebugTool = "androidx.compose.ui:ui-tooling:$version"
         const val junitTest = "androidx.compose.ui:ui-test-junit4:$version"
+
+        const val glideAccompanist = "com.google.accompanist:accompanist-glide:0.13.0"
     }
 
     object Navigation {
@@ -57,7 +59,7 @@ object Deps {
     // Retrofit的gson转换器
     const val retrofitGsonConverter = "com.squareup.retrofit2:converter-gson:2.9.0"
 
-    const val gilde = "com.github.bumptech.glide:glide:4.12.0"
+    const val glide = "com.github.bumptech.glide:glide:4.12.0"
 
     // RecyclerView - BaseRecyclerViewAdapterHelper
     const val baseRecyclerViewAdapterHelper = "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
