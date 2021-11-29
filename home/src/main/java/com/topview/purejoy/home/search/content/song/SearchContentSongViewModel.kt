@@ -65,10 +65,6 @@ class SearchContentSongViewModel : MVVMViewModel() {
             onError = {
                 status.value = Status.SEARCH_SONG_LOAD_MORE_NET_ERROR
             }
-
-            onEmpty = {
-                status.value = Status.SEARCH_SONG_LOAD_MORE_NET_EMPTY
-            }
         }
     }
 }

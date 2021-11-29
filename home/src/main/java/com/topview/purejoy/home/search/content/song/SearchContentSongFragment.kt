@@ -60,12 +60,12 @@ class SearchContentSongFragment :
             // 剩余未加载的歌曲总量
             val remainingCount = songTotalCount - offset
             // 判断未加载的歌曲是否够一页
-            if (remainingCount - offset >= pagerSize) {
+            if (remainingCount >= pagerSize) {
                 // 未加载的歌曲够一页，加载一页的歌曲
                 viewModel.loadMoreSongs(lastKeyword, offset, pagerSize)
             } else {
                 // 未加载的歌曲不够一页，加载剩余的所有歌曲
-                viewModel.loadMoreSongs(lastKeyword, remainingCount - offset, pagerSize)
+                viewModel.loadMoreSongs(lastKeyword, offset, remainingCount)
             }
         }
         binding.searchContentSongLayoutManager = layoutManager
@@ -109,11 +109,6 @@ class SearchContentSongFragment :
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 Status.SEARCH_SONG_LOAD_MORE_NET_ERROR -> adapter.loadMoreModule.loadMoreFail()
-                /**
-                 * 分页加载时，有些歌曲后半部分的数据获取不到，这里做一个特殊处理，直接让它结束分页加载
-                 * */
-                Status.SEARCH_SONG_LOAD_MORE_NET_EMPTY -> adapter.loadMoreModule.isEnableLoadMore =
-                    false
             }
         })
     }

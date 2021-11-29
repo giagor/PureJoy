@@ -17,5 +17,4 @@ internal object Status {
      * Search相关
      * */
     const val SEARCH_SONG_LOAD_MORE_NET_ERROR = "search_song_load_more_net_error"
-    const val SEARCH_SONG_LOAD_MORE_NET_EMPTY = "search_song_load_more_net_empty"
 }
