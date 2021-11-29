@@ -76,17 +76,21 @@ class SearchContentSongFragment :
         // 对用户输入的关键词进行观察
         (requireActivity() as? SearchKeywordListener)?.getKeywordLiveData()
             ?.observe(viewLifecycleOwner, {
-                // 记录关键词
-                lastKeyword = it
-                // 让adapter可以加载更多
-                adapter.loadMoreModule.isEnableLoadMore = true
-                viewModel.getSearchSongByFirst(it, pagerSize)
+                // 仅当搜索关键词不同时，才执行搜索操作
+                if (lastKeyword != it) {
+                    // 数据重置
+                    resetLoadMoreData()
+                    // 记录关键词
+                    lastKeyword = it
+                    viewModel.getSearchSongByFirst(it, pagerSize)
+                }
             })
 
         // 对关键词的第一次请求进行观察
         viewModel.searchSongsByFirstRequestLiveData.observe(viewLifecycleOwner, {
             // 设置当前页数
             curPage = 1
+            manageEnableLoadMoreByCurPages()
         })
 
         // 对歌曲总数进行观察
@@ -98,10 +102,7 @@ class SearchContentSongFragment :
         viewModel.searchSongsLoadMoreLiveData.observe(viewLifecycleOwner, {
             // 当前页数的更新
             curPage++
-            // 如果数据已经全部加载完，那么就设置adapter为无法加载更多
-            if (curPage * pagerSize >= songTotalCount) {
-                adapter.loadMoreModule.isEnableLoadMore = false
-            }
+            manageEnableLoadMoreByCurPages()
         })
 
         // 对数据请求的状态进行观察
@@ -115,8 +116,24 @@ class SearchContentSongFragment :
                     false
             }
         })
+    }
 
+    /**
+     * 重置"加载更多"的数据
+     * */
+    private fun resetLoadMoreData() {
+        curPage = 0
+        songTotalCount = 0
+        // 让adapter可以加载更多
+        adapter.loadMoreModule.isEnableLoadMore = true
+    }
 
+    /**
+     * 根据当前的页数，管理是否要加载更多
+     * */
+    private fun manageEnableLoadMoreByCurPages() {
+        // 如果数据已经全部加载完，那么就设置adapter为无法加载更多
+        adapter.loadMoreModule.isEnableLoadMore = curPage * pagerSize < songTotalCount
     }
 
     companion object {
