@@ -3,23 +3,26 @@ package com.topview.purejoy.home.search.content.song
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.data.repo.HomeRepository
 import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.entity.SongPagerWrapper
-
-/**
- * 分页加载，默认每页的大小
- * */
-private const val DEFAULT_SEARCH_SONG_PAGER_SIZE = 20
 
 class SearchContentSongViewModel : MVVMViewModel() {
     private val repository = HomeRepository
 
     /**
-     * 存储已搜索到的歌曲
+     * 记录初次搜索到的歌曲
      * */
-    val searchSongsLiveData: MutableLiveData<MutableList<Song>> by lazy {
-        MutableLiveData<MutableList<Song>>()
+    val searchSongsByFirstRequestLiveData: MutableLiveData<List<Song>> by lazy {
+        MutableLiveData<List<Song>>()
+    }
+
+    /**
+     * 记录本次"加载更多"，获取到的歌曲列表
+     * */
+    val searchSongsLoadMoreLiveData: MutableLiveData<List<Song>> by lazy {
+        MutableLiveData<List<Song>>()
     }
 
     /**
@@ -29,7 +32,7 @@ class SearchContentSongViewModel : MVVMViewModel() {
         MutableLiveData<Int>()
     }
 
-    fun getSearchSongByFirst(keyword: String, limit: Int = DEFAULT_SEARCH_SONG_PAGER_SIZE) {
+    fun getSearchSongByFirst(keyword: String, limit: Int) {
         viewModelScope.rxLaunch<SongPagerWrapper> {
             onRequest = {
                 repository.getSearchSongByFirst(keyword, limit)
@@ -43,8 +46,28 @@ class SearchContentSongViewModel : MVVMViewModel() {
                 it.songs?.let { songs ->
                     val searchResult = mutableListOf<Song>()
                     searchResult.addAll(songs)
-                    searchSongsLiveData.value = searchResult
+                    searchSongsByFirstRequestLiveData.value = searchResult
                 }
+            }
+        }
+    }
+
+    fun loadMoreSongs(keyword: String, offset: Int, limit: Int) {
+        viewModelScope.rxLaunch<List<Song>> {
+            onRequest = {
+                repository.loadMoreSongs(keyword, offset, limit)
+            }
+
+            onSuccess = {
+                searchSongsLoadMoreLiveData.value = it
+            }
+
+            onError = {
+                status.value = Status.SEARCH_SONG_LOAD_MORE_NET_ERROR
+            }
+
+            onEmpty = {
+                status.value = Status.SEARCH_SONG_LOAD_MORE_NET_EMPTY
             }
         }
     }

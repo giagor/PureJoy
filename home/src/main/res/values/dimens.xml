@@ -18,4 +18,5 @@
     <!--Search界面-->
     <dimen name="home_search_padding_left">15dp</dimen>
     <dimen name="home_search_padding_right">15dp</dimen>
+    <dimen name="home_search_content_scrollbar_size">5dp</dimen>
 </resources>

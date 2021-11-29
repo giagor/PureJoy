@@ -15,6 +15,7 @@ import com.topview.purejoy.home.entity.SongPagerWrapper
 private const val BANNER_TYPE: Int = 1
 private const val SEARCH_SONG_TYPE = 1
 
+
 class HomeRemoteStore {
     private val homeService = ServiceCreator.create(HomeService::class.java)
 
@@ -94,28 +95,48 @@ class HomeRemoteStore {
                 val songCount = result.songCount
                 val songs = result.songs
                 if (songs != null) {
-                    val searchSongs = mutableListOf<Song>()
-                    songs.forEach {
-                        val artistNameBuilder = StringBuilder()
-
-                        // 拼接歌手的名字
-                        val artists: List<SearchSongJson.Result.Song.Artist>? = it.artists
-                        artists?.forEach { artist ->
-                            artistNameBuilder.append(artist.name + " ")
-                        }
-
-                        searchSongs.add(
-                            Song(
-                                id = it.id,
-                                name = it.name,
-                                artistName = artistNameBuilder.toString()
-                            )
-                        )
-                    }
-                    return SongPagerWrapper(searchSongs, songCount)
+                    return SongPagerWrapper(parseSearchSongs(songs), songCount)
                 }
             }
         }
         return null
     }
+
+    suspend fun loadMoreSongs(keyword: String, offset: Int, limit: Int): List<Song>? {
+        val searchSongJson: SearchSongJson? =
+            homeService.getSearchSongs(keyword, SEARCH_SONG_TYPE, offset, limit).await()
+        if (searchSongJson != null) {
+            val result = searchSongJson.result
+            if (result != null) {
+                val songs = result.songs
+                if (songs != null) {
+                    return parseSearchSongs(songs)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
+        val searchSongs = mutableListOf<Song>()
+        songJson.forEach {
+            val artistNameBuilder = StringBuilder()
+
+            // 拼接歌手的名字
+            val artists: List<SearchSongJson.Result.Song.Artist>? = it.artists
+            artists?.forEach { artist ->
+                artistNameBuilder.append(artist.name + " ")
+            }
+
+            searchSongs.add(
+                Song(
+                    id = it.id,
+                    name = it.name,
+                    artistName = artistNameBuilder.toString()
+                )
+            )
+        }
+        return searchSongs
+    }
+
 }

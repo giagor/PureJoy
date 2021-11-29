@@ -26,9 +26,15 @@ internal object HomeRepository {
         withContext(Dispatchers.IO) {
             homeRemoteStore.getRecommendNewSong(limit)
         }
-    
-    suspend fun getSearchSongByFirst(keyword : String,limit : Int) : SongPagerWrapper? = 
-        withContext(Dispatchers.IO){
-            homeRemoteStore.getSearchSongByFirst(keyword,limit)
+
+    suspend fun getSearchSongByFirst(keyword: String, limit: Int): SongPagerWrapper? =
+        withContext(Dispatchers.IO) {
+            homeRemoteStore.getSearchSongByFirst(keyword, limit)
         }
+
+    suspend fun loadMoreSongs(keyword: String, offset: Int, limit: Int): List<Song>? =
+        withContext(Dispatchers.IO) {
+            homeRemoteStore.loadMoreSongs(keyword, offset, limit)
+        }
+
 }

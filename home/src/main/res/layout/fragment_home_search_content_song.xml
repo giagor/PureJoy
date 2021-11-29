@@ -26,9 +26,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbarSize="@dimen/home_search_content_scrollbar_size"
+            android:scrollbars="vertical"
             app:layoutManager="@{searchContentSongLayoutManager}"
             app:searchSongAdapter="@{searchContentSongAdapter}"
-            app:searchSongs="@{viewModel.searchSongsLiveData}"/>
+            app:searchSongsByFirstRequest="@{viewModel.searchSongsByFirstRequestLiveData}"
+            app:loadMoreSongs="@{viewModel.searchSongsLoadMoreLiveData}"/>
 
     </FrameLayout>
 </layout>

@@ -28,12 +28,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/home_search_song_name_color"
                 android:textSize="15sp"
+                android:singleLine="true"
                 android:text="@{searchSong.name}"/>
             
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
+                android:singleLine="true"
                 android:text="@{searchSong.artistName}"/>
             
         </LinearLayout>

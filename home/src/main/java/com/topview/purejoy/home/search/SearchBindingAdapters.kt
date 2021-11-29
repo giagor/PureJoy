@@ -10,11 +10,21 @@ fun setSearchContentSongAdapter(recyclerView: RecyclerView, adapter: SearchConte
     recyclerView.adapter = adapter
 }
 
-@BindingAdapter("searchSongs")
-fun setSearchSongs(recyclerView: RecyclerView, list: List<Song>?) {
+@BindingAdapter("searchSongsByFirstRequest")
+fun setSearchSongsByFirstRequest(recyclerView: RecyclerView, list: List<Song>?) {
     list?.let {
         val adapter = recyclerView.adapter as SearchContentSongAdapter
         adapter.setList(list)
+    }
+}
+
+@BindingAdapter("loadMoreSongs")
+fun loadMoreSongs(recyclerView: RecyclerView, list: List<Song>?) {
+    list?.let {
+        val adapter = recyclerView.adapter as SearchContentSongAdapter
+        adapter.addData(it)
+        // 通知"加载更多"已完成
+        adapter.loadMoreModule.loadMoreComplete()
     }
 }
 
