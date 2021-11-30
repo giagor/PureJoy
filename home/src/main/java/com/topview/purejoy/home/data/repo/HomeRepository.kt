@@ -2,7 +2,7 @@ package com.topview.purejoy.home.data.repo
 
 import com.topview.purejoy.home.data.source.HomeLocalStore
 import com.topview.purejoy.home.data.source.HomeRemoteStore
-import com.topview.purejoy.home.entity.DailyRecommendPlayList
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
 import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.entity.SongPagerWrapper
@@ -17,7 +17,7 @@ internal object HomeRepository {
         homeRemoteStore.getBanners()
     }
 
-    suspend fun getDailyRecommendPlayList(limit: Int): List<DailyRecommendPlayList>? =
+    suspend fun getDailyRecommendPlayList(limit: Int): List<PlayList>? =
         withContext(Dispatchers.IO) {
             homeRemoteStore.getDailyRecommendPlayList(limit)
         }

@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.topview.purejoy.common.widget.banner.BannerView
 import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
-import com.topview.purejoy.home.entity.DailyRecommendPlayList
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
 import com.topview.purejoy.home.entity.Song
 
@@ -51,7 +51,7 @@ fun setRecommendNewSongAdapter(
 @BindingAdapter("dailyRecommendPlayList")
 fun setDailyRecommendPlayList(
     recyclerView: RecyclerView,
-    list: List<DailyRecommendPlayList>?
+    list: List<PlayList>?
 ) {
     list?.let {
         val adapter = recyclerView.adapter as DailyRecommendPlayListAdapter

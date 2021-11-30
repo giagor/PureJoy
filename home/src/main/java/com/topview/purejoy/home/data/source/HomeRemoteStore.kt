@@ -7,7 +7,7 @@ import com.topview.purejoy.home.data.bean.BannerJson
 import com.topview.purejoy.home.data.bean.DailyRecommendPlayListJson
 import com.topview.purejoy.home.data.bean.RecommendNewSongJson
 import com.topview.purejoy.home.data.bean.SearchSongJson
-import com.topview.purejoy.home.entity.DailyRecommendPlayList
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
 import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.entity.SongPagerWrapper
@@ -34,16 +34,16 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun getDailyRecommendPlayList(limit: Int): List<DailyRecommendPlayList>? {
+    suspend fun getDailyRecommendPlayList(limit: Int): List<PlayList>? {
         val dailyRecommendPlayListJson: DailyRecommendPlayListJson? =
             homeService.getDailyRecommendPlayList(limit).await()
         if (dailyRecommendPlayListJson != null) {
             val result = dailyRecommendPlayListJson.result
             if (result != null) {
-                val list = mutableListOf<DailyRecommendPlayList>()
+                val list = mutableListOf<PlayList>()
                 result.forEach {
                     val dailyRecommendPlayList =
-                        DailyRecommendPlayList(it.id, it.name, it.picUrl, it.playCount)
+                        PlayList(it.id, it.name, it.picUrl, it.playCount)
                     list.add(dailyRecommendPlayList)
                 }
                 return list

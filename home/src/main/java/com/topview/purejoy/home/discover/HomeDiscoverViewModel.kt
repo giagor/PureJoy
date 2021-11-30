@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.data.repo.HomeRepository
-import com.topview.purejoy.home.entity.DailyRecommendPlayList
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
 import com.topview.purejoy.home.entity.Song
 
@@ -16,8 +16,8 @@ class HomeDiscoverViewModel : MVVMViewModel() {
         MutableLiveData<List<HomeDiscoverBannerItem>>()
     }
 
-    val dailyRecommendPlayListLiveData: MutableLiveData<List<DailyRecommendPlayList>> by lazy {
-        MutableLiveData<List<DailyRecommendPlayList>>()
+    val dailyRecommendPlayListLiveData: MutableLiveData<List<PlayList>> by lazy {
+        MutableLiveData<List<PlayList>>()
     }
 
     val recommendNewSongLiveData: MutableLiveData<List<Song>> by lazy {
@@ -41,7 +41,7 @@ class HomeDiscoverViewModel : MVVMViewModel() {
     }
 
     fun getDailyRecommendPlayList(limit : Int = 6) {
-        viewModelScope.rxLaunch<List<DailyRecommendPlayList>> {
+        viewModelScope.rxLaunch<List<PlayList>> {
             onRequest = {
                 repository.getDailyRecommendPlayList(limit)
             }
