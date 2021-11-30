@@ -13,4 +13,12 @@ data class PlayList(
     var picUrl: String? = null,
     var playCount: Long? = null,
     var songCounts: Int? = null
-) 
+)
+
+/**
+ * 该类是对PlayList类的封装，主要用于分页加载的初次请求中，用于记录"歌单的总数量"
+ * */
+data class PlayListPagerWrapper(
+    val playlists: List<PlayList>? = null,
+    val playlistCount: Int? = null
+)
