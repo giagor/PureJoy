@@ -1,7 +1,6 @@
 package com.topview.purejoy.common.widget.compose
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -16,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -48,11 +46,8 @@ class RoundedCornerImageView
     /**
      * 图片加载请求。
      * 注意，这是个Any属性，意味着你可以设置Bitmap、本地Drawable的id，甚至是一个String(URL)。
-     * 如果设置了一个String，那么将会尝试使用Glide加载远程图片
-     * (因为本项目使用Glide作为总的图片加载框架)，
-     * 但是这个扩展并不能长期使用(最新的0.15.0已经标明Deprecated)，应考虑迁移到Coil。
-     * 扩展的Painter只解决了Composition离开界面后不再接收、展示之前的图片，
-     * 但是已经发起的图片请求并不能被取消，在列表高速滑动下可能会导致较为可观的流量消耗
+     * 如果设置了一个String，那么将会尝试使用Coil加载远程图片
+     * 虽然本项目主要使用Glide作为图片加载框架，但是它和Compose结合的并不成功，效率很低，因此改用Coil
      */
     var loadImageRequest: Any? by mutableStateOf(null)
 
@@ -143,9 +138,6 @@ internal fun getPainter(request: Any?, remoteLoader: RemoteLoader) =
         when(this) {
             is ImageVector -> {
                 rememberVectorPainter(image = this)
-            }
-            is Bitmap -> {
-                BitmapPainter(this.asImageBitmap())
             }
             is ImageBitmap -> {
                 BitmapPainter(this)
