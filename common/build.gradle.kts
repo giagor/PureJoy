@@ -42,7 +42,9 @@ dependencies {
 
     // compose
     implementation(Deps.Compose.composeUiToolingPreview)
-    implementation(Deps.Compose.glideAccompanist)
+    // Coil
+    implementation(Deps.Coil.coilCore)
+    implementation(Deps.Coil.composeExtension)
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
