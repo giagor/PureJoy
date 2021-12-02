@@ -2,10 +2,7 @@ package com.topview.purejoy.home.data.repo
 
 import com.topview.purejoy.home.data.source.HomeLocalStore
 import com.topview.purejoy.home.data.source.HomeRemoteStore
-import com.topview.purejoy.home.entity.PlayList
-import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.Song
-import com.topview.purejoy.home.entity.SongPagerWrapper
+import com.topview.purejoy.home.entity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -37,4 +34,8 @@ internal object HomeRepository {
             homeRemoteStore.loadMoreSongs(keyword, offset, limit)
         }
 
+    suspend fun getSearchPlayListByFirst(keyword: String, limit: Int): PlayListPagerWrapper? =
+        withContext(Dispatchers.IO) {
+            homeRemoteStore.getSearchPlayListByFirst(keyword, limit)
+        }
 }

@@ -3,18 +3,12 @@ package com.topview.purejoy.home.data.source
 import com.topview.purejoy.common.net.ServiceCreator
 import com.topview.purejoy.common.net.await
 import com.topview.purejoy.home.data.api.HomeService
-import com.topview.purejoy.home.data.bean.BannerJson
-import com.topview.purejoy.home.data.bean.DailyRecommendPlayListJson
-import com.topview.purejoy.home.data.bean.RecommendNewSongJson
-import com.topview.purejoy.home.data.bean.SearchSongJson
-import com.topview.purejoy.home.entity.PlayList
-import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
-import com.topview.purejoy.home.entity.Song
-import com.topview.purejoy.home.entity.SongPagerWrapper
+import com.topview.purejoy.home.data.bean.*
+import com.topview.purejoy.home.entity.*
 
 private const val BANNER_TYPE: Int = 1
 private const val SEARCH_SONG_TYPE = 1
-
+private const val SEARCH_PLAYLIST_TYPE = 1000
 
 class HomeRemoteStore {
     private val homeService = ServiceCreator.create(HomeService::class.java)
@@ -117,6 +111,22 @@ class HomeRemoteStore {
         return null
     }
 
+    suspend fun getSearchPlayListByFirst(keyword: String, limit: Int): PlayListPagerWrapper? {
+        val searchPlayListJson: SearchPlayListJson? =
+            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, 0, limit).await()
+        if (searchPlayListJson != null) {
+            val result = searchPlayListJson.result
+            if (result != null) {
+                val playlistCounts = result.playlistCount
+                val playlists = result.playlists
+                if (playlists != null) {
+                    return PlayListPagerWrapper(parseSearchPlayList(playlists), playlistCounts)
+                }
+            }
+        }
+        return null
+    }
+
     private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
         val searchSongs = mutableListOf<Song>()
         songJson.forEach {
@@ -137,6 +147,23 @@ class HomeRemoteStore {
             )
         }
         return searchSongs
+    }
+
+    private fun parseSearchPlayList(playlistJson: MutableList<SearchPlayListJson.Result.PlayList>):
+            List<PlayList> {
+        val searchPlayLists = mutableListOf<PlayList>()
+        playlistJson.forEach {
+            searchPlayLists.add(
+                PlayList(
+                    id = it.id,
+                    name = it.name,
+                    picUrl = it.picUrl,
+                    playCount = it.playCount,
+                    songCounts = it.songCounts
+                )
+            )
+        }
+        return searchPlayLists
     }
 
 }
