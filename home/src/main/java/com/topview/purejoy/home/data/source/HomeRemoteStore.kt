@@ -127,6 +127,21 @@ class HomeRemoteStore {
         return null
     }
 
+    suspend fun loadMorePlayLists(keyword: String, offset: Int, limit: Int): List<PlayList>? {
+        val searchPlayListJson: SearchPlayListJson? =
+            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, offset, limit).await()
+        if (searchPlayListJson != null) {
+            val result = searchPlayListJson.result
+            if (result != null) {
+                val playlists = result.playlists
+                if (playlists != null) {
+                    return parseSearchPlayList(playlists)
+                }
+            }
+        }
+        return null
+    }
+
     private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
         val searchSongs = mutableListOf<Song>()
         songJson.forEach {

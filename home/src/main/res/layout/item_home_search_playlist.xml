@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topview.purejoy.home.entity.PlayList"/>
+        <variable
+            name="playlist"
+            type="PlayList" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/home_search_padding_left"
+        android:paddingEnd="@dimen/home_search_padding_right"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp" 
+            app:loadImg="@{playlist.picUrl}"/>
+       
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@{playlist.name}"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@{playlist.songCounts.toString()}"/>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+</layout>

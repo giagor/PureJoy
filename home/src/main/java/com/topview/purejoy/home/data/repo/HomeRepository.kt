@@ -38,4 +38,9 @@ internal object HomeRepository {
         withContext(Dispatchers.IO) {
             homeRemoteStore.getSearchPlayListByFirst(keyword, limit)
         }
+
+    suspend fun loadMorePlayLists(keyword: String, offset: Int, limit: Int): List<PlayList>? =
+        withContext(Dispatchers.IO) {
+            homeRemoteStore.loadMorePlayLists(keyword, offset, limit)
+        }
 }

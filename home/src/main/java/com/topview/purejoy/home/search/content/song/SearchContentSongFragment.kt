@@ -9,6 +9,7 @@ import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
 import com.topview.purejoy.home.search.SearchKeywordListener
+import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
@@ -20,7 +21,7 @@ class SearchContentSongFragment :
     /**
      * 分页加载，每页的数量
      * */
-    private val pagerSize = 20
+    private val pagerSize = SearchConstant.PAGER_SIZE
 
     /**
      * 记录最近一次的关键词搜索
