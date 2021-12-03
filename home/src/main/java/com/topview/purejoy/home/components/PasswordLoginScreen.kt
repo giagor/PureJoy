@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.theme.Red243
+import com.topview.purejoy.home.theme.Visibility
+import com.topview.purejoy.home.theme.VisibilityOff
 
 @Composable
 fun PasswordLoginScreen(
@@ -96,9 +98,9 @@ fun PasswordLoginScreen(
 
 @Composable
 fun PasswordField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     var passwordVisible by remember {
         mutableStateOf(false)
