@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_navigation_login"
+    app:startDestination="@id/home_nav_phone">
+    <fragment
+        android:id="@+id/home_nav_phone"
+        android:name="com.topview.purejoy.home.tasks.login.PhoneInputFragment"
+        android:label="@string/home_label_phone_number" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_nav_code"
+        android:name="com.topview.purejoy.home.tasks.login.CaptchaFragment"
+        android:label="@string/home_label_captcha">
+        <argument
+            android:name="@string/home_label_phone_number"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_nav_password"
+        android:name="com.topview.purejoy.home.tasks.login.PasswordFragment"
+        android:label="@string/home_label_password">
+        <argument
+            android:name="@string/home_label_phone_number"
+            app:argType="string" />
+    </fragment>
+</navigation>

@@ -1,9 +1,7 @@
 package com.topview.purejoy.common.widget.compose
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.infiniteRepeatable
@@ -16,8 +14,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.res.painterResource
@@ -38,20 +39,17 @@ class RoundedCornerImageView
     AbstractComposeView(context, attr, defStyle) {
 
     /**
-     * 需要展示的Bitmap
-     */
-    var bitmap by mutableStateOf<Bitmap?>(null)
-
-    /**
      * 圆角百分比
      */
     var percent by mutableStateOf(0)
 
     /**
-     * 需要展示的drawable的id，注意，drawable的优先级低于Bitmap，优先展示Bitmap
-     * 这个drawable的初始资源值是无意义的值0，需要从展示Bitmap转为展示drawable时，尽量先设置有意义的drawable值
+     * 图片加载请求。
+     * 注意，这是个Any属性，意味着你可以设置Bitmap、本地Drawable的id，甚至是一个String(URL)。
+     * 如果设置了一个String，那么将会尝试使用Coil加载远程图片
+     * 虽然本项目主要使用Glide作为图片加载框架，但是它和Compose结合的并不成功，效率很低，因此改用Coil
      */
-    var drawableId by mutableStateOf(0)
+    var loadImageRequest: Any? by mutableStateOf(null)
 
     /**
      * 是否开始旋转。修改这个变量将启动旋转动画
@@ -68,18 +66,25 @@ class RoundedCornerImageView
      */
     var onClick: (() -> Unit)? = null
 
+    val remoteLoader: RemoteLoader = RemoteLoader()
+
     private val contentDescription: String?
+
+    private var resetRotate = false
 
     init {
         // 获取属性集合
         val typedArray = context.obtainStyledAttributes(attr, R.styleable.RoundedCornerImageView)
         // 获取设置的属性值
         percent = typedArray.getInt(
-            R.styleable.RoundedCornerImageView_percent, 0)
-        drawableId = typedArray.getResourceId(
-            R.styleable.RoundedCornerImageView_android_src, 0)
+            R.styleable.RoundedCornerImageView_percent, 0
+        )
+        loadImageRequest = typedArray.getResourceId(
+            R.styleable.RoundedCornerImageView_android_src, 0
+        )
         contentDescription = typedArray.getString(
-            R.styleable.RoundedCornerImageView_android_contentDescription)
+            R.styleable.RoundedCornerImageView_android_contentDescription
+        )
         typedArray.recycle()
     }
 
@@ -90,30 +95,34 @@ class RoundedCornerImageView
         }
         LaunchedEffect(loop) {
             if (loop) {
-                angle.animateTo(360F, animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = duration, easing = LinearEasing)
-                ))
-            } else if (angle.value != 0F) {
-                angle.snapTo(0F)
+                resetRotate = false
+                angle.animateTo(
+                    360F + (angle.value % 360F), animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = duration, easing = LinearEasing)
+                    )
+                )
+            } else {
+                // 复位或减小角度，避免角度不断累积变大
+                angle.snapTo(if (resetRotate) 0F else angle.value % 360F)
             }
         }
-        val modifier = Modifier.rotate(angle.value).clickable { onClick?.invoke() }
-        if (bitmap != null) {
-            RoundImageViewCompose(bitmap = bitmap, modifier = modifier, percent)
-        } else {
-            RoundImageViewCompose(drawableId, modifier, percent)
-        }
+        val modifier = Modifier
+            .rotate(angle.value)
+            .clickable { onClick?.invoke() }
+        val imagePainter: Painter? = getPainter(loadImageRequest, remoteLoader)
+        RoundImageViewCompose(
+            painter = imagePainter,
+            modifier = modifier, percent, contentDescription
+        )
     }
 }
 
 @Composable
-fun RoundImageViewCompose(bitmap: Bitmap?, modifier: Modifier,
+fun RoundImageViewCompose(painter: Painter?, modifier: Modifier,
                           percent: Int = 0, contentDescription: String? = null) {
     Surface(shape = RoundedCornerShape(percent)) {
-        if (bitmap != null) {
-            Image(painter = remember {
-                mutableStateOf(BitmapPainter(bitmap.asImageBitmap()))
-            }.value,
+        if (painter != null) {
+            Image(painter = painter,
                 contentDescription = contentDescription,
                 modifier = modifier,
                 contentScale = ContentScale.Crop
@@ -124,23 +133,41 @@ fun RoundImageViewCompose(bitmap: Bitmap?, modifier: Modifier,
 }
 
 @Composable
-fun RoundImageViewCompose(@DrawableRes id: Int, modifier: Modifier,
-                          percent: Int = 0, contentDescription: String? = null) {
-    Surface(shape = RoundedCornerShape(percent)) {
-        Image(painter = painterResource(id = id),
-            contentDescription = contentDescription,
-            modifier = modifier,
-            contentScale = ContentScale.Crop)
+internal fun getPainter(request: Any?, remoteLoader: RemoteLoader) =
+    request?.run {
+        when(this) {
+            is ImageVector -> {
+                rememberVectorPainter(image = this)
+            }
+            is ImageBitmap -> {
+                BitmapPainter(this)
+            }
+            is Int -> {
+                if (this != 0) {
+                    painterResource(id = this)
+                } else {
+                    null
+                }
+            }
+            is String -> {
+                remoteLoader.getRemotePainter(request = this)
+            }
+            is Painter -> {
+                this
+            }
+            else -> {
+                null
+            }
+        }
     }
-}
+
 
 @Preview(showBackground = true)
 @Composable
 private fun RoundImageViewComposePreview() {
     Surface(modifier = Modifier) {
-        // 如果希望预览效果，换一个能够看得见效果的图而不是无意义的0值
-        RoundImageViewCompose(
-            id = 0,
+        // 如果希望预览效果，换一个能够看得见效果的图而不是无意义的null
+        RoundImageViewCompose(null,
             modifier = Modifier.size(150.dp),
             100)
     }
