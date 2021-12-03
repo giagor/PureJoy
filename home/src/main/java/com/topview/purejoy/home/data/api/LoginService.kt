@@ -3,43 +3,48 @@ package com.topview.purejoy.home.data.api
 import com.topview.purejoy.home.data.bean.PhoneExistJson
 import com.topview.purejoy.home.data.bean.UserJson
 import retrofit2.Call
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 interface LoginService {
     @POST("/captcha/sent")
+    @FormUrlEncoded
     fun sendCaptcha(
-        @Query("phone")
+        @Field("phone")
         phone: String,
-        @Query("timestamp")
+        @Field("timestamp")
         timestamp: String
     ): Call<Unit>
 
     @POST("/login/cellphone")
+    @FormUrlEncoded
     fun loginWithCaptcha(
-        @Query("phone")
+        @Field("phone")
         phone: String,
-        @Query("captcha")
+        @Field("captcha")
         captcha: String,
-        @Query("timestamp")
+        @Field("timestamp")
         timestamp: String
     ): Call<UserJson>
 
     @POST("/login/cellphone")
+    @FormUrlEncoded
     fun loginWithPassword(
-        @Query("phone")
+        @Field("phone")
         phone: String,
-        @Query("md5_password")
+        @Field("md5_password")
         password: String,
-        @Query("timestamp")
+        @Field("timestamp")
         timestamp: String
     ): Call<UserJson>
 
     @POST("/cellphone/existence/check")
+    @FormUrlEncoded
     fun checkExist(
-        @Query("phone")
+        @Field("phone")
         phone: String,
-        @Query("timestamp")
+        @Field("timestamp")
         timestamp: String
     ): Call<PhoneExistJson>
 
@@ -50,13 +55,13 @@ interface LoginService {
      */
     @POST("/register/cellphone")
     fun registerOrChangePass(
-        @Query("captcha")
+        @Field("captcha")
         captcha: String,
-        @Query("phone")
+        @Field("phone")
         phone: String,
-        @Query("password")
+        @Field("password")
         password: String,
-        @Query("timestamp")
+        @Field("timestamp")
         timestamp: String
     ): Call<UserJson>
 }

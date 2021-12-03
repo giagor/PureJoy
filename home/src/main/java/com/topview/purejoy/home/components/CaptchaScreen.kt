@@ -17,12 +17,16 @@ import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.theme.Blue219
 
+/**
+ * 验证码输入屏幕
+ * @param time 重新发送的倒计时
+ */
 @Composable
 fun CaptchaScreen(
+    modifier: Modifier = Modifier,
     time: Int,
     state: CaptchaScreenState = remember {
         CaptchaScreenState(CaptchaFieldState(), "") },
-    modifier: Modifier = Modifier,
     onResendClick: () -> Unit = {},
     onChangePhoneClick: () -> Unit = {},
     onPasswordClick: () -> Unit = {},
@@ -41,7 +45,7 @@ fun CaptchaScreen(
             ) {
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
-                    onClick =  onPasswordClick,
+                    onClick = onPasswordClick,
                     shape = RoundedCornerShape(50),
                     contentPadding = PaddingValues(
                         vertical = 0.dp,
@@ -61,21 +65,21 @@ fun CaptchaScreen(
             }
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            Row {
+        Column(
+            modifier = Modifier.padding(it),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(verticalAlignment = Alignment.Bottom) {
                 CaptchaContentTitle(
                     phone = state.phone,
                     onChangePhoneClick = onChangePhoneClick,
-                    modifier = Modifier.padding(
-                        horizontal = 15.dp).align(Alignment.Bottom)
+                    modifier = Modifier.padding(horizontal = 15.dp)
                 )
                 Spacer(modifier = Modifier.weight(1F))
                 CountDownButton(
                     time = time,
                     onClick = onResendClick,
-                    modifier = Modifier
-                        .align(Alignment.Bottom)
-                        .padding(end = 15.dp)
+                    modifier = Modifier.padding(end = 15.dp)
                 )
             }
             CaptchaField(
@@ -83,14 +87,11 @@ fun CaptchaScreen(
                 state = state.captchaFieldState,
                 modifier = Modifier.padding(horizontal = 15.dp,
                     vertical = 15.dp)
-                    .align(Alignment.CenterHorizontally)
                     .width(240.dp),
                 onFull = onCaptchaFull
             )
             SnackbarHost(
-                hostState = snackBarHostState,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                hostState = snackBarHostState
             )
         }
     }
@@ -144,9 +145,9 @@ fun CaptchaContentTitle(
 
 @Composable
 fun CountDownButton(
+    modifier: Modifier = Modifier,
     time: Int,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     val clickableModifier: Modifier = Modifier.clickable {
         onClick()
@@ -179,6 +180,6 @@ private fun CaptchaScreenPreview() {
         )
     }
     Surface(modifier = Modifier.fillMaxSize()) {
-        CaptchaScreen(59, state)
+        CaptchaScreen(time = 59, state = state)
     }
 }

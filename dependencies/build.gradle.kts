@@ -45,7 +45,7 @@ dependencies {
     api(Deps.Coroutines.coroutinesAndroid)
 
     // glide
-    api(Deps.gilde)
+    api(Deps.glide)
     // compose UI
     api(Deps.Compose.composeUi)
     api(Deps.Compose.composeMaterial)

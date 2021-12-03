@@ -95,18 +95,16 @@ fun SingleCaptchaText(
     val lineColor: Color by animateColorAsState(
         targetValue = if (text.isEmpty()) emptyColor else Color.Black
     )
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(text = text,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = 6.dp),
             fontWeight = FontWeight.Light,
             fontSize = 24.sp
         )
-        Box(modifier = lineModifier
-            .background(lineColor)
-            .align(Alignment.CenterHorizontally)
-        )
+        Box(modifier = lineModifier.background(lineColor))
     }
 }
 class CaptchaFieldState {

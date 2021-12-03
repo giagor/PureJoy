@@ -16,3 +16,7 @@ fun dpToPx(dp: Int): Int =
         dp.toFloat(),
         Resources.getSystem().displayMetrics
     ).toInt()
+
+fun pxToDp(px: Int): Int = pxToDp(px.toFloat()).toInt()
+
+fun pxToDp(px: Float): Float = px / Resources.getSystem().displayMetrics.density

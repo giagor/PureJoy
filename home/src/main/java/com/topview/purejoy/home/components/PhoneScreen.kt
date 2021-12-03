@@ -45,7 +45,7 @@ fun PhoneScreen(
         Column(modifier = Modifier.padding(it)) {
             PhoneContentTitle(modifier = Modifier.padding(
                 horizontal = 15.dp, vertical = 8.dp))
-            PhoneNumberInput(outerModifier = Modifier.padding(
+            PhoneNumberInput(modifier = Modifier.padding(
                 horizontal = 15.dp, vertical = 8.dp),
                 phoneUiState = phoneUiState,
                 onButtonClick = onNextStepClick,
@@ -72,12 +72,12 @@ fun PhoneScreen(
 
 @Composable
 fun PhoneNumberInput(
-    outerModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     phoneUiState: PhoneUiState,
     onButtonClick: () -> Unit,
     onTextChanged: (String) -> Unit
 ) {
-    Column(modifier = outerModifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = phoneUiState.text,
             onValueChange = onTextChanged,
@@ -152,26 +152,21 @@ fun LoginScreenTitle(
     onClose: (() -> Unit)? = null,
     trailingContent: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(modifier = modifier) {
-        var iconModifier = Modifier
-            .align(Alignment.CenterVertically)
-            .size(32.dp)
-        if (onClose != null) {
-            iconModifier = iconModifier.clickable { onClose() }
-        }
-        Icon(painter = painterResource(id = R.drawable.ic_home_baseline_close_24),
-            contentDescription = null,
-            modifier = iconModifier
-        )
-        Text(text = stringResource(R.string.home_login_phone_title),
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(start = 10.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        )
-        trailingContent()
+    var iconModifier = Modifier.size(32.dp)
+    if (onClose != null) {
+        iconModifier = iconModifier.clickable { onClose() }
     }
+    ScreenTitle(
+        title = stringResource(R.string.home_login_phone_title),
+        modifier = modifier,
+        leadingContent = {
+            Icon(painter = painterResource(id = R.drawable.ic_home_baseline_close_24),
+                contentDescription = null,
+                modifier = iconModifier
+            )
+        },
+        trailingContent = trailingContent
+    )
 }
 
 @Composable
