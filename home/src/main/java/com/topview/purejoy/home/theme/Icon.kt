@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.theme
 
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
