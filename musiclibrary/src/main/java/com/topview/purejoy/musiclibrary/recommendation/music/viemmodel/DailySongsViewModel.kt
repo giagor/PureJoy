@@ -36,7 +36,7 @@ class DailySongsViewModel(
                     }
                     list.add(SongWithReason(item, reason))
                 }
-                data.value = list
+                data.postValue(list)
             }
             onEmpty = {
                 data.value = null
