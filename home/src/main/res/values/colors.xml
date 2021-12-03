@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--底部栏的颜色-->
-    <color name="home_bottom_navi_selected_color">#FF6A6A</color>
-    <color name="home_bottom_navi_unselected_color">#696969</color>
-</resources>
