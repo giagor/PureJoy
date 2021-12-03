@@ -15,7 +15,7 @@ class PlayingViewModel(private val repository: PlayingRepository = PlayingReposi
     val lrcResponse: MutableLiveData<LrcResponse> = MutableLiveData()
 
     // lrc fragment需监听，以与Activity交互
-    val currentItem: MutableLiveData<MusicItem> = MutableLiveData()
+    val currentItem: MutableLiveData<MusicItem?> = MutableLiveData()
     val progress: MutableLiveData<Int> = MutableLiveData(0)
     val duration: MutableLiveData<Int> = MutableLiveData(0)
     val playState: MutableLiveData<Boolean> = MutableLiveData()
