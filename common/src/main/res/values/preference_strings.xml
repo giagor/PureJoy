@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--以下是储存相关设置的键-->
+    <string name="mine_key_accept_notification">acceptNotification</string>
+    <string name="mine_key_load_image_wifi_only">loadImageWifiOnly</string>
+    <string name="mine_key_auto_play_video_on_wifi">autoPlayVideoOnWifi</string>
+    <string name="mine_key_display_animal">displayAnimal</string>
+    <string name="mine_key_selected_animal">selectedAnimal</string>
+    <string name="mine_key_allow_use_voice">allowUseVoice</string>
+    <string name="mine_key_voice_type">voiceType</string>
+
+    
+</resources>

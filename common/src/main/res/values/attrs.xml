@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BannerView">
+        <attr name="indicator_size" format="dimension" />
+        <attr name="indicator_gravity" format="flags">
+            <flag name="top" value="48" />
+            <flag name="bottom" value="80" />
+            <flag name="left" value="3" />
+            <flag name="right" value="5" />
+            <flag name="center_horizontal" value="1" />
+        </attr>
+        <attr name="indicator_margin_top" format="dimension" />
+        <attr name="indicator_margin_bottom" format="dimension" />
+        <attr name="indicator_margin_left" format="dimension" />
+        <attr name="indicator_margin_right" format="dimension" />
+        <attr name="indicator_spacing" format="dimension" />
+        <attr name="show_indicator" format="boolean" />
+        <attr name="auto_scroll_time_spacing" format="integer" />
+        <attr name="indicator_shape" format="reference" />
+        <attr name="indicator_select_color" format="color" />
+        <attr name="indicator_unselect_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundImageView">
+        <attr name="draw_type">
+            <flag name="circle" value="1"/>
+            <flag name="round_rect" value="2"/>
+        </attr>
+        <attr name="round_rect_radius" format="float"/>
+        <attr name="thumb" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundedCornerImageView">
+        <attr name="percent" format="integer"/>
+        <attr name="android:src" format="reference"/>
+        <attr name="android:contentDescription" format="string" />
+    </declare-styleable>
+</resources>
