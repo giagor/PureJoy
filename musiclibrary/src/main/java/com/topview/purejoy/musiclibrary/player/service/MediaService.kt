@@ -25,6 +25,7 @@ import com.topview.purejoy.musiclibrary.player.setting.ErrorSetting
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.player.util.ensureSecurity
 import java.lang.ref.WeakReference
 
@@ -213,7 +214,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         val playerController = initPlayerController(callback = callback,
             source = dataController.mediaSource,
             position = dataController.position)
-        val realController = playerController.realController.cast<MediaControllerImpl<T>>()!!
+        val realController = playerController.realController.castAs<MediaControllerImpl<T>>()!!
 
         val listenerController = IPCListenerControllerImpl()
 
@@ -236,7 +237,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
 
                 listenerController.invokeDataSetChangeListener(changes)
 
-                if (changes == null) {
+                if (changes!!.isEmpty()) {
                     realController.position.with(InitPosition)
                     errorSetting.record.clear()
                     if (realController.isPlaying()) {
@@ -244,9 +245,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
                     }
                 } else {
                     realController.position.max = source.size
-                    if (realController.position.current() == MediaModeSetting.INIT_POSITION) {
-                        realController.next()
-                    }
+//                    if (realController.position.current() == MediaModeSetting.INIT_POSITION) {
+//                        realController.next()
+//                    }
                     changes.forEach {
                         errorSetting.remove(it.value?.cast<T>()!!)
                     }

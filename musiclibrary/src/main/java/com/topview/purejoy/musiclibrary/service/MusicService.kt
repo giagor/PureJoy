@@ -14,6 +14,7 @@ import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCDataControllerImpl
 import com.topview.purejoy.musiclibrary.player.service.MediaService
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotification
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotificationReceiver
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModel
@@ -25,7 +26,7 @@ class MusicService : MediaService<MusicItem>() {
         MusicNotification(applicationContext, NOTIFICATION_ID)
     }
     private val receiver: MusicNotificationReceiver by lazy {
-        val controller = pool.queryBinder(BinderPool.PLAYER_CONTROL_BINDER).cast<IPCPlayerController>()!!
+        val controller = pool.queryBinder(BinderPool.PLAYER_CONTROL_BINDER).castAs<IPCPlayerController>()!!
         MusicNotificationReceiver(controller = controller,
             listener = object : MusicNotificationReceiver.ClearListener {
             override fun onClear() {
@@ -45,7 +46,7 @@ class MusicService : MediaService<MusicItem>() {
     override fun onCreate() {
         super.onCreate()
         val dataController = pool.queryBinder(BinderPool.DATA_CONTROL_BINDER)
-            .cast<IPCDataControllerImpl<MusicItem>>()!!
+            .castAs<IPCDataControllerImpl<MusicItem>>()!!
         dataController.source.changeListeners.add(object : DataSource.DataSetChangeListener<Wrapper> {
             override fun onChange(changes: MutableList<Wrapper>?) {
                 if (changes == null) {

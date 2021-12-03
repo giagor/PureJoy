@@ -6,7 +6,7 @@ class DataSource<T>(
     val removeListeners: MutableList<RemoveListener<T>> = mutableListOf()
 ) : MutableListWrapper<T>(list) {
     override fun afterClearing() {
-        invokeDataSetChangeListeners(null)
+        invokeDataSetChangeListeners(mutableListOf())
     }
 
     override fun afterAddAll(elements: MutableList<T>) {

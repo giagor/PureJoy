@@ -72,17 +72,18 @@ open class IPCDataControllerImpl<T : Item>(
     override fun addAll(wrapper: MutableList<Wrapper>?) {
         handler.post {
             wrapper?.let {
-                    list ->
-                list.forEach {
-                        w ->
-                    w.value?.cast<T> {
-                        if (mediaSource.add(it)) {
-                            if (!source.add(w)) {
-                                mediaSource.removeAt(mediaSource.size - 1)
-                            }
+                val wl = mutableListOf<Wrapper>()
+                val il = mutableListOf<T>()
+                it.forEach { w ->
+                    w.value?.let { item ->
+                        if (!mediaSource.isIntercepted(item.cast()!!) && !source.isIntercepted(w)) {
+                            wl.add(w)
+                            il.add(item.cast()!!)
                         }
                     }
                 }
+                mediaSource.addAll(il)
+                source.addAll(wl)
             }
         }
     }

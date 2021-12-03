@@ -3,7 +3,7 @@ package com.topview.purejoy.musiclibrary.player.impl
 import com.topview.purejoy.musiclibrary.player.abs.MediaListenerManger
 import com.topview.purejoy.musiclibrary.player.impl.listener.ChangeListener
 import com.topview.purejoy.musiclibrary.player.impl.listener.ListenerFilter
-import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 
 class MediaListenerMangerImpl(
     private val listeners: MutableList<ChangeListener<*>> = mutableListOf(),
@@ -18,7 +18,7 @@ class MediaListenerMangerImpl(
 
     override fun <T> invokeChangeListener(value: T, filter: ListenerFilter<T>) {
         listeners.forEach { li ->
-            li.cast<ChangeListener<T>> {
+            li.castAs<ChangeListener<T>> {
                 if (filter.filter(it)) {
                     it.onChange(value)
                 }
