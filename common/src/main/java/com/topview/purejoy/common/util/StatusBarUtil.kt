@@ -55,9 +55,10 @@ object StatusBarUtil {
      * 修改状态栏的字符的颜色。设置为黑色的调用在API 23以下不起作用
      * @param dark 传入true以将状态栏颜色修改为黑色
      */
-    fun Window.setStatusBarTextColor(dark: Boolean) {
+    fun Window.setStatusBarTextColor(dark: Boolean): Window {
         WindowCompat.getInsetsController(
                 this, decorView)?.isAppearanceLightStatusBars = dark
+        return this
     }
 
     /**
