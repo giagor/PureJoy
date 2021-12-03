@@ -16,7 +16,7 @@ import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.entity.removeAll
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
-import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.playing.view.pop.MusicPopUpWrapper
 import com.topview.purejoy.musiclibrary.playing.view.pop.PopAdapter
 import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
@@ -27,6 +27,8 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
     private val layout: LinearLayout by lazy {
         binding.root.findViewById(R.id.music_playing_layout)
     }
+    
+    private val TAG = "Playing"
 
     private val progressTx: TextView by lazy {
         binding.root.findViewById(R.id.music_playing_progress_tx)
@@ -66,7 +68,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     private val itemChangeListener = object : IPCItemChangeListener.Stub() {
         override fun onItemChange(wrapper: Wrapper?) {
-            viewModel.currentItem.postValue(dataController?.current()?.value?.cast())
+            viewModel.currentItem.postValue(dataController?.current()?.value?.castAs())
             viewModel.progress.postValue(0)
             viewModel.duration.postValue(playerController?.duration())
         }
@@ -96,7 +98,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     private val dataSetChangeListener = object : IPCDataSetChangeListener.Stub() {
         override fun onChange(source: MutableList<Wrapper>?) {
-            if (source == null) {
+            if (source!!.isEmpty()) {
                 viewModel.playingItems.postValue(null)
             } else {
                 val value = viewModel.playingItems.value!!
@@ -116,10 +118,10 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        viewModel.currentItem.postValue(dataController?.current()?.value?.cast())
+        viewModel.currentItem.postValue(dataController?.current()?.value?.castAs())
         viewModel.progress.postValue(playerController?.progress() ?: 0)
         viewModel.playState.postValue(playerController?.isPlaying ?: false)
-        val items = dataController?.allItems()?.map { it.value?.cast<MusicItem>()!! }!!
+        val items = dataController?.allItems()?.map { it.value?.castAs<MusicItem>()!! }!!
         viewModel.playingItems.value?.clear()
         viewModel.playingItems.value?.addAll(items)
         viewModel.playingItems.postValue(viewModel.playingItems.value)
