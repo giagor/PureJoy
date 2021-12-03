@@ -11,6 +11,9 @@
             android:name=".tasks.login.LoginActivity"
             android:exported="false" >
         </activity>
+        <activity android:name=".tasks.toplist.TopListActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".HomeActivity"
             android:exported="true">
