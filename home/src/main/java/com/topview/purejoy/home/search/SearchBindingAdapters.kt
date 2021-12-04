@@ -1,6 +1,8 @@
 package com.topview.purejoy.home.search
 
+import android.annotation.SuppressLint
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -59,4 +61,13 @@ fun loadMorePlayLists(recyclerView: RecyclerView, list: List<PlayList>?) {
         // 通知"加载更多"已完成
         adapter.loadMoreModule.loadMoreComplete()
     }
+}
+
+/**
+ * 设置歌单的 歌曲数量、播放数量 信息
+ * */
+@SuppressLint("SetTextI18n")
+@BindingAdapter("playListCountsInfo")
+fun setPlayListCountsInfo(textView : TextView, playList: PlayList){
+    textView.text = "${playList.songCounts}首，播放${playList.playCount}次"
 }
