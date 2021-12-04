@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentTabBinding
@@ -18,7 +19,16 @@ class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initView()
+    }
+
+    private fun initView() {
         binding.pagerAdapter = SearchContentPagerAdapter()
+        //设置ViewPager和TabLayout的联动
+        val vp = binding.homeVpSearchContentPager
+        val tl = binding.homeTlSearchTab
+        vp.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tl))
+        tl.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(vp))
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_home_search_content_tab
