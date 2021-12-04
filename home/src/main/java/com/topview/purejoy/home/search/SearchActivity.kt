@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
+import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
@@ -36,13 +37,27 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
 
         initView()
         initBinding()
-        addFragment(R.id.home_fl_fragment_layout, SearchContentTabFragment.newInstance())
+        observe()
+        addFragment(R.id.home_fl_fragment_layout, SearchContentRecommendFragment.newInstance())
     }
 
     private fun initView() {
         searchView = binding.homeSvBox.apply {
             onActionViewExpanded()
         }
+    }
+
+    private fun observe() {
+        keywordLiveData.observe(this, {
+            val tabFragment = findFragment(SearchContentTabFragment::class.java.simpleName)
+            // 若找不到SearchContentTabFragment，则将它替换到容器中
+            if (tabFragment == null) {
+                replaceAndAddToBackStack(
+                    R.id.home_fl_fragment_layout,
+                    SearchContentTabFragment.newInstance()
+                )
+            }
+        })
     }
 
     private fun initBinding() {
