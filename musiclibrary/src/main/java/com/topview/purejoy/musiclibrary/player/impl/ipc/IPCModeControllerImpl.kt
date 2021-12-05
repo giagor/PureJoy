@@ -15,6 +15,8 @@ class IPCModeControllerImpl(
         }
     }
 
+    private val TAG = "ModeController"
+
     override fun currentMode(): Int {
         return realController.current
     }

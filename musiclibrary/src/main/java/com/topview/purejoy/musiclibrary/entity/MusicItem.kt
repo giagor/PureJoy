@@ -63,10 +63,18 @@ fun MutableList<MusicItem>.removeAll(collection: Collection<Wrapper>) {
         val iterator = iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
-            if (item.isSame(it.value)) {
+            if (item == it.value) {
                 iterator.remove()
                 break
             }
         }
     }
+}
+
+fun List<MusicItem>.wrap(): List<Wrapper> {
+    val ans = mutableListOf<Wrapper>()
+    forEach {
+        ans.add(Wrapper(value = it))
+    }
+    return ans
 }

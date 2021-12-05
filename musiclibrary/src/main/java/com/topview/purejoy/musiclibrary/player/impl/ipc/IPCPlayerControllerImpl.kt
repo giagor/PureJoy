@@ -9,6 +9,9 @@ class IPCPlayerControllerImpl(
     val realController: MediaController,
     val handler: Handler = Handler(Looper.getMainLooper())
 ) : IPCPlayerController.Stub() {
+
+    private val TAG = "PlayerController"
+
     override fun last() {
         handler.post {
             realController.last()

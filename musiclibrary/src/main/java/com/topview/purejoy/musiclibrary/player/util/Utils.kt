@@ -3,14 +3,14 @@ package com.topview.purejoy.musiclibrary.player.util
 import com.topview.purejoy.musiclibrary.data.Item
 import com.topview.purejoy.musiclibrary.player.abs.core.Position
 
-inline fun <reified T> Any.cast(block: (T) -> Unit) {
-    cast<T>()?.let {
+inline fun <reified T> Any.castAs(block: (T) -> Unit) {
+    castAs<T>()?.let {
         block(it)
     }
 }
 
 // 便于类型转换
-inline fun <reified T> Any.cast(): T? {
+inline fun <reified T> Any.castAs(): T? {
     return if (this is T) {
         this
     } else {
@@ -31,6 +31,12 @@ fun <T : Item> Item.cast(action: (T) -> Unit) {
 
 fun ensureSecurity(source: MutableList<*>, position: Position, action: () -> Unit) {
     if (position.current() < source.size) {
+        action.invoke()
+    }
+}
+
+fun ensureSecurity(source: MutableList<*>, index: Int, action: () -> Unit) {
+    if (index < source.size) {
         action.invoke()
     }
 }

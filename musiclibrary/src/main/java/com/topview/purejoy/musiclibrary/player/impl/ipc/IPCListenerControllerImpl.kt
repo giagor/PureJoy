@@ -1,13 +1,16 @@
 package com.topview.purejoy.musiclibrary.player.impl.ipc
 
 import android.os.IInterface
+import android.os.Parcel
 import android.os.RemoteCallbackList
+import android.util.Log
 import com.topview.purejoy.musiclibrary.IPCDataSetChangeListener
 import com.topview.purejoy.musiclibrary.IPCItemChangeListener
 import com.topview.purejoy.musiclibrary.IPCModeChangeListener
 import com.topview.purejoy.musiclibrary.IPCPlayStateChangeListener
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 
 open class IPCListenerControllerImpl(
     private val listeners: RemoteCallbackList<IInterface> = RemoteCallbackList()
@@ -65,7 +68,7 @@ open class IPCListenerControllerImpl(
 
     override fun invokeDataSetChangeListener(change: List<Wrapper>?) {
         traverseListeners { i ->
-            i.cast<IPCDataSetChangeListener> {
+            i.castAs<IPCDataSetChangeListener> {
                 it.onChange(change)
             }
         }
@@ -73,7 +76,7 @@ open class IPCListenerControllerImpl(
 
     override fun invokeItemChangeListener(change: Wrapper) {
         traverseListeners { i ->
-            i.cast<IPCItemChangeListener> {
+            i.castAs<IPCItemChangeListener> {
                 it.onItemChange(change)
             }
         }
@@ -82,7 +85,7 @@ open class IPCListenerControllerImpl(
     override fun invokeModeChangeListener(mode: Int) {
 
         traverseListeners { i ->
-            i.cast<IPCModeChangeListener> {
+            i.castAs<IPCModeChangeListener> {
                 it.onModeChange(mode)
             }
         }
@@ -90,7 +93,7 @@ open class IPCListenerControllerImpl(
 
     override fun invokePlayStateChangeListener(state: Boolean) {
         traverseListeners { i ->
-            i.cast<IPCPlayStateChangeListener> {
+            i.castAs<IPCPlayStateChangeListener> {
                 it.playStateChange(state)
             }
         }

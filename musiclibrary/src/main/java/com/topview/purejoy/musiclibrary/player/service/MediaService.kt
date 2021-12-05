@@ -25,6 +25,7 @@ import com.topview.purejoy.musiclibrary.player.setting.ErrorSetting
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.player.util.ensureSecurity
 import java.lang.ref.WeakReference
 
@@ -155,7 +156,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         mediaController.errorListener = object : ErrorListener<T> {
             override fun onError(value: T): Boolean {
                 ensureSecurity(source, mediaController.position) {
-                    if (source[position.current()].isSame(value)) {
+                    if (source[position.current()] == value) {
                         player.reset()
                         val count = errorSetting.errorCount(value)
                         if (count >= errorSetting.retryCount) {
@@ -198,11 +199,11 @@ abstract class MediaService<T : Item> : Service(), Loader {
         val callback = object : Loader.Callback<Item> {
             override fun callback(itemIndex: Int, value: Item) {
                 val wrapper = source[itemIndex]
-                if (wrapper.value?.isSame(value) == true) {
+                if (value == wrapper.value) {
                     wrapper.value = value
                 } else {
                     source.forEach { w ->
-                        if (w.value?.isSame(value) == true) {
+                        if (value == wrapper.value) {
                             w.value = value
                         }
                     }
@@ -213,7 +214,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         val playerController = initPlayerController(callback = callback,
             source = dataController.mediaSource,
             position = dataController.position)
-        val realController = playerController.realController.cast<MediaControllerImpl<T>>()!!
+        val realController = playerController.realController.castAs<MediaControllerImpl<T>>()!!
 
         val listenerController = IPCListenerControllerImpl()
 
@@ -236,7 +237,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
 
                 listenerController.invokeDataSetChangeListener(changes)
 
-                if (changes == null) {
+                if (changes!!.isEmpty()) {
                     realController.position.with(InitPosition)
                     errorSetting.record.clear()
                     if (realController.isPlaying()) {
@@ -244,9 +245,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
                     }
                 } else {
                     realController.position.max = source.size
-                    if (realController.position.current() == MediaModeSetting.INIT_POSITION) {
-                        realController.next()
-                    }
+//                    if (realController.position.current() == MediaModeSetting.INIT_POSITION) {
+//                        realController.next()
+//                    }
                     changes.forEach {
                         errorSetting.remove(it.value?.cast<T>()!!)
                     }
@@ -268,7 +269,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         realController.listenerManger.registerChangeListener(object : ItemChangeListener {
             override fun onChange(value: Item) {
                 for(i in 0 until source.size) {
-                    if (value.isSame(source[i].value)) {
+                    if (value == source[i].value) {
                         listenerController.invokeItemChangeListener(source[i])
                         showForeground(value.cast()!!, realController.isPlaying())
                         break

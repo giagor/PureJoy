@@ -8,6 +8,7 @@ import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.player.abs.core.Position
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.ensureSecurity
 
 open class IPCDataControllerImpl<T : Item>(
     val handler: Handler = Handler(Looper.getMainLooper()),
@@ -37,6 +38,27 @@ open class IPCDataControllerImpl<T : Item>(
         }
     }
 
+    override fun addAfter(wrapper: Wrapper?, index: Int) {
+        handler.post {
+            ensureSecurity(source, index) {
+                val v = wrapper?.value?.cast<T>()
+                v?.let {
+                    if (mediaSource.contains(it) || source.contains(wrapper)) {
+                        addCallback?.invoke(FAIL_CODE, wrapper)
+                    } else {
+                        mediaSource.add(index + 1, it)
+                        source.add(index + 1, wrapper)
+                        addCallback?.invoke(SUCCESS_CODE, wrapper)
+                    }
+                }
+                if (v == null) {
+                    addCallback?.invoke(FAIL_CODE, wrapper)
+                }
+            }
+        }
+    }
+
+
     override fun remove(wrapper: Wrapper?) {
         handler.post {
             wrapper?.value?.let {
@@ -50,17 +72,18 @@ open class IPCDataControllerImpl<T : Item>(
     override fun addAll(wrapper: MutableList<Wrapper>?) {
         handler.post {
             wrapper?.let {
-                    list ->
-                list.forEach {
-                        w ->
-                    w.value?.cast<T> {
-                        if (mediaSource.add(it)) {
-                            if (!source.add(w)) {
-                                mediaSource.removeAt(mediaSource.size - 1)
-                            }
+                val wl = mutableListOf<Wrapper>()
+                val il = mutableListOf<T>()
+                it.forEach { w ->
+                    w.value?.let { item ->
+                        if (!mediaSource.isIntercepted(item.cast()!!) && !source.isIntercepted(w)) {
+                            wl.add(w)
+                            il.add(item.cast()!!)
                         }
                     }
                 }
+                mediaSource.addAll(il)
+                source.addAll(wl)
             }
         }
     }
