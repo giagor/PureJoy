@@ -25,6 +25,7 @@ import com.topview.purejoy.musiclibrary.player.setting.ErrorSetting
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
+import com.topview.purejoy.musiclibrary.player.util.ensureSecurity
 import java.lang.ref.WeakReference
 
 abstract class MediaService<T : Item> : Service(), Loader {
@@ -108,8 +109,10 @@ abstract class MediaService<T : Item> : Service(), Loader {
         player.completeListener = object : MusicPlayer.CompleteListener {
             override fun completed() {
                 mainHandler.post {
-                    mediaController.completeListener?.onComplete(
-                        source[mediaController.position.current()])
+                    ensureSecurity(source, mediaController.position) {
+                        mediaController.completeListener?.onComplete(
+                            source[mediaController.position.current()])
+                    }
                     mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
                     mediaController.next()
                 }
@@ -118,10 +121,12 @@ abstract class MediaService<T : Item> : Service(), Loader {
         player.preparedListener = object : MusicPlayer.PreparedListener {
             override fun prepared() {
                 mainHandler.post {
-                    mediaController.listenerManger.invokeChangeListener(source[position.current()], ItemFilter)
-                    mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
-                    mediaController.preparedListener?.onPrepared(
-                        source[mediaController.position.current()])
+                    ensureSecurity(source, mediaController.position) {
+                        mediaController.listenerManger.invokeChangeListener(source[position.current()], ItemFilter)
+                        mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
+                        mediaController.preparedListener?.onPrepared(
+                            source[mediaController.position.current()])
+                    }
                 }
             }
 
@@ -130,16 +135,18 @@ abstract class MediaService<T : Item> : Service(), Loader {
         player.errorListener = object : MusicPlayer.ErrorListener {
             override fun onError(what: Int, extra: Int) {
                 mainHandler.post {
-                    val value = source[mediaController.position.current()]
-                    val count = errorSetting.errorCount(value)
-                    mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
-                    if (mediaController.errorListener?.onError(value) == false) {
-                        player.reset()
-                        if (count >= errorSetting.retryCount) {
-                            errorSetting.handler.onError(value)
-                        } else {
-                            errorSetting.record[value] = count + 1
-                            mediaController.playOrPause()
+                    ensureSecurity(source, mediaController.position) {
+                        val value = source[mediaController.position.current()]
+                        val count = errorSetting.errorCount(value)
+                        mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
+                        if (mediaController.errorListener?.onError(value) == false) {
+                            player.reset()
+                            if (count >= errorSetting.retryCount) {
+                                errorSetting.handler.onError(value)
+                            } else {
+                                errorSetting.record[value] = count + 1
+                                mediaController.playOrPause()
+                            }
                         }
                     }
                 }
@@ -147,13 +154,17 @@ abstract class MediaService<T : Item> : Service(), Loader {
         }
         mediaController.errorListener = object : ErrorListener<T> {
             override fun onError(value: T): Boolean {
-                player.reset()
-                val count = errorSetting.errorCount(value)
-                if (count >= errorSetting.retryCount) {
-                    errorSetting.handler.onError(value)
-                } else {
-                    errorSetting.record[value] = count + 1
-                    mediaController.playOrPause()
+                ensureSecurity(source, mediaController.position) {
+                    if (source[position.current()].isSame(value)) {
+                        player.reset()
+                        val count = errorSetting.errorCount(value)
+                        if (count >= errorSetting.retryCount) {
+                            errorSetting.handler.onError(value)
+                        } else {
+                            errorSetting.record[value] = count + 1
+                            mediaController.playOrPause()
+                        }
+                    }
                 }
                 return true
             }
@@ -228,6 +239,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
                 if (changes == null) {
                     realController.position.with(InitPosition)
                     errorSetting.record.clear()
+                    if (realController.isPlaying()) {
+                        realController.reset()
+                    }
                 } else {
                     realController.position.max = source.size
                     if (realController.position.current() == MediaModeSetting.INIT_POSITION) {

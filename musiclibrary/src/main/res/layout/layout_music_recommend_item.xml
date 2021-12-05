@@ -16,6 +16,9 @@
         android:id="@+id/music_daily_recommend_item_layout"
         android:layout_marginHorizontal="8dp">
 
+
+
+
         <com.topview.purejoy.common.widget.RoundImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -26,6 +29,8 @@
             app:round_rect_radius="16"
 
             android:id="@+id/music_daily_recommend_item_iv"/>
+
+
 
         <LinearLayout
             android:layout_width="0dp"

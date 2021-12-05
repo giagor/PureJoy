@@ -14,6 +14,7 @@ import com.topview.purejoy.musiclibrary.player.abs.listener.CompleteListener
 import com.topview.purejoy.musiclibrary.player.abs.listener.ErrorListener
 import com.topview.purejoy.musiclibrary.player.abs.listener.PreparedListener
 import com.topview.purejoy.musiclibrary.player.impl.listener.ItemFilter
+import com.topview.purejoy.musiclibrary.player.impl.listener.PlayStateFilter
 import com.topview.purejoy.musiclibrary.player.util.cast
 import java.lang.ref.WeakReference
 
@@ -66,10 +67,12 @@ open class MediaControllerImpl<T : Item>(
     }
 
     override fun last() {
-        val last = position.current()
-        setDataSource(list[position.last()])
-        if (isItemChange(last)) {
-            notifyItemChange()
+        if (list.isNotEmpty()) {
+            val last = position.current()
+            setDataSource(list[position.last()])
+            if (isItemChange(last)) {
+                notifyItemChange()
+            }
         }
     }
 
@@ -82,10 +85,12 @@ open class MediaControllerImpl<T : Item>(
     }
 
     override fun next() {
-        val last = position.current()
-        setDataSource(list[position.next()])
-        if (isItemChange(last)) {
-            notifyItemChange()
+        if (list.isNotEmpty()) {
+            val last = position.current()
+            setDataSource(list[position.next()])
+            if (isItemChange(last)) {
+                notifyItemChange()
+            }
         }
 
     }
@@ -113,6 +118,7 @@ open class MediaControllerImpl<T : Item>(
             setDataSource(list[position.current()])
             notifyItemChange()
         }
+        listenerManger.invokeChangeListener(player.isPlaying(), PlayStateFilter)
     }
 
     override fun duration(): Int {

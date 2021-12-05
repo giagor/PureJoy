@@ -47,9 +47,17 @@ dependencies {
     implementation(Deps.Compose.composeNavigation)
     implementation(Deps.Compose.composeActivity)
     implementation(Deps.Compose.composeViewBinding)
+    implementation(Deps.Coil.coilCore)
+    implementation(Deps.Coil.composeExtension)
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02")
 
     implementation(Deps.Navigation.fragmentKtx)
     implementation(Deps.Navigation.navigationUiKtx)
+
+    implementation(Deps.accompanistInsets)
+
+    debugImplementation(Deps.Compose.uiDebugTool)
+    androidTestImplementation(Deps.Compose.junitTest)
 
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)

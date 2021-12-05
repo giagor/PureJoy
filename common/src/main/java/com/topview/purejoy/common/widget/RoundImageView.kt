@@ -23,7 +23,6 @@ import kotlin.math.abs
  * round_rect_radius 仅对圆角矩形生效，指示圆角矩形的圆角的弧度
  * thumb 指示是否对图片进行压缩（压缩基于ImageView的宽高）
  */
-@Deprecated("use widget RoundedCornerImageView instead")
 class RoundImageView(context: Context, attrs: AttributeSet?, defStyleAttr: Int):
     AppCompatImageView(context, attrs, defStyleAttr) {
 
