@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topview.purejoy.home.search.content.playlist.SearchContentPlayListViewModel"/>
+        <import type="com.topview.purejoy.home.search.content.playlist.adapter.SearchContentPlayListAdapter"/>
+        <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <variable
+            name="viewModel"
+            type="SearchContentPlayListViewModel" />
+        <variable
+            name="searchContentPlayListAdapter"
+            type="SearchContentPlayListAdapter" />
+        <variable
+            name="searchContentPlayListLayoutManager"
+            type="LinearLayoutManager" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".search.content.playlist.SearchContentPlayListFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarSize="@dimen/home_search_content_scrollbar_size"
+            android:scrollbars="vertical"
+            app:layoutManager="@{searchContentPlayListLayoutManager}"
+            app:adapter="@{searchContentPlayListAdapter}"
+            app:searchPlayListsByFirstRequest="@{viewModel.searchPlayListByFirstRequestLiveData}"
+            app:loadMorePlayLists="@{viewModel.searchPlayListsLoadMoreLiveData}"/>
+
+    </FrameLayout>
+</layout>

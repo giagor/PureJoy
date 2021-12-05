@@ -8,15 +8,21 @@
         android:theme="@style/Theme.PureJoy"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".search.SearchActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".tasks.login.LoginActivity"
             android:exported="false" >
         </activity>
         <activity android:name=".tasks.toplist.TopListActivity"
             android:exported="false">
         </activity>
+
         <activity
             android:name=".HomeActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,4 +30,5 @@
             </intent-filter>
         </activity>
     </application>
+    
 </manifest>

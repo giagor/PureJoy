@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Style.Home.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@null</item>
+    </style>
+</resources>

@@ -1,14 +1,12 @@
 package com.topview.purejoy.common.base
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.topview.purejoy.common.util.StatusBarUtil
 import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
-import com.topview.purejoy.common.util.StatusBarUtil.setBlackTextToStatusBar
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackground
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 
@@ -88,6 +86,18 @@ abstract class CommonActivity : AppCompatActivity() {
      */
     protected fun findFragment(tag: String?): Fragment? {
         return supportFragmentManager.findFragmentByTag(tag)
+    }
+
+    /**
+     * 替换碎片，并且将事务添加到返回栈当中
+     *
+     * @param containerId 存放Fragment的布局ID
+     * @param fragment 容器中要替换成的Fragment
+     * */
+    protected fun replaceAndAddToBackStack(containerId: Int, fragment: Fragment) {
+        beginTransaction().replace(containerId, fragment,fragment::class.java.simpleName)
+            .addToBackStack(null)
+            .commit()
     }
 
     /**

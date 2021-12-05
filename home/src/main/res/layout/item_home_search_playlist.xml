@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topview.purejoy.home.entity.PlayList"/>
+        <variable
+            name="playlist"
+            type="PlayList" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/home_search_padding_left"
+        android:paddingEnd="@dimen/home_search_padding_right"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp" 
+            app:loadImg="@{playlist.picUrl}"/>
+       
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#212121"
+                android:text="@{playlist.name}"
+                android:layout_marginBottom="3dp"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="11sp"
+                app:playListCountsInfo="@{playlist}"
+                android:layout_marginTop="3dp"/>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+</layout>
