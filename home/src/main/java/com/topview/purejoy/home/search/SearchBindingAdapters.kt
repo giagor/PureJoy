@@ -12,11 +12,6 @@ import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.search.content.playlist.adapter.SearchContentPlayListAdapter
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
 
-@BindingAdapter("searchSongAdapter")
-fun setSearchContentSongAdapter(recyclerView: RecyclerView, adapter: SearchContentSongAdapter) {
-    recyclerView.adapter = adapter
-}
-
 @BindingAdapter("searchSongsByFirstRequest")
 fun setSearchSongsByFirstRequest(recyclerView: RecyclerView, list: List<Song>?) {
     list?.let {

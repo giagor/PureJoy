@@ -76,7 +76,7 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         }
         val adapter = DailyRecommendPlayListAdapter()
         val decoration = DailyRecommendPlayListDecoration()
-        binding.dailyRecommendNewSongLayoutManager = layoutManager
+        binding.dailyRecommendPlayListLayoutManager = layoutManager
         binding.dailyRecommendPlayListAdapter = adapter
         binding.dailyRecommendPlayListDecoration = decoration
         binding.dailyRecommendPlayListSnapHelper = GravitySnapHelper(Gravity.START).apply {

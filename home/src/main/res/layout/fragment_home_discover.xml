@@ -17,7 +17,7 @@
             name="viewModel"
             type="HomeDiscoverViewModel" />
         <variable
-            name="dailyRecommendNewSongLayoutManager"
+            name="dailyRecommendPlayListLayoutManager"
             type="LinearLayoutManager" />
         <variable
             name="dailyRecommendPlayListAdapter"
@@ -173,8 +173,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                app:layoutManager="@{dailyRecommendNewSongLayoutManager}"
-                app:dailyRecommendPlayListAdapter="@{dailyRecommendPlayListAdapter}"
+                app:layoutManager="@{dailyRecommendPlayListLayoutManager}"
+                app:adapter="@{dailyRecommendPlayListAdapter}"
                 app:dailyRecommendPlayList="@{viewModel.dailyRecommendPlayListLiveData}"
                 app:attachSnapHelper="@{dailyRecommendPlayListSnapHelper}"
                 app:itemDecoration="@{dailyRecommendPlayListDecoration}"/>
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 app:layoutManager="@{recommendNewSongLayoutManager}"
-                app:recommendNewSongAdapter="@{recommendNewSongAdapter}"
+                app:adapter="@{recommendNewSongAdapter}"
                 app:recommendNewSong="@{viewModel.recommendNewSongLiveData}"
                 app:itemDecoration="@{recommendNewSongDecoration}"
                 app:attachSnapHelper="@{recommendNewSongSnapHelper}" />

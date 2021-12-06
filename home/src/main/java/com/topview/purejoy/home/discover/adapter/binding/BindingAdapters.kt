@@ -32,22 +32,6 @@ fun loadImg(iv: ImageView, url: String?) {
     }
 }
 
-@BindingAdapter("dailyRecommendPlayListAdapter")
-fun setDailyRecommendPlayListAdapter(
-    recyclerView: RecyclerView,
-    adapter: DailyRecommendPlayListAdapter
-) {
-    recyclerView.adapter = adapter
-}
-
-@BindingAdapter("recommendNewSongAdapter")
-fun setRecommendNewSongAdapter(
-    recyclerView: RecyclerView,
-    adapter: RecommendNewSongAdapter
-) {
-    recyclerView.adapter = adapter
-}
-
 @BindingAdapter("dailyRecommendPlayList")
 fun setDailyRecommendPlayList(
     recyclerView: RecyclerView,

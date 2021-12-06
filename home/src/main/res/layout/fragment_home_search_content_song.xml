@@ -29,7 +29,7 @@
             android:scrollbarSize="@dimen/home_search_content_scrollbar_size"
             android:scrollbars="vertical"
             app:layoutManager="@{searchContentSongLayoutManager}"
-            app:searchSongAdapter="@{searchContentSongAdapter}"
+            app:adapter="@{searchContentSongAdapter}"
             app:searchSongsByFirstRequest="@{viewModel.searchSongsByFirstRequestLiveData}"
             app:loadMoreSongs="@{viewModel.searchSongsLoadMoreLiveData}"/>
 
