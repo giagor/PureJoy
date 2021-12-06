@@ -19,7 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
-            app:loadImg="@{recommendNewSong.picUrl}" />
+            app:commonLoadImg="@{recommendNewSong.picUrl}" />
         
         <LinearLayout
             android:layout_width="match_parent"

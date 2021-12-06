@@ -2,12 +2,12 @@ package com.topview.purejoy.home.search.content.recommend
 
 import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.databinding.HomeFragmentSearchContentRecommendBinding
+import com.topview.purejoy.home.databinding.FragmentHomeSearchContentRecommendBinding
 
 class SearchContentRecommendFragment :
-    BindingFragment<HomeFragmentSearchContentRecommendBinding>() {
+    BindingFragment<FragmentHomeSearchContentRecommendBinding>() {
 
-    override fun getLayoutId(): Int = R.layout.home_fragment_search_content_recommend
+    override fun getLayoutId(): Int = R.layout.fragment_home_search_content_recommend
 
     companion object {
         @JvmStatic

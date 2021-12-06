@@ -17,7 +17,7 @@
         <ImageView
             android:layout_width="@dimen/home_discover_daily_recommend_playlist_img_size"
             android:layout_height="@dimen/home_discover_daily_recommend_playlist_img_size" 
-            app:loadImg="@{dailyRecommendPlayList.picUrl}"/>
+            app:commonLoadImg="@{dailyRecommendPlayList.picUrl}"/>
 
         <TextView
             android:layout_width="match_parent"
