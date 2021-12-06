@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.discover.adapter.binding
+package com.topview.purejoy.home.discover
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
