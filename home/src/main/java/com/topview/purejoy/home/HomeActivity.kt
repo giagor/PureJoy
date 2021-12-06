@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import com.topview.purejoy.common.base.binding.BindingActivity
-import com.topview.purejoy.home.databinding.HomeActivityHomeBinding
+import com.topview.purejoy.home.databinding.ActivityHomeHomeBinding
 import com.topview.purejoy.home.discover.HomeDiscoverFragment
 
 private const val TAG = "HomeActivity"
 
-class HomeActivity : BindingActivity<HomeActivityHomeBinding>() {
+class HomeActivity : BindingActivity<ActivityHomeHomeBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,7 +18,7 @@ class HomeActivity : BindingActivity<HomeActivityHomeBinding>() {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.home_activity_home
+        return R.layout.activity_home_home
     }
 
     /**

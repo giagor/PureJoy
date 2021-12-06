@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
-import com.topview.purejoy.home.databinding.HomeActivityLoginBinding
+import com.topview.purejoy.home.databinding.ActivityHomeLoginBinding
 
 class LoginActivity: ComposeActivity() {
     private val viewModel: LoginViewModel by viewModels()
@@ -15,7 +15,7 @@ class LoginActivity: ComposeActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ProvideWindowInsets(false) {
-                AndroidViewBinding(HomeActivityLoginBinding::inflate)
+                AndroidViewBinding(ActivityHomeLoginBinding::inflate)
             }
         }
     }
