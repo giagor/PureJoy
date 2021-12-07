@@ -65,17 +65,10 @@ abstract class MediaService<T : Item> : Service(), Loader {
      * 初始化IPCDataController
      */
     private fun initDataController(position: Position): IPCDataControllerImpl<T> {
-        val local = initDataSet()
         val dataSource = DataSource<T>()
 
         val wrappers = DataSource<Wrapper>()
-
-        if (local.isNotEmpty()) {
-            local.forEach {
-                wrappers.add(Wrapper(value = it))
-            }
-            dataSource.addAll(local)
-        }
+        
         position.max = dataSource.size
         val dataController = IPCDataControllerImpl(
             handler = mainHandler,
@@ -233,11 +226,11 @@ abstract class MediaService<T : Item> : Service(), Loader {
 
         })
         source.changeListeners.add(object : DataSource.DataSetChangeListener<Wrapper> {
-            override fun onChange(changes: MutableList<Wrapper>?) {
+            override fun onChange(changes: MutableList<Wrapper>) {
 
                 listenerController.invokeDataSetChangeListener(changes)
 
-                if (changes!!.isEmpty()) {
+                if (changes.isEmpty()) {
                     realController.position.with(InitPosition)
                     errorSetting.record.clear()
                     if (realController.isPlaying()) {
@@ -249,7 +242,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
 //                        realController.next()
 //                    }
                     changes.forEach {
-                        errorSetting.remove(it.value?.cast<T>()!!)
+                        errorSetting.remove(it.value?.cast()!!)
                     }
                 }
             }
@@ -322,13 +315,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
      */
     abstract fun showForeground(value: T, state: Boolean)
 
-    /**
-     * 加载初始化时所用到的音乐数据集合，默认为一个空的MutableList
-     * 可在此方法中加载本地数据
-     */
-    open fun initDataSet(): MutableList<T> {
-        return mutableListOf()
-    }
+
 
     /**
      * 初始化缓存策略，默认为null
