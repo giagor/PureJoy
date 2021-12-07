@@ -1,10 +1,7 @@
 package com.topview.purejoy.musiclibrary.service
 
 import android.content.IntentFilter
-import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.viewModelScope
-import com.topview.purejoy.musiclibrary.IPCDataController
 import com.topview.purejoy.musiclibrary.IPCModeController
 import com.topview.purejoy.musiclibrary.IPCPlayerController
 import com.topview.purejoy.musiclibrary.common.util.ExecutorInstance
@@ -32,7 +29,6 @@ import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverMusicDa
 import com.topview.purejoy.musiclibrary.service.recover.db.initDB
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModel
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModelImpl
-import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -85,8 +81,6 @@ class MusicService : MediaService<MusicItem>() {
         return mode
     }
 
-    @Volatile
-    private var isChanged: Boolean = false
 
     private val storeDuration = 60000L
 
@@ -107,58 +101,32 @@ class MusicService : MediaService<MusicItem>() {
                         musicNotification.showForeground = false
                     }
                 }
-                isChanged = true
             }
         })
 
         readLocal()
 
+        val storeTask = object : Runnable {
+            override fun run() {
+                if (rmPhoto.size != dataController.mediaSource.size) {
+                    storePlayerState()
+                } else {
+                    var changed = false
 
-        val storeTask = Runnable {
-            if (isChanged) {
-                val md = db.recoverMusicDataDao()
-                val ard = db.recoverARDataDao()
-                val ald = db.recoverALDataDao()
-
-                isChanged = false
-
-                ExecutorInstance.getInstance().execute {
-                    val tm = ArrayList(rmPhoto)
-                    val tl = ArrayList(rlPhoto)
-                    val tr = ArrayList(rrPhoto)
-                    md.deleteRecoverMusicData(tm)
-                    ard.deleteRecoverARData(tr)
-                    ald.deleteRecoverALData(tl)
-
-                    rmPhoto.clear()
-                    rrPhoto.clear()
-                    rlPhoto.clear()
-                    val list = dataController.mediaSource
-
-                    val modeController = IPCModeController.Stub.asInterface(pool.queryBinder(
-                        BinderPool.MODE_CONTROL_BINDER))?.castAs<IPCModeControllerImpl>()
-                    if (list.isNotEmpty()) {
-                        translateList(rmPhoto, rrPhoto, rlPhoto)
-                        tm.clear()
-                        tm.addAll(rmPhoto)
-                        tl.clear()
-                        tl.addAll(rlPhoto)
-                        tr.clear()
-                        tr.addAll(rrPhoto)
-
-                        md.insertRecoverMusicData(tm)
-                        ard.insertRecoverARData(tr)
-                        ald.insertRecoverALData(tl)
-
-                        modeController?.let {
-                            storeState(it.realController.current, dataController.position.current(), list.size)
+                    for(item in dataController.mediaSource) {
+                        if (!rmPhoto.contains(item.toRecoverMusic())) {
+                            changed = true
+                            break
                         }
+                    }
 
-                    } else {
-                        storeState(MediaModeSetting.ORDER, MediaModeSetting.INIT_POSITION, 0)
+                    if (changed) {
+                        storePlayerState()
                     }
                 }
+                mainHandler.postDelayed(this, storeDuration)
             }
+
         }
 
         mainHandler.postDelayed(storeTask, storeDuration)
@@ -169,6 +137,48 @@ class MusicService : MediaService<MusicItem>() {
         filter.addAction(MusicNotificationReceiver.NEXT_ACTION)
         filter.addAction(MusicNotificationReceiver.PREVIOUS_ACTION)
         registerReceiver(receiver, filter)
+    }
+
+    private fun storePlayerState() {
+        val md = db.recoverMusicDataDao()
+        val ard = db.recoverARDataDao()
+        val ald = db.recoverALDataDao()
+        ExecutorInstance.getInstance().execute {
+            val tm = ArrayList(rmPhoto)
+            val tl = ArrayList(rlPhoto)
+            val tr = ArrayList(rrPhoto)
+            md.deleteRecoverMusicData(tm)
+            ard.deleteRecoverARData(tr)
+            ald.deleteRecoverALData(tl)
+
+            rmPhoto.clear()
+            rrPhoto.clear()
+            rlPhoto.clear()
+            val list = dataController.mediaSource
+
+            val modeController = IPCModeController.Stub.asInterface(pool.queryBinder(
+                BinderPool.MODE_CONTROL_BINDER))?.castAs<IPCModeControllerImpl>()
+            if (list.isNotEmpty()) {
+                translateList(rmPhoto, rrPhoto, rlPhoto)
+                tm.clear()
+                tm.addAll(rmPhoto)
+                tl.clear()
+                tl.addAll(rlPhoto)
+                tr.clear()
+                tr.addAll(rrPhoto)
+
+                md.insertRecoverMusicData(tm)
+                ard.insertRecoverARData(tr)
+                ald.insertRecoverALData(tl)
+
+                modeController?.let {
+                    storeState(it.realController.current, dataController.position.current(), list.size)
+                }
+
+            } else {
+                storeState(MediaModeSetting.ORDER, MediaModeSetting.INIT_POSITION, 0)
+            }
+        }
     }
 
     private fun translateList(recoverMusicList: MutableList<RecoverMusicData>,
@@ -262,6 +272,7 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onDestroy() {
+        storePlayerState()
         unregisterReceiver(receiver)
         super.onDestroy()
     }
