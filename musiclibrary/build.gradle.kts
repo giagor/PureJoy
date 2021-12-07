@@ -34,6 +34,15 @@ android {
 }
 
 dependencies {
+    val roomVersion = "2.3.0"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$roomVersion")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("jp.wasabeef:glide-transformations:3.3.0")
     implementation("androidx.fragment:fragment-ktx:1.3.2")

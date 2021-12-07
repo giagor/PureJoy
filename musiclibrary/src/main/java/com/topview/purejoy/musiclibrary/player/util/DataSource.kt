@@ -32,7 +32,7 @@ class DataSource<T>(
         }
     }
 
-    private fun invokeDataSetChangeListeners(changes: MutableList<T>?) {
+    private fun invokeDataSetChangeListeners(changes: MutableList<T>) {
         changeListeners.forEach {
             it.onChange(changes)
         }
@@ -47,9 +47,9 @@ class DataSource<T>(
     interface DataSetChangeListener<T> {
         /**
          * @param changes 数据集的变化
-         * 如果changes为null则说明数据集被清空，否则则是数据集变化的数据
+         * 如果changes为空集合则说明数据集被清空，否则则是数据集变化的数据
          */
-        fun onChange(changes: MutableList<T>?)
+        fun onChange(changes: MutableList<T>)
     }
 
     interface RemoveListener<T> {
