@@ -17,6 +17,8 @@ data class AL(val id: Long,
 data class BR(val br: Int = 0, val fid: Long = 0,
               val size: Long = 0, val vd: Long = 0) : Serializable
 
+data class MusicResponse(val code: Int, val songs: List<MusicItem>)
+
 class MusicItem(
     val name: String = "",
     val id: Long,
