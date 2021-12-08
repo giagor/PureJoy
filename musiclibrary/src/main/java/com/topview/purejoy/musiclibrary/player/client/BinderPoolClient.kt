@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.util.Log
 import com.topview.purejoy.musiclibrary.IBinderPool
 
 open class BinderPoolClient(context: Context,
@@ -24,7 +23,6 @@ open class BinderPoolClient(context: Context,
     private val connection: ServiceConnection by lazy {
         object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                Log.d("client", "onServiceConnected: ")
                 state = CONNECT_STATE
                 pool = IBinderPool.Stub.asInterface(service)
                 pool?.asBinder()?.linkToDeath(deathRecipient, flags)
@@ -92,7 +90,6 @@ open class BinderPoolClient(context: Context,
 
     fun connectService() {
         if (state != WAITING && !isConnected()) {
-            Log.d("client", "connectService: ")
             state = WAITING
             val intent = Intent(context, clazz)
             context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
