@@ -48,6 +48,8 @@ dependencies {
     implementation(Deps.Compose.composeViewBinding)
     implementation(Deps.Coil.coilCore)
     implementation(Deps.Coil.composeExtension)
+    // ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
     val roomVersion = "2.3.0"
 
     implementation("androidx.room:room-runtime:$roomVersion")
