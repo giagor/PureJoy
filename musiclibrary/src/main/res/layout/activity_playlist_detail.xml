@@ -50,6 +50,7 @@
                         android:maxLines="2"
                         android:layout_gravity="center_vertical"
                         android:layout_marginVertical="4dp"
+                        android:ellipsize="end"
                         android:textColor="@color/black"
                         android:id="@+id/playlist_detail_name"/>
 
@@ -58,6 +59,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="2"
                         android:layout_gravity="center_vertical"
+                        android:ellipsize="end"
                         android:textSize="16sp"
                         android:id="@+id/playlist_detail_description_tx"/>
 
@@ -71,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/back_white_24"
+                app:navigationIcon="@drawable/back_white_32"
                 android:id="@+id/playlist_detail_tool_bar"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
