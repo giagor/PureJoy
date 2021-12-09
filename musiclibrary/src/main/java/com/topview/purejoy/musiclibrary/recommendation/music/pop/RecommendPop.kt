@@ -3,6 +3,7 @@ package com.topview.purejoy.musiclibrary.recommendation.music.pop
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.topview.purejoy.musiclibrary.R
@@ -54,7 +55,10 @@ class RecommendPop(context: Context, width: Int, height: Int) {
         view.setOnClickListener {
             click?.invoke(data)
         }
-        content.addView(view)
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.topMargin = 16
+        content.addView(view, params)
     }
 
 

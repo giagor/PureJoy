@@ -24,6 +24,7 @@ import com.topview.purejoy.musiclibrary.IPCItemChangeListener
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.MusicCommonActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
+import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
 import com.topview.purejoy.musiclibrary.common.util.buildSwatch
 import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
 import com.topview.purejoy.musiclibrary.data.Wrapper
@@ -32,6 +33,7 @@ import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReas
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.recommendation.music.viemmodel.DailySongsViewModel
+import com.topview.purejoy.musiclibrary.service.MusicService
 
 class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
 
@@ -189,6 +191,15 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
     override fun onDestroy() {
         if (popWindow.window.isShowing) {
             popWindow.window.dismiss()
+        }
+        kotlin.runCatching {
+            if (BinderPoolClientInstance.getInstance().getClient(
+                    MusicService::class.java).isConnected()) {
+                listenerController?.apply {
+                    removeItemChangeListener(itemChangeListener)
+                    removeDataChangeListener(dataSetChangeListener)
+                }
+            }
         }
         super.onDestroy()
     }

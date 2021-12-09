@@ -30,10 +30,24 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Deps.Compose.version
     }
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation(Deps.Compose.composeMaterial)
+    implementation(Deps.Compose.composeUiToolingPreview)
+    implementation(Deps.Compose.livedataRuntime)
+    implementation(Deps.Compose.composeNavigation)
+    implementation(Deps.Compose.composeActivity)
+    implementation(Deps.Compose.composeViewBinding)
+    implementation(Deps.Coil.coilCore)
+    implementation(Deps.Coil.composeExtension)
     val roomVersion = "2.3.0"
 
     implementation("androidx.room:room-runtime:$roomVersion")
