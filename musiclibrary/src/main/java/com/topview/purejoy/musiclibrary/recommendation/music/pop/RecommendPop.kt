@@ -1,23 +1,31 @@
 package com.topview.purejoy.musiclibrary.recommendation.music.pop
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.util.loadBitmap
 import com.topview.purejoy.musiclibrary.entity.MusicItem
 
-class RecommendPop(context: Context, width: Int, height: Int) {
+class RecommendPop(context: Context, width: Int, height: Int, val outWindow: Window) {
 
     val window: PopupWindow by lazy {
         val w = PopupWindow(width, height)
         w.contentView = holder.itemView
         w.isFocusable = true
+        w.isTouchable = true
         w.isOutsideTouchable = true
+        w.setOnDismissListener {
+            setBackground(1f)
+        }
         w
+    }
+
+    private fun setBackground(value: Float) {
+        val lp = outWindow.attributes
+        lp.alpha = value
+        outWindow.attributes = lp
     }
 
 
@@ -45,6 +53,13 @@ class RecommendPop(context: Context, width: Int, height: Int) {
         }
 
     }
+
+    fun showDownAt(view: View) {
+        window.showAsDropDown(view, Gravity.BOTTOM, 0, 0)
+        setBackground(0.4f)
+    }
+
+
 
     fun addItemView(image: Int, text: Int, click: ((MusicItem?) -> Unit)?) {
         val view = LayoutInflater.from(content.context)
