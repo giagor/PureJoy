@@ -28,6 +28,7 @@ import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
 import com.topview.purejoy.musiclibrary.common.util.buildSwatch
 import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
 import com.topview.purejoy.musiclibrary.data.Wrapper
+import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.recommendation.music.adapter.DailyRecommendAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
@@ -45,7 +46,7 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
             item ->
             item?.let {
-                val w = Wrapper(value = it)
+                val w = it.wrap()
                 if (currentItem.value == null) {
                     dataController?.add(w)
                     playerController?.jumpTo(0)

@@ -4,6 +4,8 @@ import android.content.IntentFilter
 import android.widget.Toast
 import com.topview.purejoy.musiclibrary.IPCModeController
 import com.topview.purejoy.musiclibrary.IPCPlayerController
+import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
+import com.topview.purejoy.musiclibrary.common.transformation.WrapperTransformation
 import com.topview.purejoy.musiclibrary.common.util.ExecutorInstance
 import com.topview.purejoy.musiclibrary.common.util.SP
 import com.topview.purejoy.musiclibrary.data.Item
@@ -11,6 +13,8 @@ import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.*
 import com.topview.purejoy.musiclibrary.player.abs.Loader
 import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
+import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.musiclibrary.player.abs.transformation.IWrapperTransformation
 import com.topview.purejoy.musiclibrary.player.impl.cache.CacheStrategyImpl
 import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCDataControllerImpl
@@ -218,7 +222,7 @@ class MusicService : MediaService<MusicItem>() {
                     rrPhoto.addAll(recoverAr)
                     val source = mutableListOf<Wrapper>()
                     list.forEach {
-                        source.add(Wrapper(value = it))
+                        source.add(it.wrap())
                     }
                     dataController.addAll(source)
                 }
@@ -277,11 +281,19 @@ class MusicService : MediaService<MusicItem>() {
         super.onDestroy()
     }
 
+    override fun transformation(): ItemTransformation<MusicItem> {
+        return MusicItemTransformation
+    }
+
     companion object {
         const val MUSIC_CACHE_DIR = "musicCache"
         const val NOTIFICATION_ID = 100
         const val POSITION_KEY = "position"
         const val MODE_KEY = "mode"
         const val MAX_KEY = "max"
+    }
+
+    override fun wrapperTransformation(): IWrapperTransformation<MusicItem> {
+        return WrapperTransformation
     }
 }

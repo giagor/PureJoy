@@ -2,6 +2,7 @@ package com.topview.purejoy.musiclibrary.recommendation.music.entity
 
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
+import com.topview.purejoy.musiclibrary.entity.wrap
 
 data class RecommendReason(val songId: Long, val reason: String)
 
@@ -14,7 +15,7 @@ data class SongWithReason(val item: MusicItem, val reason: String? = null)
 fun List<SongWithReason>.toWrapperList() : List<Wrapper> {
     val list = mutableListOf<Wrapper>()
     forEach {
-        list.add(Wrapper(value = it.item))
+        list.add(it.item.wrap())
     }
     return list
 }

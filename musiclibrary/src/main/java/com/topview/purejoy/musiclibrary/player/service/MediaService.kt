@@ -14,6 +14,8 @@ import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
 import com.topview.purejoy.musiclibrary.player.abs.core.MusicPlayer
 import com.topview.purejoy.musiclibrary.player.abs.core.Position
 import com.topview.purejoy.musiclibrary.player.abs.listener.ErrorListener
+import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.musiclibrary.player.abs.transformation.IWrapperTransformation
 import com.topview.purejoy.musiclibrary.player.impl.MediaListenerMangerImpl
 import com.topview.purejoy.musiclibrary.player.impl.controller.MediaControllerImpl
 import com.topview.purejoy.musiclibrary.player.impl.controller.ModeControllerImpl
@@ -46,6 +48,14 @@ abstract class MediaService<T : Item> : Service(), Loader {
         cacheStrategy()
     }
 
+    protected val itemTransformation by lazy {
+        transformation()
+    }
+
+    protected val wrapperTransformation by lazy {
+        wrapperTransformation()
+    }
+
 
     override fun onCreate() {
         super.onCreate()
@@ -74,8 +84,12 @@ abstract class MediaService<T : Item> : Service(), Loader {
             handler = mainHandler,
             source = wrappers,
             mediaSource = dataSource, addCallback = { code, wrapper ->
-                reportOperator(code, wrapper?.value?.cast())
-            }, position = position)
+                if (wrapper == null) {
+                    reportOperator(code, null)
+                } else {
+                    reportOperator(code, itemTransformation?.transform(wrapper))
+                }
+            }, position = position, transformation = itemTransformation)
         return dataController
     }
 
@@ -193,12 +207,17 @@ abstract class MediaService<T : Item> : Service(), Loader {
         val callback = object : Loader.Callback<Item> {
             override fun callback(itemIndex: Int, value: Item) {
                 val wrapper = source[itemIndex]
-                if (value == wrapper.value) {
-                    wrapper.value = value
+                if (value == itemTransformation.transform(wrapper)) {
+                    wrapperTransformation.transform(value.cast()!!)?.let {
+                        source[itemIndex] = it
+                    }
                 } else {
-                    source.forEach { w ->
-                        if (value == wrapper.value) {
-                            w.value = value
+                    for (i in 0 until source.size) {
+                        val w = source[i]
+                        if (value == itemTransformation.transform(w)) {
+                            wrapperTransformation.transform(value.cast()!!)?.let {
+                                source[i] = it
+                            }
                         }
                     }
                 }
@@ -222,7 +241,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
                         realController.reset()
                     }
                 }
-                errorSetting.remove(element.value?.cast<T>()!!)
+                itemTransformation.transform(element)?.let {
+                    errorSetting.remove(it)
+                }
             }
 
         })
@@ -243,7 +264,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
 //                        realController.next()
 //                    }
                     changes.forEach {
-                        errorSetting.remove(it.value?.cast()!!)
+                        itemTransformation.transform(it)?.let { item ->
+                            errorSetting.remove(item)
+                        }
                     }
                 }
             }
@@ -263,9 +286,10 @@ abstract class MediaService<T : Item> : Service(), Loader {
         realController.listenerManger.registerChangeListener(object : ItemChangeListener {
             override fun onChange(value: Item) {
                 for(i in 0 until source.size) {
-                    if (value == source[i].value) {
+                    val v = itemTransformation.transform(source[i])
+                    if (value == v) {
                         listenerController.invokeItemChangeListener(source[i])
-                        showForeground(value.cast()!!, realController.isPlaying())
+                        showForeground(v, realController.isPlaying())
                         break
                     }
                 }
@@ -274,7 +298,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
         realController.listenerManger.registerChangeListener(object : PlayStateChangeListener {
             override fun onChange(value: Boolean) {
                 listenerController.invokePlayStateChangeListener(value)
-                showForeground(source[realController.position.current()].value?.cast()!!, realController.isPlaying())
+                showForeground(itemTransformation.transform(
+                    source[realController.position.current()])!!,
+                    realController.isPlaying())
             }
         })
 
@@ -336,6 +362,12 @@ abstract class MediaService<T : Item> : Service(), Loader {
         })
     }
 
+    protected open fun transformation(): ItemTransformation<T> {
+        return DefaultTransformation()
+    }
+
+    protected abstract fun wrapperTransformation(): IWrapperTransformation<T>
+
     override fun onDestroy() {
         mainHandler.removeCallbacksAndMessages(null)
         (IPCPlayerController.Stub.asInterface(
@@ -343,4 +375,12 @@ abstract class MediaService<T : Item> : Service(), Loader {
         ) as? IPCPlayerControllerImpl)?.realController?.release()
         super.onDestroy()
     }
+
+    class DefaultTransformation<T : Item> : ItemTransformation<T> {
+        override fun transform(source: Wrapper): T? {
+            return source.value?.cast()
+        }
+    }
+
+
 }
