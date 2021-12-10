@@ -98,12 +98,14 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
     }
 
     private val dataSetChangeListener = object : IPCDataSetChangeListener.Stub() {
-        override fun onChange(source: MutableList<Wrapper>?) {
-            if (source!!.isEmpty()) {
+        override fun onChange(source: MutableList<Wrapper>) {
+            if (source.isEmpty()) {
                 viewModel.playingItems.postValue(null)
             } else {
                 val value = viewModel.playingItems.value!!
-//                value.removeAll(source)
+                for (data in source) {
+                    value.remove(MusicItemTransformation.transform(data))
+                }
                 if (value.isEmpty()) finish()
                 viewModel.playingItems.postValue(value)
             }
@@ -122,7 +124,6 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
         dataController?.current()?.let {
             viewModel.currentItem.postValue(MusicItemTransformation.transform(it))
         }
-//        viewModel.currentItem.postValue(dataController?.current()?.value?.castAs())
         viewModel.progress.postValue(playerController?.progress() ?: 0)
         viewModel.playState.postValue(playerController?.isPlaying ?: false)
         val items = dataController?.allItems()?.map {
@@ -238,6 +239,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
                 if (popWrapper.popWindow.isShowing) {
                     popWrapper.adapter.currentItem = it
                 }
+                popWrapper.adapter.currentItem = it
             }
         }
         viewModel.progress.observe(this) {

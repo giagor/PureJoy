@@ -22,6 +22,7 @@
         android:layout_gravity="center_vertical"
         android:layout_toEndOf="@id/music_pop_list_item_name_tx"
         android:layout_centerVertical="true"
+        android:textColor="@color/black"
         android:id="@+id/music_pop_list_item_author_tx"
         android:maxLines="1"
         android:text="@string/unknown"/>
