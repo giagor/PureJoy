@@ -98,7 +98,8 @@ abstract class MediaService<T : Item> : Service(), Loader {
             loader = WeakReference(this),
             handler = mainHandler,
             list = source,
-            itemCallback = callback
+            itemCallback = callback,
+            cacheStrategy = cacheStrategy
         )
         player.completeListener = object : MusicPlayer.CompleteListener {
             override fun completed() {
