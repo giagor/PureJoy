@@ -7,6 +7,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".playlist.square.view.PlaylistSquareActivity"
+            android:exported="false" />
+        <activity
             android:name=".playlist.detail.view.PlaylistDetailActivity"
             android:exported="false" />
         <activity
@@ -21,8 +24,8 @@
             android:name=".service.MusicService"
             android:process=":music" />
     </application>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

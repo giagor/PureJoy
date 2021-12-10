@@ -2,7 +2,6 @@ package com.topview.purejoy.musiclibrary.playlist.detail.view
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -34,7 +33,8 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
 
     private val popWindow: RecommendPop by lazy {
         val size = getDisplaySize()
-        val p = RecommendPop(this, width = size.width(), height = size.height() * 2 / 3)
+        val p = RecommendPop(this, width = size.width(),
+            height = size.height() * 2 / 3, window)
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
                 item ->
             item?.let {
@@ -180,7 +180,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
         adapter.buttonClickListener = object : DataClickListener<MusicItem> {
             override fun onClick(value: MusicItem, position: Int) {
                 popWindow.data = value
-                popWindow.window.showAtLocation(root, Gravity.BOTTOM, 0, 0)
+                popWindow.showDownAt(root)
             }
         }
 

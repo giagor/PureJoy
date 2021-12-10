@@ -41,7 +41,8 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
 
     private val popWindow: RecommendPop by lazy {
         val size = getDisplaySize()
-        val p = RecommendPop(this, size.width(), size.height() * 2/ 3)
+        val p = RecommendPop(this, size.width(),
+            size.height() * 2 / 3, window)
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
             item ->
             item?.let {
@@ -148,7 +149,7 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         }, buttonClickListener = object : DailyRecommendAdapter.DailyRecommendItemClickListener {
             override fun onClick(item: SongWithReason) {
                 popWindow.data = item.item
-                popWindow.window.showAtLocation(root, Gravity.BOTTOM, 0, 0)
+                popWindow.showDownAt(root)
             }
         })
         recyclerView.adapter = adapter

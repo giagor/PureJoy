@@ -15,4 +15,6 @@
     <string name="next_play">下一首播放</string>
     <string name="download">下载</string>
     <string name="playlist_detail">歌单详情</string>
+    <string name="playlist_square">歌单广场</string>
+    <string name="loading">加载中…</string>
 </resources>
