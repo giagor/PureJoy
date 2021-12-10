@@ -13,8 +13,8 @@ import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.*
 import com.topview.purejoy.musiclibrary.player.abs.Loader
 import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
-import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransformation
 import com.topview.purejoy.musiclibrary.player.abs.transformation.IWrapperTransformation
+import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransformation
 import com.topview.purejoy.musiclibrary.player.impl.cache.CacheStrategyImpl
 import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCDataControllerImpl
@@ -150,16 +150,12 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     private fun storePlayerState() {
-        val md = db.recoverMusicDataDao()
-        val ard = db.recoverARDataDao()
-        val ald = db.recoverALDataDao()
+        val dao = db.recoverDao()
         ExecutorInstance.getInstance().execute {
             val tm = ArrayList(rmPhoto)
             val tl = ArrayList(rlPhoto)
             val tr = ArrayList(rrPhoto)
-            md.deleteRecoverMusicData(tm)
-            ard.deleteRecoverARData(tr)
-            ald.deleteRecoverALData(tl)
+            dao.deleteRecoverData(tm, tl, tr)
 
             rmPhoto.clear()
             rrPhoto.clear()
@@ -177,9 +173,7 @@ class MusicService : MediaService<MusicItem>() {
                 tr.clear()
                 tr.addAll(rrPhoto)
 
-                md.insertRecoverMusicData(tm)
-                ard.insertRecoverARData(tr)
-                ald.insertRecoverALData(tl)
+                dao.insertRecoverData(tm, tl, tr)
 
                 modeController?.let {
                     storeState(it.realController.current, dataController.position.current(), list.size)
@@ -207,7 +201,8 @@ class MusicService : MediaService<MusicItem>() {
     private fun readLocal() {
         ExecutorInstance.getInstance().execute {
             val list = mutableListOf<MusicItem>()
-            val data = db.recoverDao().obtainRecoverData()
+            val dao = db.recoverDao()
+            val data = dao.obtainRecoverData()
             val recoverMusic = mutableListOf<RecoverMusicData>()
             val recoverAl = mutableListOf<RecoverALData>()
             val recoverAr = mutableListOf<RecoverARData>()
@@ -218,9 +213,7 @@ class MusicService : MediaService<MusicItem>() {
                 recoverAr.addAll(d.arDataList)
             }
 
-            db.recoverMusicDataDao().deleteRecoverMusicData(recoverMusic)
-            db.recoverALDataDao().deleteRecoverALData(recoverAl)
-            db.recoverARDataDao().deleteRecoverARData(recoverAr)
+            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
             if (list.isNotEmpty()) {
                 mainHandler.post {
                     rmPhoto.addAll(recoverMusic)
