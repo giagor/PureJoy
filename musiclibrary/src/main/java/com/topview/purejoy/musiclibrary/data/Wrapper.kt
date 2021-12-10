@@ -5,15 +5,22 @@ import android.os.Parcel
 import android.os.Parcelable
 
 // 音乐实体的封装类，便于在AIDL中使用
-class Wrapper(var value: Item?, var bundle: Bundle? = null) : Parcelable {
+// 为了方便在集合中的使用，请传入一个唯一的标识identity,
+class Wrapper(var value: SerializableItem? = null, var bundle: Bundle? = null,
+              var identity: Long) : Parcelable {
+
+
     constructor(parcel: Parcel) : this(
-        parcel.readSerializable() as? Item,
-        parcel.readBundle(Bundle::class.java.classLoader)) {
+        parcel.readSerializable() as? SerializableItem,
+        parcel.readBundle(Bundle::class.java.classLoader),
+        parcel.readLong()
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeSerializable(value)
         parcel.writeBundle(bundle)
+        parcel.writeLong(identity)
     }
 
     override fun describeContents(): Int {
@@ -34,11 +41,11 @@ class Wrapper(var value: Item?, var bundle: Bundle? = null) : Parcelable {
         if (other !is Wrapper) {
             return false
         }
-        return value == other.value
+        return identity == other.identity
     }
 
     override fun hashCode(): Int {
-        return value?.hashCode() ?: super.hashCode()
+        return (31 * identity).toInt()
     }
 
     override fun toString(): String {

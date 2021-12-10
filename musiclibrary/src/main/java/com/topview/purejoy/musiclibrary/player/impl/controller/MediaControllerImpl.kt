@@ -91,7 +91,7 @@ open class MediaControllerImpl<T : Item>(
 
     private fun setDataSource(item: Item) {
         if (TextUtils.isEmpty(item.url())) {
-            var index = list.indexOf(item)
+            val index = list.indexOf(item)
             loader.get()?.onLoadItem(index, item, callback)
         } else {
             val path = cacheStrategy?.getRecord(item.url()!!)
