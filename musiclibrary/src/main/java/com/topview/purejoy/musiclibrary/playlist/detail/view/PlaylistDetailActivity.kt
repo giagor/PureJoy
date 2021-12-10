@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -29,7 +28,6 @@ import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.entity.wrap
-import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
@@ -40,7 +38,8 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
 
     private val popWindow: RecommendPop by lazy {
         val size = getDisplaySize()
-        val p = RecommendPop(this, width = size.width(), height = size.height() * 2 / 3)
+        val p = RecommendPop(this, width = size.width(),
+            height = size.height() * 2 / 3, window)
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
                 item ->
             item?.let {
@@ -192,7 +191,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
         adapter.buttonClickListener = object : DataClickListener<MusicItem> {
             override fun onClick(value: MusicItem, position: Int) {
                 popWindow.data = value
-                popWindow.window.showAtLocation(root, Gravity.BOTTOM, 0, 0)
+                popWindow.showDownAt(root)
             }
         }
 

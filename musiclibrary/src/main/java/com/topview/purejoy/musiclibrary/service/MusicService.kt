@@ -24,6 +24,7 @@ import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
 import com.topview.purejoy.musiclibrary.player.util.castAs
+import com.topview.purejoy.musiclibrary.service.cache.CacheCallback
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotification
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotificationReceiver
 import com.topview.purejoy.musiclibrary.service.recover.db.RecoverDatabase
@@ -33,6 +34,7 @@ import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverMusicDa
 import com.topview.purejoy.musiclibrary.service.recover.db.initDB
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModel
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModelImpl
+import okhttp3.OkHttpClient
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -66,6 +68,10 @@ class MusicService : MediaService<MusicItem>() {
 
     private val db: RecoverDatabase by lazy {
         initDB(RecoverDatabase::class.java, recoverDB)
+    }
+
+    private val client: OkHttpClient by lazy {
+        OkHttpClient()
     }
 
     override fun initMediaModeSetting() {
@@ -241,7 +247,8 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
-        viewModel.requestMusicURL(item.cast()!!, itemIndex, callback)
+        val cacheCallback = CacheCallback(callback, cacheStrategy!!, client)
+        viewModel.requestMusicURL(item.cast()!!, itemIndex, cacheCallback)
     }
 
     override fun showForeground(value: MusicItem, state: Boolean) {

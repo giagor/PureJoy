@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class ExecutorInstance private constructor() {
 
-    private val service: ExecutorService
+    val service: ExecutorService
 
     init {
         val core = Runtime.getRuntime().availableProcessors()

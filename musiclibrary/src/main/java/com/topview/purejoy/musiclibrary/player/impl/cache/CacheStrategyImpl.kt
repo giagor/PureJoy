@@ -1,6 +1,7 @@
 package com.topview.purejoy.musiclibrary.player.impl.cache
 
 import android.util.LruCache
+import com.topview.purejoy.musiclibrary.common.util.ExecutorInstance
 import com.topview.purejoy.musiclibrary.player.abs.cache.Cache
 import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
 import java.io.File
@@ -11,7 +12,7 @@ import java.util.concurrent.Executors
 class CacheStrategyImpl(
     cacheDirectory: File,
     maxMemorySize: Int,
-    executor: Executor = Executors.newCachedThreadPool(),
+    executor: Executor = ExecutorInstance.getInstance().service,
     suffix: String? = null): CacheStrategy {
     override val memoryCache: Cache<String> = MemoryCache(LruCache(maxMemorySize))
     override val diskCache: Cache<InputStream> = DiskCache(
