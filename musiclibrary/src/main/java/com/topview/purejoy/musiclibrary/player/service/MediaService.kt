@@ -235,6 +235,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
             override fun onRemoved(element: Wrapper, index: Int) {
                 realController.position.max = source.size;
                 if (realController.position.current() == index) {
+                    if (realController.isPlaying()) {
+                        realController.playOrPause()
+                    }
                     if (source.size > 0) {
                         realController.next()
                     } else {
@@ -256,6 +259,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
                     realController.position.with(InitPosition)
                     errorSetting.record.clear()
                     if (realController.isPlaying()) {
+                        realController.playOrPause()
                         realController.reset()
                     }
                 } else {

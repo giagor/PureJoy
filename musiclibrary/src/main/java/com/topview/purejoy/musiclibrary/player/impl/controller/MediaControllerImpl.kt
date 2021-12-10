@@ -90,6 +90,9 @@ open class MediaControllerImpl<T : Item>(
     }
 
     private fun setDataSource(item: Item) {
+        if (player.isPlaying()) {
+            player.playOrPause()
+        }
         if (TextUtils.isEmpty(item.url())) {
             val index = list.indexOf(item)
             loader.get()?.onLoadItem(index, item, callback)
