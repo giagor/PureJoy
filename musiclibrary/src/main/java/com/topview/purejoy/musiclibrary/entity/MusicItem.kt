@@ -118,7 +118,7 @@ class MusicItem(
         parcel.readLong(),
         parcel.readString(),
         parcel.createTypedArrayList(AR) ?: listOf(),
-        parcel.readParcelable(AL::class.java.classLoader)!!
+        parcel.readParcelable(MusicItem::class.java.classLoader)!!
     ) {
     }
 

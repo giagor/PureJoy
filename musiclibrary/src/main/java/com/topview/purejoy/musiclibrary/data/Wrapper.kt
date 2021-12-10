@@ -12,7 +12,7 @@ class Wrapper(var value: SerializableItem? = null, var bundle: Bundle? = null,
 
     constructor(parcel: Parcel) : this(
         parcel.readSerializable() as? SerializableItem,
-        parcel.readBundle(Bundle::class.java.classLoader),
+        parcel.readBundle(Wrapper::class.java.classLoader),
         parcel.readLong()
     ) {
     }
