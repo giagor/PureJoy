@@ -9,6 +9,8 @@ interface CacheStrategy {
     // 磁盘缓存
     val diskCache: Cache<InputStream>
 
+    var loader: CacheLoader?
+
     /**
      * @param key 写入缓存时所用的键
      * @return key对应的文件路径，有可能为null
