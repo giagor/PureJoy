@@ -12,6 +12,7 @@ import com.topview.purejoy.musiclibrary.data.Item
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.*
 import com.topview.purejoy.musiclibrary.player.abs.Loader
+import com.topview.purejoy.musiclibrary.player.abs.cache.CacheLoader
 import com.topview.purejoy.musiclibrary.player.abs.cache.CacheStrategy
 import com.topview.purejoy.musiclibrary.player.abs.transformation.IWrapperTransformation
 import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransformation
@@ -24,7 +25,6 @@ import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.DataSource
 import com.topview.purejoy.musiclibrary.player.util.cast
 import com.topview.purejoy.musiclibrary.player.util.castAs
-import com.topview.purejoy.musiclibrary.service.cache.CacheCallback
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotification
 import com.topview.purejoy.musiclibrary.service.notification.MusicNotificationReceiver
 import com.topview.purejoy.musiclibrary.service.recover.db.RecoverDatabase
@@ -34,8 +34,9 @@ import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverMusicDa
 import com.topview.purejoy.musiclibrary.service.recover.db.initDB
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModel
 import com.topview.purejoy.musiclibrary.service.url.viewmodel.MusicURLViewModelImpl
-import okhttp3.OkHttpClient
+import okhttp3.*
 import java.io.File
+import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MusicService : MediaService<MusicItem>() {
@@ -213,7 +214,7 @@ class MusicService : MediaService<MusicItem>() {
                 recoverAr.addAll(d.arDataList)
             }
 
-            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
+//            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
             if (list.isNotEmpty()) {
                 mainHandler.post {
                     rmPhoto.addAll(recoverMusic)
@@ -240,8 +241,7 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
-        val cacheCallback = CacheCallback(callback, cacheStrategy!!, client)
-        viewModel.requestMusicURL(item.cast()!!, itemIndex, cacheCallback)
+        viewModel.requestMusicURL(item.cast()!!, itemIndex, callback)
     }
 
     override fun showForeground(value: MusicItem, state: Boolean) {
@@ -260,7 +260,25 @@ class MusicService : MediaService<MusicItem>() {
             file.mkdirs()
         }
         val maxSize = Runtime.getRuntime().freeMemory() / 8
-        return CacheStrategyImpl(cacheDirectory = file, maxMemorySize = maxSize.toInt())
+        val cs = CacheStrategyImpl(cacheDirectory = file, maxMemorySize = maxSize.toInt())
+        cs.loader = object : CacheLoader {
+            override fun load(url: String) {
+                val request = Request.Builder().url(url).build()
+                val call = client.newCall(request)
+                call.enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        response.body?.byteStream()?.let { stream ->
+                            cs.putInDisk(url, stream)
+                        }
+                    }
+                })
+            }
+        }
+        return cs
     }
 
     override fun reportOperator(code: Int, value: MusicItem?) {
