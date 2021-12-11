@@ -1,6 +1,7 @@
 package com.topview.purejoy.musiclibrary.player.util
 
 import com.topview.purejoy.musiclibrary.data.Item
+import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.player.abs.core.Position
 
 inline fun <reified T> Any.castAs(block: (T) -> Unit) {
@@ -38,5 +39,13 @@ fun ensureSecurity(source: MutableList<*>, position: Position, action: () -> Uni
 fun ensureSecurity(source: MutableList<*>, index: Int, action: () -> Unit) {
     if (index < source.size) {
         action.invoke()
+    }
+}
+
+fun checkWrapper(wrapper: Wrapper?, action: (Wrapper) -> Unit) {
+    if (wrapper == null || (wrapper.value == null && wrapper.bundle == null)) {
+        throw IllegalArgumentException()
+    } else {
+        action.invoke(wrapper)
     }
 }

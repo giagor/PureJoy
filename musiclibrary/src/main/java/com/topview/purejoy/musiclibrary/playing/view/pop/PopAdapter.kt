@@ -35,6 +35,9 @@ class PopAdapter()
         if (item == currentItem) {
             holder.setTextColor(R.id.music_pop_list_item_name_tx, Color.RED)
                 .setTextColor(R.id.music_pop_list_item_author_tx, Color.RED)
+        } else {
+            holder.setTextColor(R.id.music_pop_list_item_name_tx, Color.BLACK)
+                .setTextColor(R.id.music_pop_list_item_author_tx, Color.BLACK)
         }
     }
 

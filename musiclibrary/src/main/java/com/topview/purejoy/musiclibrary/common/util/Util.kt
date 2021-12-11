@@ -1,11 +1,8 @@
 package com.topview.purejoy.musiclibrary.common.util
 
-import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.palette.graphics.Palette
@@ -17,9 +14,6 @@ import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
-import com.topview.purejoy.musiclibrary.data.Item
-import com.topview.purejoy.musiclibrary.data.Wrapper
-import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.player.client.BinderPoolClient
 import jp.wasabeef.glide.transformations.BlurTransformation
 

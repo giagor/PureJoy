@@ -1,7 +1,10 @@
 package com.topview.purejoy.musiclibrary.playlist.detail.view
 
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -18,12 +21,14 @@ import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.MusicCommonActivity
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
+import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
 import com.topview.purejoy.musiclibrary.common.util.ExecutorInstance
 import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
-import com.topview.purejoy.musiclibrary.player.util.castAs
+import com.topview.purejoy.musiclibrary.entity.wrap
+import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
@@ -38,7 +43,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
                 item ->
             item?.let {
-                val w = Wrapper(value = it)
+                val w = it.wrap()
                 val items = allItems.value
                 if (items == null || items.isEmpty()) {
                     dataController?.add(w)
@@ -71,7 +76,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                     data.clear()
                 } else {
                     for (w in source) {
-                        val item = w.value?.castAs<MusicItem>()
+                        val item = MusicItemTransformation.transform(w)
                         if (data.contains(item)) {
                             data.remove(item)
                         } else {
@@ -90,10 +95,12 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
     private val itemChangeListener: IPCItemChangeListener by lazy {
         object : IPCItemChangeListener.Stub() {
             override fun onItemChange(wrapper: Wrapper?) {
-                currentItem.postValue(wrapper?.value?.castAs())
+                currentItem.postValue(MusicItemTransformation.transform(wrapper!!))
             }
         }
     }
+
+    private val handler = Handler(Looper.getMainLooper())
 
 
 
@@ -106,12 +113,16 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             wrapper?.let {
                 val list = mutableListOf<MusicItem>()
                 for (w in it) {
-                    w.value?.castAs<MusicItem> { item ->
+                    MusicItemTransformation.transform(w)?.let { item ->
                         list.add(item)
                     }
                 }
                 val current = dataController?.current()
-                currentItem.postValue(current?.value?.castAs())
+                if (current == null) {
+                    currentItem.postValue(null)
+                } else {
+                    currentItem.postValue(MusicItemTransformation.transform(current))
+                }
                 allItems.postValue(list)
             }
 
@@ -205,10 +216,12 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             dataController?.clear()
             val list = mutableListOf<Wrapper>()
             for (d in data) {
-                list.add(Wrapper(value = d))
+                list.add(d.wrap())
             }
             dataController?.addAll(list)
             playerController?.jumpTo(position)
+
+            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 2000)
         }
     }
 

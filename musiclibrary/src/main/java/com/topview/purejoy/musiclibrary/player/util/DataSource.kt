@@ -1,6 +1,6 @@
 package com.topview.purejoy.musiclibrary.player.util
 
-class DataSource<T>(
+open class DataSource<T>(
     list: MutableList<T> = mutableListOf(),
     val changeListeners: MutableList<DataSetChangeListener<T>> = mutableListOf(),
     val removeListeners: MutableList<RemoveListener<T>> = mutableListOf()

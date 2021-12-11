@@ -11,10 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.topview.purejoy.musiclibrary.*
 import com.topview.purejoy.musiclibrary.common.MusicBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
+import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
 import com.topview.purejoy.musiclibrary.common.util.*
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
-import com.topview.purejoy.musiclibrary.entity.removeAll
+import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.player.util.castAs
 import com.topview.purejoy.musiclibrary.playing.view.pop.MusicPopUpWrapper
@@ -68,7 +69,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     private val itemChangeListener = object : IPCItemChangeListener.Stub() {
         override fun onItemChange(wrapper: Wrapper?) {
-            viewModel.currentItem.postValue(dataController?.current()?.value?.castAs())
+            viewModel.currentItem.postValue(MusicItemTransformation.transform(wrapper!!))
             viewModel.progress.postValue(0)
             viewModel.duration.postValue(playerController?.duration())
         }
@@ -97,12 +98,14 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
     }
 
     private val dataSetChangeListener = object : IPCDataSetChangeListener.Stub() {
-        override fun onChange(source: MutableList<Wrapper>?) {
-            if (source!!.isEmpty()) {
+        override fun onChange(source: MutableList<Wrapper>) {
+            if (source.isEmpty()) {
                 viewModel.playingItems.postValue(null)
             } else {
                 val value = viewModel.playingItems.value!!
-                value.removeAll(source)
+                for (data in source) {
+                    value.remove(MusicItemTransformation.transform(data))
+                }
                 if (value.isEmpty()) finish()
                 viewModel.playingItems.postValue(value)
             }
@@ -118,10 +121,14 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        viewModel.currentItem.postValue(dataController?.current()?.value?.castAs())
+        dataController?.current()?.let {
+            viewModel.currentItem.postValue(MusicItemTransformation.transform(it))
+        }
         viewModel.progress.postValue(playerController?.progress() ?: 0)
         viewModel.playState.postValue(playerController?.isPlaying ?: false)
-        val items = dataController?.allItems()?.map { it.value?.castAs<MusicItem>()!! }!!
+        val items = dataController?.allItems()?.map {
+            MusicItemTransformation.transform(it)!!
+        } ?: listOf()
         viewModel.playingItems.value?.clear()
         viewModel.playingItems.value?.addAll(items)
         viewModel.playingItems.postValue(viewModel.playingItems.value)
@@ -196,7 +203,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
         popWrapper.adapter.deleteClickListener = object : PopAdapter.PopItemClickListener {
             override fun onClick(item: MusicItem) {
-                dataController?.remove(Wrapper(value = item))
+                dataController?.remove(item.wrap())
             }
 
         }
@@ -232,6 +239,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
                 if (popWrapper.popWindow.isShowing) {
                     popWrapper.adapter.currentItem = it
                 }
+                popWrapper.adapter.currentItem = it
             }
         }
         viewModel.progress.observe(this) {

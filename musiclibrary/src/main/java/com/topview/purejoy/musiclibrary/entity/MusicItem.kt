@@ -1,21 +1,108 @@
 package com.topview.purejoy.musiclibrary.entity
 
-import com.topview.purejoy.musiclibrary.data.Item
+import android.os.Parcel
+import android.os.Parcelable
+import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
+import com.topview.purejoy.musiclibrary.common.transformation.WrapperTransformation
+import com.topview.purejoy.musiclibrary.data.ParcelableItem
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverALData
 import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverARData
 import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverData
 import com.topview.purejoy.musiclibrary.service.recover.db.entity.RecoverMusicData
-import java.io.Serializable
 
-data class AR(val id: Long, val name: String = "") : Serializable
+data class AR(val id: Long, val name: String = "") : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString() ?: ""
+    ) {
+    }
 
-data class AL(val id: Long,
-                       val name: String = "",
-                       val picUrl: String = "", ) : Serializable
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeString(name)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AR> {
+        override fun createFromParcel(parcel: Parcel): AR {
+            return AR(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AR?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+
+}
+
+data class AL(
+    val id: Long,
+    val name: String = "",
+    val picUrl: String = "", ) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeString(name)
+        parcel.writeString(picUrl)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AL> {
+        override fun createFromParcel(parcel: Parcel): AL {
+            return AL(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AL?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class BR(val br: Int = 0, val fid: Long = 0,
-              val size: Long = 0, val vd: Long = 0) : Serializable
+              val size: Long = 0, val vd: Long = 0) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(br)
+        parcel.writeLong(fid)
+        parcel.writeLong(size)
+        parcel.writeLong(vd)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<BR> {
+        override fun createFromParcel(parcel: Parcel): BR {
+            return BR(parcel)
+        }
+
+        override fun newArray(size: Int): Array<BR?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class MusicResponse(val code: Int, val songs: List<MusicItem>)
 
@@ -24,7 +111,16 @@ class MusicItem(
     val id: Long,
     var url: String? = null,
     val ar: List<AR> = listOf(),
-    val al: AL, ) : Item {
+    val al: AL, ) : ParcelableItem {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readLong(),
+        parcel.readString(),
+        parcel.createTypedArrayList(AR) ?: listOf(),
+        parcel.readParcelable(MusicItem::class.java.classLoader)!!
+    ) {
+    }
 
     override fun url(): String? {
         return url
@@ -55,6 +151,28 @@ class MusicItem(
 
     override fun toString(): String {
         return "[MusicItem name = $name, id = $id, url = $url, al = $al, ar = $ar]"
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeLong(id)
+        parcel.writeString(url)
+        parcel.writeTypedList(ar)
+        parcel.writeParcelable(al, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<MusicItem> {
+        override fun createFromParcel(parcel: Parcel): MusicItem {
+            return MusicItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<MusicItem?> {
+            return arrayOfNulls(size)
+        }
     }
 }
 
@@ -87,26 +205,34 @@ fun RecoverALData.toAL(): AL {
     return AL(id, name, picUrl)
 }
 
+fun Wrapper.getMusicItem(): MusicItem? {
+    return MusicItemTransformation.transform(this)
+}
+
+fun MusicItem.wrap(): Wrapper {
+    return WrapperTransformation.transform(this)
+}
+
 /**
  * 从List中移除collection中包含的Item
  */
-fun MutableList<MusicItem>.removeAll(collection: Collection<Wrapper>) {
-    collection.forEach {
-        val iterator = iterator()
-        while (iterator.hasNext()) {
-            val item = iterator.next()
-            if (item == it.value) {
-                iterator.remove()
-                break
-            }
-        }
-    }
-}
+//fun MutableList<MusicItem>.removeAll(collection: Collection<Wrapper>) {
+//    collection.forEach {
+//        val iterator = iterator()
+//        while (iterator.hasNext()) {
+//            val item = iterator.next()
+//            if (item == it.value) {
+//                iterator.remove()
+//                break
+//            }
+//        }
+//    }
+//}
 
 fun List<MusicItem>.wrap(): List<Wrapper> {
     val ans = mutableListOf<Wrapper>()
     forEach {
-        ans.add(Wrapper(value = it))
+        ans.add(it.wrap())
     }
     return ans
 }
