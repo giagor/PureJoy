@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":home"))
     implementation(project(":musiclibrary"))
+    implementation(project(":video"))
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
