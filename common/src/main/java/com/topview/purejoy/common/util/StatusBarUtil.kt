@@ -122,7 +122,7 @@ object StatusBarUtil {
     fun fitSystemBar(view : View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBar = insets.getInsets(
-                WindowInsetsCompat.Type.statusBars()
+                WindowInsetsCompat.Type.systemGestures()
                     or WindowInsetsCompat.Type.navigationBars())
             v.updatePadding(top = systemBar.top, bottom = systemBar.bottom)
             // TODO 仅挑选一部分Inset进行消费，其他的继续传递
