@@ -44,6 +44,10 @@ class CaptchaFragment: Fragment() {
             val phoneArgName = stringResource(R.string.home_label_phone_number)
             val uiState by viewModel.captchaUiState.observeAsState()
 
+            if (uiState!!.loginSuccess) {
+                activity?.finish()
+            }
+
             Surface {
                 CaptchaScreen(
                     time = viewModel.time,

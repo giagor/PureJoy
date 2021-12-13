@@ -33,6 +33,10 @@ class PasswordFragment: Fragment() {
             Surface {
                 val uiState by passwordViewModel.passwordLoginScreenState.observeAsState()
 
+                if (uiState!!.loginSuccess) {
+                    activity?.finish()
+                }
+
                 PasswordLoginScreen(
                     onLoginClick = passwordViewModel::login,
                     state = uiState!!,

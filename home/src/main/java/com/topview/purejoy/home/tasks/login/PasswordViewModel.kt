@@ -3,11 +3,12 @@ package com.topview.purejoy.home.tasks.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.util.UserManager
 import com.topview.purejoy.home.components.PasswordLoginScreenState
 import com.topview.purejoy.home.components.SnackBarState
 import com.topview.purejoy.home.data.repo.LoginRepository
-import com.topview.purejoy.home.entity.User
 
 class PasswordViewModel: MVVMViewModel() {
 
@@ -36,7 +37,8 @@ class PasswordViewModel: MVVMViewModel() {
                 }
                 onSuccess = {
                     state.loading = false
-                    // TODO 添加登录成功后的逻辑
+                    UserManager.login(it)
+                    state.loginSuccess = true
                 }
                 onEmpty = {
                     state.loading = false

@@ -5,12 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.util.UserManager
 import com.topview.purejoy.home.components.CaptchaFieldState
 import com.topview.purejoy.home.components.CaptchaScreenState
 import com.topview.purejoy.home.components.SnackBarState
 import com.topview.purejoy.home.data.repo.LoginRepository
-import com.topview.purejoy.home.entity.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -82,7 +83,8 @@ class CaptchaViewModel: MVVMViewModel() {
                     }
                 }
                 onSuccess = {
-                    // TODO 添加登录成功后的逻辑
+                    UserManager.login(it)
+                    state.loginSuccess = true
                 }
                 onEmpty = {
                     state.snackBarState = SnackBarState.Show("登录失败，请重试")

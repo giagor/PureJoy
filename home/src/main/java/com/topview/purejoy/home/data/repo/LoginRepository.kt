@@ -1,8 +1,8 @@
 package com.topview.purejoy.home.data.repo
 
+import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.home.data.bean.UserJson
 import com.topview.purejoy.home.data.source.LoginRemoteStore
-import com.topview.purejoy.home.entity.User
 import com.topview.purejoy.home.util.MD5Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -95,7 +95,7 @@ internal object LoginRepository {
 
     private fun disposeProfile(profile: UserJson.Profile?): User? {
         return profile?.run {
-            User(this.avatarUrl, this.nickname!!, this.userId!!)
+            User(this.avatarUrl, this.nickname!!, this.userId!!, this.backgroundUrl)
         }
     }
 
