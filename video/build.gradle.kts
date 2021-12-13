@@ -37,6 +37,26 @@ android {
 }
 
 dependencies {
+    implementation(project(":dependencies"))
+    implementation(project(":common"))
+
+    implementation(Deps.Compose.composeUiToolingPreview)
+    implementation(Deps.Compose.composeActivity)
+    implementation(Deps.Compose.constraintLayoutDSL)
+    implementation(Deps.Coil.coilCore)
+    implementation(Deps.Coil.composeExtension)
+    implementation(Deps.ExoPlayer.core)
+    implementation(Deps.ExoPlayer.dash)
+    implementation(Deps.ExoPlayer.ui)
+    implementation(Deps.Accompanist.pager)
+    implementation(Deps.Accompanist.accompanistInsets)
+
+    implementation("androidx.paging:paging-runtime-ktx:3.1.0")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha14")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+
+    debugImplementation(Deps.Compose.uiDebugTool)
+    androidTestImplementation(Deps.Compose.junitTest)
 
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
