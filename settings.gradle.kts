@@ -20,3 +20,4 @@ include(":musiclibrary")
 
 include(":home")
 
+include(":video")

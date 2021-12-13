@@ -151,4 +151,5 @@ class PasswordLoginScreenState {
     var snackBarState: SnackBarState by mutableStateOf(SnackBarState.None)
     var password: String by mutableStateOf("")
     var loading: Boolean by mutableStateOf(false)
+    var loginSuccess by mutableStateOf(false)
 }

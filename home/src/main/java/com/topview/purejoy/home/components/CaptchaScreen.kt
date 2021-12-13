@@ -168,6 +168,7 @@ class CaptchaScreenState(
     val phone: String
 ) {
     var snackBarState: SnackBarState by mutableStateOf(SnackBarState.None)
+    var loginSuccess by mutableStateOf(false)
 }
 
 @Preview(showBackground = true)

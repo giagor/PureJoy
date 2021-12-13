@@ -8,5 +8,6 @@ class UserJson {
         var avatarUrl : String? = null
         var nickname : String? = null
         var userId : Long? = null
+        var backgroundUrl: String? = null
     }
 }

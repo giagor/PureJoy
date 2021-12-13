@@ -26,6 +26,8 @@ object Deps {
         const val composeRuntime = "androidx.compose.runtime:runtime:$version"
         const val uiDebugTool = "androidx.compose.ui:ui-tooling:$version"
         const val junitTest = "androidx.compose.ui:ui-test-junit4:$version"
+
+        const val constraintLayoutDSL = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
     }
 
     object Navigation {
@@ -40,7 +42,7 @@ object Deps {
 
     object Ktx {
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
-        const val fragment = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
+        const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     }
 
     object Coroutines {
@@ -53,7 +55,19 @@ object Deps {
         const val composeExtension = "io.coil-kt:coil-compose:1.4.0"
     }
 
-    const val accompanistInsets = "com.google.accompanist:accompanist-insets:0.16.0"
+    object ExoPlayer {
+        const val version = "2.16.1"
+        const val core = "com.google.android.exoplayer:exoplayer-core:$version"
+        const val dash = "com.google.android.exoplayer:exoplayer-dash:$version"
+        const val ui = "com.google.android.exoplayer:exoplayer-ui:$version"
+    }
+
+    object Accompanist {
+        const val version = "0.20.2"
+        const val accompanistInsets = "com.google.accompanist:accompanist-insets:$version"
+        const val pager = "com.google.accompanist:accompanist-pager:$version"
+    }
+
     const val material = "com.google.android.material:material:1.4.0"
 
     const val okhttp = "com.squareup.okhttp3:okhttp:4.9.2"

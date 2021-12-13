@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.components.status
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material.Surface
@@ -16,22 +17,24 @@ fun SimpleStatusScreen(
     loadingContent: @Composable (BoxScope.() -> Unit)? = null,
     successScreen: @Composable () -> Unit,
 ) {
-    if (state is PageState.Success) {
-        successScreen()
-    } else {
-        Surface(modifier = modifier) {
-            Box(contentAlignment = Alignment.Center,) {
-                when (state) {
-                    is PageState.Empty -> {
-                        emptyContent?.invoke(this)
+    Crossfade(targetState = state) {
+        if (it is PageState.Success) {
+            successScreen()
+        } else {
+            Surface(modifier = modifier) {
+                Box(contentAlignment = Alignment.Center) {
+                    when (it) {
+                        is PageState.Empty -> {
+                            emptyContent?.invoke(this)
+                        }
+                        is PageState.Error -> {
+                            errorContent?.invoke(this)
+                        }
+                        is PageState.Loading -> {
+                            loadingContent?.invoke(this)
+                        }
+                        else -> {}
                     }
-                    is PageState.Error -> {
-                        errorContent?.invoke(this)
-                    }
-                    is PageState.Loading -> {
-                        loadingContent?.invoke(this)
-                    }
-                    else -> {}
                 }
             }
         }
