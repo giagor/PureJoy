@@ -1,16 +1,20 @@
 package com.topview.purejoy.musiclibrary.playing.view.pop
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.topview.purejoy.musiclibrary.R
+import com.topview.purejoy.musiclibrary.entity.MusicItem
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
 
-class MusicPopUpWrapper(context: Context, width: Int, height: Int) {
+class MusicPopUpWrapper(context: Context, width: Int, height: Int, val window: Window) {
 
     val rootView: View = LayoutInflater.from(context)
         .inflate(R.layout.activity_playing_pop_layout, null)
@@ -34,7 +38,29 @@ class MusicPopUpWrapper(context: Context, width: Int, height: Int) {
         w.contentView = rootView
         w.isFocusable = true
         w.isOutsideTouchable = true
+        w.setOnDismissListener {
+            setBackground(1f)
+        }
         w
+    }
+
+    private fun setBackground(value: Float) {
+        val lp = window.attributes
+        lp.alpha = value
+        window.attributes = lp
+    }
+
+    fun showDownAt(view: View, alpha: Float = 0.5f) {
+        popWindow.showAsDropDown(view, Gravity.BOTTOM, 0, 0)
+        setBackground(alpha)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateWindow(data: List<MusicItem>) {
+        adapter.data.clear()
+        adapter.data.addAll(data)
+        adapter.notifyDataSetChanged()
+        updatePlayingCount(adapter.data.size)
     }
 
     fun updatePlayingCount(count: Int) {
