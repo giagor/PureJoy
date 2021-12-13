@@ -27,6 +27,7 @@ import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.MusicItem
+import com.topview.purejoy.musiclibrary.entity.getMusicItem
 import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
@@ -76,7 +77,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                     data.clear()
                 } else {
                     for (w in source) {
-                        val item = MusicItemTransformation.transform(w)
+                        val item = w.getMusicItem()
                         if (data.contains(item)) {
                             data.remove(item)
                         } else {
@@ -95,7 +96,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
     private val itemChangeListener: IPCItemChangeListener by lazy {
         object : IPCItemChangeListener.Stub() {
             override fun onItemChange(wrapper: Wrapper?) {
-                currentItem.postValue(MusicItemTransformation.transform(wrapper!!))
+                currentItem.postValue(wrapper?.getMusicItem())
             }
         }
     }
@@ -113,7 +114,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             wrapper?.let {
                 val list = mutableListOf<MusicItem>()
                 for (w in it) {
-                    MusicItemTransformation.transform(w)?.let { item ->
+                    w?.getMusicItem()?.let { item ->
                         list.add(item)
                     }
                 }
@@ -121,7 +122,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 if (current == null) {
                     currentItem.postValue(null)
                 } else {
-                    currentItem.postValue(MusicItemTransformation.transform(current))
+                    currentItem.postValue(current.getMusicItem())
                 }
                 allItems.postValue(list)
             }
