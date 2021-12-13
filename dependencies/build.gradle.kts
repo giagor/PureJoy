@@ -33,7 +33,7 @@ dependencies {
     api(Deps.AndroidX.appCompat)
     api(Deps.AndroidX.constraintLayout)
     api(Deps.Ktx.coreKtx)
-    api(Deps.Ktx.fragment)
+    api(Deps.Ktx.viewModelKtx)
     api(Deps.material)
 
     api(Deps.okhttp)
