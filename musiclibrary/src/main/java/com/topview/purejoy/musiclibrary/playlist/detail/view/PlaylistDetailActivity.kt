@@ -45,7 +45,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 item ->
             item?.let {
                 val w = it.wrap()
-                val items = allItems.value
+                val items = playItems.value
                 if (items == null || items.isEmpty()) {
                     dataController?.add(w)
                     playerController?.jumpTo(0)
@@ -53,6 +53,10 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                     val index = items.indexOf(currentItem.value)
                     if (index != -1) {
                         dataController?.addAfter(w, index)
+                    } else {
+                        dataController?.clear()
+                        dataController?.add(w)
+                        playerController?.jumpTo(0)
                     }
                 }
                 popWindow.window.dismiss()
@@ -66,80 +70,12 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
         p
     }
 
-    private val allItems: MutableLiveData<MutableList<MusicItem>> = MutableLiveData(mutableListOf())
-    private val currentItem: MutableLiveData<MusicItem?> = MutableLiveData()
 
-    private val dataSetChangeListener: IPCDataSetChangeListener by lazy {
-        object : IPCDataSetChangeListener.Stub() {
-            override fun onChange(source: MutableList<Wrapper>) {
-                val data = allItems.value!!
-                if (source.isEmpty()) {
-                    data.clear()
-                } else {
-                    for (w in source) {
-                        val item = w.getMusicItem()
-                        if (data.contains(item)) {
-                            data.remove(item)
-                        } else {
-                            item?.let {
-                                data.add(it)
-                            }
-                        }
-                    }
-                }
-                allItems.postValue(data)
-            }
-
-        }
-    }
-
-    private val itemChangeListener: IPCItemChangeListener by lazy {
-        object : IPCItemChangeListener.Stub() {
-            override fun onItemChange(wrapper: Wrapper?) {
-                currentItem.postValue(wrapper?.getMusicItem())
-            }
-        }
-    }
 
     private val handler = Handler(Looper.getMainLooper())
 
 
 
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-
-        // 防止主线程等待过长时间，将读取数据的操作放到子线程执行
-        ExecutorInstance.getInstance().execute {
-            val wrapper = dataController?.allItems()
-            wrapper?.let {
-                val list = mutableListOf<MusicItem>()
-                for (w in it) {
-                    w?.getMusicItem()?.let { item ->
-                        list.add(item)
-                    }
-                }
-                val current = dataController?.current()
-                if (current == null) {
-                    currentItem.postValue(null)
-                } else {
-                    currentItem.postValue(current.getMusicItem())
-                }
-                allItems.postValue(list)
-            }
-
-        }
-
-        listenerController?.apply {
-            addDataChangeListener(dataSetChangeListener)
-            addItemChangeListener(itemChangeListener)
-        }
-
-    }
-
-    override fun onServiceDisconnected() {
-        allItems.value?.clear()
-        super.onServiceDisconnected()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -204,7 +140,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 adapter.notifyItemRangeInserted(0, adapter.data.size)
             }
         }
-
+        addMusicBottomBar(0)
         viewModel.getDetails(playlistId)
 
 
@@ -222,7 +158,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             dataController?.addAll(list)
             playerController?.jumpTo(position)
 
-            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 2000)
+            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 500)
         }
     }
 
@@ -243,15 +179,6 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
     override fun onDestroy() {
         if (popWindow.window.isShowing) {
             popWindow.window.dismiss()
-        }
-        kotlin.runCatching {
-            if (BinderPoolClientInstance.getInstance().getClient(
-                    MusicService::class.java).isConnected()) {
-                listenerController?.apply {
-                    removeDataChangeListener(dataSetChangeListener)
-                    removeItemChangeListener(itemChangeListener)
-                }
-            }
         }
         super.onDestroy()
     }
