@@ -42,6 +42,7 @@ class PlaylistSquareActivity : MusicCommonActivity<PlaylistSquareViewModel>() {
                 adapter.notifyItemRangeInserted(0, adapter.fragments.size)
             }
         }
+        addMusicBottomBar(0)
         viewModel.requireTags()
     }
 

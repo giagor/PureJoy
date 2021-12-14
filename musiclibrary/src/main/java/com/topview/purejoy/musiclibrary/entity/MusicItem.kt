@@ -213,21 +213,6 @@ fun MusicItem.wrap(): Wrapper {
     return WrapperTransformation.transform(this)
 }
 
-/**
- * 从List中移除collection中包含的Item
- */
-//fun MutableList<MusicItem>.removeAll(collection: Collection<Wrapper>) {
-//    collection.forEach {
-//        val iterator = iterator()
-//        while (iterator.hasNext()) {
-//            val item = iterator.next()
-//            if (item == it.value) {
-//                iterator.remove()
-//                break
-//            }
-//        }
-//    }
-//}
 
 fun List<MusicItem>.wrap(): List<Wrapper> {
     val ans = mutableListOf<Wrapper>()

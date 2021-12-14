@@ -1,5 +1,6 @@
 package com.topview.purejoy.musiclibrary.recommendation.music.view
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -27,8 +28,10 @@ import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
 import com.topview.purejoy.musiclibrary.common.util.buildSwatch
 import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
+import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.data.Wrapper
 import com.topview.purejoy.musiclibrary.entity.wrap
+import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.recommendation.music.adapter.DailyRecommendAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
@@ -52,10 +55,8 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
                     dataController?.add(w)
                     playerController?.jumpTo(0)
                 } else {
-                    val index = playingList.value!!.indexOf(currentItem.value)
-                    if (index == -1) {
-                        dataController?.add(w)
-                    } else {
+                    val index = playItems.value?.indexOf(currentItem.value)
+                    if (index != null && index != -1) {
                         dataController?.addAfter(w, index)
                     }
                 }
@@ -71,59 +72,14 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
     }
 
 
-    private val playingList = MutableLiveData<MutableList<Wrapper>>(mutableListOf())
-
-    private var currentItem: MutableLiveData<Wrapper?> = MutableLiveData(null)
     
     private val TAG = "DailyRecommend"
 
 
-    private val itemChangeListener: IPCItemChangeListener =
-        object : IPCItemChangeListener.Stub() {
-            override fun onItemChange(wrapper: Wrapper?) {
-                currentItem.postValue(wrapper)
-            }
-        }
+
 
     private val handler: Handler = Handler(Looper.getMainLooper())
 
-    private val dataSetChangeListener: IPCDataSetChangeListener =
-        object : IPCDataSetChangeListener.Stub() {
-            override fun onChange(source: MutableList<Wrapper>?) {
-                handler.post {
-                    if (source!!.isEmpty()) {
-                        val v = playingList.value!!
-                        v.clear()
-                        playingList.postValue(v)
-                        currentItem.postValue(null)
-                    } else {
-                        dataController?.allItems()?.let {
-                            val value = playingList.value!!
-                            value.clear()
-                            value.addAll(it)
-                            playingList.postValue(value)
-                        }
-                    }
-                }
-            }
-        }
-
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        dataController?.allItems()?.let {
-            val v = playingList.value!!
-            v.addAll(it)
-            playingList.postValue(v)
-        }
-
-        val v = dataController?.current()
-        currentItem.postValue(v)
-
-        listenerController?.apply {
-            addItemChangeListener(itemChangeListener)
-            addDataChangeListener(dataSetChangeListener)
-        }
-    }
 
 
 
@@ -145,7 +101,8 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
                 dataController?.clear()
                 dataController?.addAll(viewModel.data.value!!.toWrapperList())
                 playerController?.jumpTo(viewModel.data.value!!.indexOf(item))
-                playingList.value?.addAll(viewModel.data.value!!.toWrapperList())
+                handler.postDelayed({ startActivity(Intent(this@DailyRecommendActivity,
+                    PlayingActivity::class.java)) }, 500)
             }
         }, buttonClickListener = object : DailyRecommendAdapter.DailyRecommendItemClickListener {
             override fun onClick(item: SongWithReason) {
@@ -159,22 +116,10 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
                 adapter.data.clear()
                 adapter.data.addAll(it)
                 adapter.notifyItemRangeChanged(0, adapter.data.size)
-                Glide.with(this).asBitmap().load(it[0].item.al.picUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            buildSwatch(resource) {
-                                imageView.setImageDrawable(ColorDrawable(it))
-                            }
-                        }
+                loadBitmapColor(it[0].item.al.picUrl) { color ->
+                    imageView.setImageDrawable(ColorDrawable(color))
+                }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {
-
-                        }
-
-                    })
             } else {
                 showToast(context = this, text = "Request Error")
             }
@@ -188,20 +133,12 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
             }
         }
         viewModel.requestDailySongs()
+        addMusicBottomBar(0)
     }
 
     override fun onDestroy() {
         if (popWindow.window.isShowing) {
             popWindow.window.dismiss()
-        }
-        kotlin.runCatching {
-            if (BinderPoolClientInstance.getInstance().getClient(
-                    MusicService::class.java).isConnected()) {
-                listenerController?.apply {
-                    removeItemChangeListener(itemChangeListener)
-                    removeDataChangeListener(dataSetChangeListener)
-                }
-            }
         }
         super.onDestroy()
     }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.topview.purejoy.common.widget.compose.RoundedCornerImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/white_holder"
+        android:id="@+id/music_bottom_bar_iv"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="8dp"
+        app:percent="100"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/music_bottom_bar_name_tx"
+        android:layout_weight="1"
+        android:textColor="@android:color/black"
+        android:maxLines="1"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="8dp"
+        android:ellipsize="end"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/music_bottom_bar_status_iv"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="8dp"
+        android:src="@drawable/music_bottom_bar_play_32"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/music_bottom_bar_playlist_iv"
+        android:src="@drawable/music_bottom_bar_playlist_32"
+        android:layout_margin="8dp"/>
+
+
+
+</LinearLayout>
