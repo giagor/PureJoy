@@ -2,6 +2,7 @@ package com.topview.purejoy.musiclibrary.common.util
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ fun AppCompatActivity.addViewToContent(view: View, marginBottom: Int,
     val contentView = ((window.decorView as ViewGroup).getChildAt(0)
             as ViewGroup).getChildAt(1) as FrameLayout
     val lp = FrameLayout.LayoutParams(width, height)
+    lp.gravity = Gravity.BOTTOM
     val animator = MarginBottomAnimator(contentView, view, lp, duration, marginBottom)
     animator.start()
 }
