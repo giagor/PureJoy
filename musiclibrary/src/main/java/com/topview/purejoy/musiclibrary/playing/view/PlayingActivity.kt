@@ -115,19 +115,11 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
             }
         }
         playItems.observe(this) { source ->
-            if (source.isEmpty()) {
-                viewModel.playingItems.postValue(null)
-            } else {
-                val value = viewModel.playingItems.value!!
-                for (data in source) {
-                    if (value.contains(data)) {
-                        value.remove(data)
-                    } else {
-                        value.add(data)
-                    }
+            if (source != null) {
+                viewModel.playingItems.postValue(source)
+                if (source.isEmpty()) {
+                    finish()
                 }
-                if (value.isEmpty()) finish()
-                viewModel.playingItems.postValue(value)
             }
         }
     }
