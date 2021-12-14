@@ -1,13 +1,12 @@
 package com.topview.purejoy.musiclibrary.common
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +24,7 @@ import com.topview.purejoy.musiclibrary.entity.getMusicItem
 import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.player.client.BinderPoolClient
 import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
+import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playing.view.pop.MusicPopUpWrapper
 import com.topview.purejoy.musiclibrary.playing.view.pop.PopAdapter
 import com.topview.purejoy.musiclibrary.service.MusicService
@@ -125,6 +125,12 @@ abstract class MusicBindingActivity<VM: MVVMViewModel, T : ViewDataBinding> : MV
             }
         }
         playItems.observe(this) {
+            if (it == null) {
+                if (p.popWindow.isShowing) {
+                    p.popWindow.dismiss()
+                }
+                return@observe
+            }
             if (it.isEmpty()) {
                 p.updateWindow(it)
                 if (p.popWindow.isShowing) {
@@ -203,6 +209,8 @@ abstract class MusicBindingActivity<VM: MVVMViewModel, T : ViewDataBinding> : MV
         val nameTx = bar.findViewById<TextView>(R.id.music_bottom_bar_name_tx)
         val stateIv = bar.findViewById<ImageView>(R.id.music_bottom_bar_status_iv)
         val listIv = bar.findViewById<ImageView>(R.id.music_bottom_bar_playlist_iv)
+        val contentView = ((window.decorView as ViewGroup).getChildAt(0)
+                as ViewGroup).getChildAt(1) as FrameLayout
         currentItem.observe(this) {
             if (it == null) {
                 bar.visibility = View.GONE
@@ -222,8 +230,8 @@ abstract class MusicBindingActivity<VM: MVVMViewModel, T : ViewDataBinding> : MV
         stateIv.setOnClickListener {
             playerController?.playOrPause()
         }
-        playItems.observe(this) {
-            if (it.isEmpty()) {
+        currentItem.observe(this) {
+            if (it == null) {
                 bar.visibility = View.GONE
             } else {
                 if (bar.visibility != View.VISIBLE) {
@@ -233,8 +241,11 @@ abstract class MusicBindingActivity<VM: MVVMViewModel, T : ViewDataBinding> : MV
         }
         listIv.setOnClickListener {
             if (!musicPopWindow.popWindow.isShowing) {
-                musicPopWindow.showDownAt(bar)
+                musicPopWindow.showDownAt(contentView)
             }
+        }
+        bar.setOnClickListener {
+            startActivity(Intent(this, PlayingActivity::class.java))
         }
         addViewToContent(bar, marginBottom, duration)
     }
