@@ -2,6 +2,7 @@ package com.topview.purejoy.musiclibrary.service
 
 import android.content.IntentFilter
 import android.widget.Toast
+import com.topview.purejoy.musiclibrary.IPCListenerController
 import com.topview.purejoy.musiclibrary.IPCModeController
 import com.topview.purejoy.musiclibrary.IPCPlayerController
 import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
@@ -18,6 +19,7 @@ import com.topview.purejoy.musiclibrary.player.abs.transformation.ItemTransforma
 import com.topview.purejoy.musiclibrary.player.impl.cache.CacheStrategyImpl
 import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCDataControllerImpl
+import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCListenerControllerImpl
 import com.topview.purejoy.musiclibrary.player.impl.ipc.IPCModeControllerImpl
 import com.topview.purejoy.musiclibrary.player.service.MediaService
 import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
@@ -97,6 +99,11 @@ class MusicService : MediaService<MusicItem>() {
     private val dataController: IPCDataControllerImpl<MusicItem> by lazy {
         pool.queryBinder(BinderPool.DATA_CONTROL_BINDER)
             .castAs<IPCDataControllerImpl<MusicItem>>()!!
+    }
+
+    private val listenerController: IPCListenerControllerImpl by lazy {
+        IPCListenerController.Stub.asInterface(pool.queryBinder(
+            BinderPool.LISTENER_CONTROL_BINDER)).castAs()!!
     }
 
 
@@ -213,7 +220,7 @@ class MusicService : MediaService<MusicItem>() {
                 recoverAr.addAll(d.arDataList)
             }
 
-            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
+//            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
             if (list.isNotEmpty()) {
                 mainHandler.post {
                     rmPhoto.addAll(recoverMusic)
@@ -224,7 +231,15 @@ class MusicService : MediaService<MusicItem>() {
                         source.add(it.wrap())
                     }
                     dataController.addAll(source)
+
+                    mainHandler.post {
+                        val current = dataController.current()
+                        if (current != null) {
+                            listenerController.invokeItemChangeListener(current)
+                        }
+                    }
                 }
+
             }
 
         }
