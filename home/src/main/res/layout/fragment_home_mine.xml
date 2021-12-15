@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="com.topview.purejoy.home.mine.HomeMineFragment"/>
+        <variable
+            name="homeMineFragment"
+            type="HomeMineFragment" />
     </data>
 
     <LinearLayout
@@ -23,17 +27,17 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/home_img_default_user_portrait"/>
+                app:userPortrait="@{homeMineFragment.userLiveData}"/>
             
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/home_mine_username_tips"
                 android:layout_centerInParent="true"
                 android:layout_below="@id/home_riv_user_portrait"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:userNickName="@{homeMineFragment.userLiveData}"/>
             
         </RelativeLayout>
         
