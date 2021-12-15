@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Home界面的统一-->
+    <dimen name="home_padding_left">15dp</dimen>
+    <dimen name="home_padding_right">15dp</dimen>
+    
     <!--Discover界面-->
-    <dimen name="home_discover_padding_left">15dp</dimen>
-    <dimen name="home_discover_padding_right">15dp</dimen>
     <dimen name="home_search_ic_width">15dp</dimen>
     <dimen name="home_search_ic_height">15dp</dimen>
     <dimen name="home_discover_single_row_icon_size">35dp</dimen>
@@ -16,7 +18,5 @@
     <dimen name="home_discover_recommend_new_song_item_width_smaller_than_screen">50dp</dimen>
 
     <!--Search界面-->
-    <dimen name="home_search_padding_left">15dp</dimen>
-    <dimen name="home_search_padding_right">15dp</dimen>
     <dimen name="home_search_content_scrollbar_size">5dp</dimen>
 </resources>

@@ -13,8 +13,8 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingStart="@dimen/home_search_padding_left"
-        android:paddingEnd="@dimen/home_search_padding_right"
+        android:paddingStart="@dimen/home_padding_left"
+        android:paddingEnd="@dimen/home_padding_right"
         android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout
