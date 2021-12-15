@@ -24,8 +24,8 @@
             app:tabSelectedTextColor="@color/black"
             app:tabIndicatorColor="#CD5C5C"
             app:tabIndicatorFullWidth="false"
-            android:layout_marginStart="@dimen/home_search_padding_left"
-            android:layout_marginEnd="@dimen/home_search_padding_right">
+            android:layout_marginStart="@dimen/home_padding_left"
+            android:layout_marginEnd="@dimen/home_padding_right">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

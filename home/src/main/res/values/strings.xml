@@ -40,4 +40,7 @@
     <string name="home_toplist_title">排行榜</string>
     <string name="home_toplist_error_tip">出错啦，点击重新加载</string>
     <string name="home_toplist_loading_tip">加载中......</string>
+    
+    <!--"我的"界面相关-->
+    <string name="home_mine_username_tips">用户名</string>
 </resources>

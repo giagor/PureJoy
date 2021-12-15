@@ -48,8 +48,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/home_discover_padding_left"
-        android:paddingEnd="@dimen/home_discover_padding_right"
+        android:paddingStart="@dimen/home_padding_left"
+        android:paddingEnd="@dimen/home_padding_right"
         android:scrollbars="none">
 
         <LinearLayout
