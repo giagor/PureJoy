@@ -1,7 +1,6 @@
 package com.topview.purejoy.musiclibrary.common.util
 
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
@@ -11,10 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.topview.purejoy.common.app.CommonApplication
-import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.musiclibrary.R
-import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
-import com.topview.purejoy.musiclibrary.player.client.BinderPoolClient
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 /**
@@ -88,25 +84,6 @@ fun loadBitmapColor(url: String, action: (Int) -> Unit) {
     })
 }
 
-/**
- * CommonActivity的拓展方法，为了方便连接音乐服务和获取服务客户端的单例
- */
-fun CommonActivity.getAndConnectService(clazz: Class<*>): BinderPoolClient {
-    val client = BinderPoolClientInstance.getInstance().getClient(clazz)
-    client.connectService()
-    return client
-}
-
-
-fun CommonActivity.getDisplaySize(): Rect {
-    val rect = Rect()
-    rect.left = 0
-    rect.top = 0
-    val metrics = resources.displayMetrics
-    rect.right = metrics.widthPixels
-    rect.bottom = metrics.heightPixels
-    return rect
-}
 
 /**
  * 将数字转换为时间格式的字符串

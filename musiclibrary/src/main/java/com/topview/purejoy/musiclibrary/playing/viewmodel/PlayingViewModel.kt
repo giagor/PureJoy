@@ -3,7 +3,7 @@ package com.topview.purejoy.musiclibrary.playing.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.musiclibrary.entity.MusicItem
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.musiclibrary.playing.entity.LrcResponse
 import com.topview.purejoy.musiclibrary.playing.repository.PlayingRepository
 

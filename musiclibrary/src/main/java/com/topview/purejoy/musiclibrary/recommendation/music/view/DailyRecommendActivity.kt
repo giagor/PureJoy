@@ -1,43 +1,30 @@
 package com.topview.purejoy.musiclibrary.recommendation.music.view
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.common.music.service.entity.wrap
+import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.util.showToast
-import com.topview.purejoy.musiclibrary.IPCDataSetChangeListener
-import com.topview.purejoy.musiclibrary.IPCItemChangeListener
 import com.topview.purejoy.musiclibrary.R
-import com.topview.purejoy.musiclibrary.common.MusicCommonActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
-import com.topview.purejoy.musiclibrary.common.util.buildSwatch
-import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
-import com.topview.purejoy.musiclibrary.data.Wrapper
-import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.recommendation.music.adapter.DailyRecommendAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.recommendation.music.viemmodel.DailySongsViewModel
-import com.topview.purejoy.musiclibrary.service.MusicService
 
 class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
 

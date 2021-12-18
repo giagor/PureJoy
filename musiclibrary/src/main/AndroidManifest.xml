@@ -20,9 +20,7 @@
             android:name=".recommendation.music.view.DailyRecommendActivity"
             android:exported="false" />
 
-        <service
-            android:name=".service.MusicService"
-            android:process=":music" />
+
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 
