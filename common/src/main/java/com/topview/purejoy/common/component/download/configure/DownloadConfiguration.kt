@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient
 
 /**
  * Created by giagor on 2021/12/18
- * 
+ *
  * 下载的配置类
  * */
 abstract class DownloadConfiguration {

@@ -4,7 +4,7 @@ import java.io.InputStream
 
 /**
  * Created by giagor on 2021/12/18
- * 
+ *
  * 获取资源实体信息时的回调接口
  * */
 interface ResourceDataCallback {
