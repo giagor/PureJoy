@@ -4,6 +4,8 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 /**
+ * Created by giagor on 2021/12/18
+ *
  * 默认的下载配置类
  * */
 open class DefaultDownloadConfiguration : DownloadConfiguration() {

@@ -1,6 +1,8 @@
 package com.topview.purejoy.common.component.download.listener.net
 
 /**
+ * Created by giagor on 2021/12/18
+ * 
  * 获取资源的长度等信息时的回调接口，一般是使用HEAD方法请求资源的信息，然后根据服务端是否支持Range的范围请求，
  * 回调不同的接口
  * */
