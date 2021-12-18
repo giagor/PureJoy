@@ -1,8 +1,8 @@
 package com.topview.purejoy.musiclibrary.recommendation.music.entity
 
-import com.topview.purejoy.musiclibrary.data.Wrapper
-import com.topview.purejoy.musiclibrary.entity.MusicItem
-import com.topview.purejoy.musiclibrary.entity.wrap
+import com.topview.purejoy.common.music.data.Wrapper
+import com.topview.purejoy.common.music.service.entity.MusicItem
+import com.topview.purejoy.common.music.service.entity.wrap
 
 data class RecommendReason(val songId: Long, val reason: String)
 

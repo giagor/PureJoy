@@ -6,7 +6,7 @@ import android.widget.*
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.util.loadBitmap
-import com.topview.purejoy.musiclibrary.entity.MusicItem
+import com.topview.purejoy.common.music.service.entity.MusicItem
 
 class RecommendPop(context: Context, width: Int, height: Int, val outWindow: Window) {
 

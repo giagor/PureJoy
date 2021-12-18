@@ -3,17 +3,17 @@ package com.topview.purejoy.musiclibrary.playing.view
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import com.topview.purejoy.common.IPCPlayerController
 import com.topview.purejoy.common.base.CommonFragment
-import com.topview.purejoy.musiclibrary.IPCPlayerController
+import com.topview.purejoy.common.music.instance.BinderPoolClientInstance
+import com.topview.purejoy.common.music.player.client.BinderPoolClient
+import com.topview.purejoy.common.music.player.impl.ipc.BinderPool
+import com.topview.purejoy.common.music.service.MusicService
 import com.topview.purejoy.musiclibrary.R
-import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
-import com.topview.purejoy.musiclibrary.player.client.BinderPoolClient
-import com.topview.purejoy.musiclibrary.player.impl.ipc.BinderPool
 import com.topview.purejoy.musiclibrary.playing.entity.LrcItem
 import com.topview.purejoy.musiclibrary.playing.util.LrcParser
 import com.topview.purejoy.musiclibrary.playing.view.widget.LrcView
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
-import com.topview.purejoy.musiclibrary.service.MusicService
 
 class PlayingLrcFragment : CommonFragment() {
     private lateinit var lrcView: LrcView
