@@ -3,12 +3,14 @@ package com.topview.purejoy.musiclibrary.playlist.square.view
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
-import com.topview.purejoy.musiclibrary.common.MusicCommonActivity
+import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.playlist.square.adapter.PlaylistSquareFragmentAdapter
 import com.topview.purejoy.musiclibrary.playlist.square.viewmodel.PlaylistSquareViewModel
 
@@ -52,5 +54,9 @@ class PlaylistSquareActivity : MusicCommonActivity<PlaylistSquareViewModel>() {
 
     override fun getViewModelClass(): Class<PlaylistSquareViewModel> {
         return PlaylistSquareViewModel::class.java
+    }
+
+    override fun createFactory(): ViewModelProvider.Factory {
+        return DefaultFactory.getInstance()
     }
 }

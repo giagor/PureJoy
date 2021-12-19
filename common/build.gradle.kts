@@ -40,6 +40,16 @@ android {
 dependencies {
     implementation(project(":dependencies"))
 
+    val roomVersion = "2.3.0"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$roomVersion")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+
     // compose
     implementation(Deps.Compose.composeUiToolingPreview)
     // Coil

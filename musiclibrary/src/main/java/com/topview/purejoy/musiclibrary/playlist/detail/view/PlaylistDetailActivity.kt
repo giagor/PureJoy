@@ -10,30 +10,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.common.music.data.Wrapper
+import com.topview.purejoy.common.music.service.entity.MusicItem
+import com.topview.purejoy.common.music.service.entity.wrap
+import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
-import com.topview.purejoy.musiclibrary.IPCDataSetChangeListener
-import com.topview.purejoy.musiclibrary.IPCItemChangeListener
 import com.topview.purejoy.musiclibrary.R
-import com.topview.purejoy.musiclibrary.common.MusicCommonActivity
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
-import com.topview.purejoy.musiclibrary.common.instance.BinderPoolClientInstance
-import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
-import com.topview.purejoy.musiclibrary.common.util.ExecutorInstance
-import com.topview.purejoy.musiclibrary.common.util.getDisplaySize
+import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
-import com.topview.purejoy.musiclibrary.data.Wrapper
-import com.topview.purejoy.musiclibrary.entity.MusicItem
-import com.topview.purejoy.musiclibrary.entity.getMusicItem
-import com.topview.purejoy.musiclibrary.entity.wrap
 import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
-import com.topview.purejoy.musiclibrary.service.MusicService
 
 class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
 
@@ -158,7 +152,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             dataController?.addAll(list)
             playerController?.jumpTo(position)
 
-            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 500)
+//            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 500)
         }
     }
 
@@ -185,5 +179,9 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
 
     companion object {
         const val PLAYLIST_EXTRA = "playlist"
+    }
+
+    override fun createFactory(): ViewModelProvider.Factory {
+        return DefaultFactory.getInstance()
     }
 }

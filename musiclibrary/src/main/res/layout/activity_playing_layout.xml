@@ -4,7 +4,7 @@
     <data>
         <variable
             name="playingItem"
-            type="com.topview.purejoy.musiclibrary.entity.MusicItem" />
+            type="com.topview.purejoy.common.music.service.entity.MusicItem" />
     </data>
 
     <LinearLayout

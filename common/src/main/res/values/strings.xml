@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_order_mode">顺序播放</string>
+    <string name="pop_random_mode">随机播放</string>
+    <string name="pop_loop_mode">单曲循环</string>
+    <string name="common_unknown">未知</string>
+    <string name="clear_playing_msg">确定要清空播放列表吗?</string>
+    <string name="ensure">确定</string>
+    <string name="cancel">取消</string>
+    <string name="current_playing">当前播放</string>
+    <string name="zero_playing">(0)</string>
+</resources>

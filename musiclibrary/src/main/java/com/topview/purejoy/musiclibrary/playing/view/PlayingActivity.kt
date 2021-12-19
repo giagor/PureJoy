@@ -1,28 +1,16 @@
 package com.topview.purejoy.musiclibrary.playing.view
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.topview.purejoy.musiclibrary.*
-import com.topview.purejoy.musiclibrary.common.MusicBindingActivity
+import com.topview.purejoy.common.music.activity.MusicBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.transformation.MusicItemTransformation
 import com.topview.purejoy.musiclibrary.common.util.*
-import com.topview.purejoy.musiclibrary.data.Wrapper
-import com.topview.purejoy.musiclibrary.entity.MusicItem
-import com.topview.purejoy.musiclibrary.entity.getMusicItem
-import com.topview.purejoy.musiclibrary.entity.wrap
-import com.topview.purejoy.musiclibrary.player.setting.MediaModeSetting
-import com.topview.purejoy.musiclibrary.player.util.castAs
-import com.topview.purejoy.musiclibrary.playing.view.pop.MusicPopUpWrapper
-import com.topview.purejoy.musiclibrary.playing.view.pop.PopAdapter
+import com.topview.purejoy.common.music.player.setting.MediaModeSetting
 import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
 

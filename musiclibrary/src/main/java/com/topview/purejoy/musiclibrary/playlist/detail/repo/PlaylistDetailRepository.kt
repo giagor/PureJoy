@@ -1,7 +1,7 @@
 package com.topview.purejoy.musiclibrary.playlist.detail.repo
 
 import com.topview.purejoy.common.net.ServiceCreator
-import com.topview.purejoy.musiclibrary.entity.MusicResponse
+import com.topview.purejoy.common.music.service.entity.MusicResponse
 import com.topview.purejoy.musiclibrary.playlist.detail.service.PlaylistDetailService
 import com.topview.purejoy.musiclibrary.playlist.entity.PlaylistResponse
 import retrofit2.Call

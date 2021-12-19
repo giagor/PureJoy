@@ -2,4 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.topview.purejoy.common">
 
+    <application>
+
+        <service
+            android:name="com.topview.purejoy.common.music.service.MusicService"
+            android:process=":music" />
+
+    </application>
+
 </manifest>
