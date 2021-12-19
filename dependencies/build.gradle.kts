@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -54,4 +55,8 @@ dependencies {
     api(Deps.baseRecyclerViewAdapterHelper)
     // RecyclerView - GravitySnapHelper
     api(Deps.gravitySnapHelper)
+    
+    // Room
+    api(Deps.Room.roomRuntime)
+    kapt(Deps.Room.roomCompiler)
 }

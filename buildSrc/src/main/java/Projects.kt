@@ -68,6 +68,12 @@ object Deps {
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
+    object Room{
+        private const val version = "2.3.0"
+        const val roomRuntime = "androidx.room:room-runtime:$version"
+        const val roomCompiler = "androidx.room:room-compiler:$version"
+    }
+    
     const val material = "com.google.android.material:material:1.4.0"
 
     const val okhttp = "com.squareup.okhttp3:okhttp:4.9.2"
