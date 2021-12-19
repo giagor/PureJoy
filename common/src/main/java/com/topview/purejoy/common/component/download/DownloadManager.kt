@@ -44,7 +44,7 @@ object DownloadManager {
      * @param applicationContext 通常是Application context
      * @param configuration 配置(可选项)
      * */
-    fun init(applicationContext: Context, configuration: DownloadConfiguration?) {
+    fun init(applicationContext: Context, configuration: DownloadConfiguration? = null) {
         // 防止重复初始化
         if (init) {
             return

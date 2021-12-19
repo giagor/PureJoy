@@ -6,7 +6,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
-import android.util.Log
+import com.topview.purejoy.common.component.download.DownloadManager
 
 class CommonApplication : Application() {
     companion object {
@@ -19,6 +19,17 @@ class CommonApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+
+        if (isAppMainProcess()) {
+            initDownloadLibrary()
+        }
+    }
+
+    /**
+     * 对下载库进行初始化
+     * */
+    private fun initDownloadLibrary() {
+        DownloadManager.init(this)
     }
 
     /**

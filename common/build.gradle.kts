@@ -48,4 +48,8 @@ dependencies {
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
+    
+    // 虽然在dependencies模块添加了Room的依赖以及注解处理器kapt，但是在使用到Room的模块中仍然
+    // 需要单独添加kapt
+    kapt(Deps.Room.roomCompiler)
 }
