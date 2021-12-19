@@ -20,6 +20,10 @@ class BatchDownloadTask {
      * 添加任务
      *
      * @param identifier 任务对应的标识符，每个任务的标识符需要不一样
+     * @param url 要下载的文件的url
+     * @param saveDir 要保存到的目录，例如/storage/emulated/0/Android/data/packagename/files/Music
+     * @param name 文件名，需要自己带上后缀名
+     * @param listener 监听器，可以继承SimpleUserDownloadListener实现监听
      * */
     fun addTask(
         identifier: Int,

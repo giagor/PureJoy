@@ -22,8 +22,40 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  * Created by giagor on 2021/12/18
  *
  * 下载的管理类
+ *
+ * 使用方式：
+ * 1.初始化(推荐在Application中)：DownloadManager.init(...)
+ *
+ * 2.下载单个任务
+ * 调用方式：
+ * val task : DownloadTask = DownloadManager.download(url,saveDir,name,listener)
+ * 暂停下载：
+ * task.pauseDownload()
+ * 从暂停中恢复下载：
+ * task.resumeDownload()
+ * 取消下载：
+ * task.cancelDownload()
+ *
+ * 3.批量下载(下载多个任务)
+ * 调用方式：
+ *  val batchDownloadTask : BatchDownloadTask = DownloadManager.batchDownload()
+ *      .addTask(1, url1, saveDir1, name1, listener1)
+ *      .addTask(2, url2, saveDir2, name2, listener2)
+ *      .addTask(3, url3, saveDir3, name3, listener3)
+ *      .addTask(4, url4, saveDir4, name4, listener4)
+ *      .addTask(5, url5, saveDir5, name5, listener5)
+ *      .addTask(6, url6, saveDir6, name6, listener6)
+ *      .addTask(7, url7, saveDir7, name7, listener7)
+ *      .downloadAll()
+ * 获取某个具体的任务(通过标识符获取)：
+ * val task : DownloadTask? = batchDownloadTask.getTask(1)
+ * 暂停下载某个具体任务：
+ * task?.pauseDownload()
+ * 从暂停中恢复下载某个具体任务：
+ * task?.resumeDownload()
+ * 取消下载某个具体任务：
+ * task?.cancelDownload()
  * */
-// todo 使用方式
 object DownloadManager {
 
     /**
@@ -65,8 +97,9 @@ object DownloadManager {
      * 用户调用该方法，进行任务的下载
      *
      * @param url 要下载的文件的url
-     * @param saveDir 要保存到的目录
-     * @param name 文件名
+     * @param saveDir 要保存到的目录，例如/storage/emulated/0/Android/data/packagename/files/Music
+     * @param name 文件名，需要自己带上后缀名
+     * @param listener 监听器，可以继承SimpleUserDownloadListener实现监听
      * */
     fun download(
         url: String,
