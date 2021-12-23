@@ -5,8 +5,10 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Environment
 import android.os.Process
 import com.topview.purejoy.common.component.download.DownloadManager
+import java.io.File
 
 class CommonApplication : Application() {
     companion object {
@@ -14,6 +16,10 @@ class CommonApplication : Application() {
         private lateinit var context: Context
 
         fun getContext() = context
+
+        val musicPath: File by lazy {
+            context.getExternalFilesDir(Environment.DIRECTORY_MUSIC)!!
+        }
     }
 
     override fun onCreate() {
