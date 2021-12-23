@@ -1,10 +1,7 @@
 package com.topview.purejoy.musiclibrary.playlist.detail.view
 
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -13,8 +10,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.topview.purejoy.common.app.CommonApplication
+import com.topview.purejoy.common.component.download.DownloadManager
+import com.topview.purejoy.common.component.download.util.md5
 import com.topview.purejoy.common.music.activity.MusicCommonActivity
 import com.topview.purejoy.common.music.data.Wrapper
+import com.topview.purejoy.common.music.player.impl.cache.DiskCache
 import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
@@ -24,7 +25,6 @@ import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
-import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
@@ -39,8 +39,8 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 item ->
             item?.let {
                 val w = it.wrap()
-                val items = playItems.value
-                if (items == null || items.isEmpty()) {
+                val items = viewModel.songsResponse.value!!.songs
+                if (items.isEmpty()) {
                     dataController?.add(w)
                     playerController?.jumpTo(0)
                 } else {
@@ -58,16 +58,22 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
         }
         p.addItemView(R.drawable.download_32, R.string.download) {
             // 下载
-
+            it?.let { item ->
+                if (item.url != null) {
+                    val name = "${DiskCache.MD5Digest.getInstance()
+                        .digest(item.url!!)}/${item.url!!.substring(item.url!!.lastIndexOf('.'))}"
+                    DownloadManager.download(item.url!!,
+                        CommonApplication.musicPath.absolutePath,
+                        name, null)
+                    popWindow.window.dismiss()
+                } else {
+                    viewModel.requestUrl(item.id)
+                }
+            }
             popWindow.window.dismiss()
         }
         p
     }
-
-
-
-    private val handler = Handler(Looper.getMainLooper())
-
 
 
 
@@ -106,6 +112,36 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 descriptionTx.text = it.playlist.description
                 val t = "(${it.playlist.trackCount})"
                 countTx.text = t
+            }
+        }
+
+        viewModel.urlResponse.observe(this) {
+            if (it == null) {
+                showToast(this, "请求错误", Toast.LENGTH_SHORT)
+            } else {
+                it.data.forEach { item ->
+                    var music: MusicItem? = null
+                    for (m in adapter.data) {
+                        if (m.id == item.id) {
+                            music = m
+                            break
+                        }
+                    }
+                    if (item.url.isEmpty()) {
+                        showToast(this, "歌曲${music?.name}不能下载", Toast.LENGTH_SHORT)
+                    } else {
+                        music?.url = item.url
+                        showToast(this, "已加入下载任务队列",
+                            Toast.LENGTH_SHORT)
+                        val name = "${md5(item.url)}${item.url.substring(item.url.lastIndexOf('.'))}"
+                        DownloadManager.download(item.url,
+                            CommonApplication.musicPath.path,
+                            name, null)
+                        if (item.id == popWindow.data?.id) {
+                            popWindow.window.dismiss()
+                        }
+                    }
+                }
             }
         }
 
