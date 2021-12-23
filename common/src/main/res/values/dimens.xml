@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App界面左右间距的统一 -->
+    <dimen name="common_padding_left">15dp</dimen>
+    <dimen name="common_padding_right">15dp</dimen>
+</resources>

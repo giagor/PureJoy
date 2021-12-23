@@ -44,9 +44,9 @@ class RecommendNewSongDecoration : RecyclerView.ItemDecoration() {
         } else {
             // 最后一列
             val discoverPaddingLeft =
-                parent.context.resources.getDimension(R.dimen.home_padding_left)
+                parent.context.resources.getDimension(R.dimen.common_padding_left)
             val discoverPaddingRight =
-                parent.context.resources.getDimension(R.dimen.home_padding_right)
+                parent.context.resources.getDimension(R.dimen.common_padding_right)
             val itemWidthSmallerThanScreen = parent.context.resources
                 .getDimension(R.dimen.home_discover_recommend_new_song_item_width_smaller_than_screen)
             outRect.right =

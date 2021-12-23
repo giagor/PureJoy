@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Home界面的统一-->
-    <dimen name="home_padding_left">15dp</dimen>
-    <dimen name="home_padding_right">15dp</dimen>
-    
     <!--Discover界面-->
     <dimen name="home_search_ic_width">15dp</dimen>
     <dimen name="home_search_ic_height">15dp</dimen>

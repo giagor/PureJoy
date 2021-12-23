@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         tools:context=".mine.HomeMineFragment"
         android:orientation="vertical"
-        android:paddingStart="@dimen/home_padding_left"
-        android:paddingEnd="@dimen/home_padding_right">
+        android:paddingStart="@dimen/common_padding_left"
+        android:paddingEnd="@dimen/common_padding_right">
         
         <RelativeLayout
             android:layout_width="match_parent"
