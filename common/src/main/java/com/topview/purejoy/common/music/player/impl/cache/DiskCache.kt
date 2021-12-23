@@ -14,7 +14,7 @@ class DiskCache(
     val parent: File,
     val executor: Executor = Executors.newCachedThreadPool(),
     val listener: DiskCacheListener? = null,
-    val digest: Digest? = MD5Digest(),
+    val digest: Digest? = MD5Digest.getInstance(),
     val suffix: String? = null)
     : Cache<InputStream> {
 
@@ -99,6 +99,22 @@ class DiskCache(
             val m = MessageDigest.getInstance("MD5")
             m.update(url.toByteArray())
             return BigInteger(1, m.digest()).toString(16)
+        }
+
+        companion object {
+            @Volatile
+            private var instance: MD5Digest? = null
+
+            fun getInstance(): MD5Digest {
+                if (instance == null) {
+                    synchronized(this) {
+                        if (instance == null) {
+                            instance = MD5Digest()
+                        }
+                    }
+                }
+                return instance!!
+            }
         }
     }
 
