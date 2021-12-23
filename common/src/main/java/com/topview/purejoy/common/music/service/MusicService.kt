@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.topview.purejoy.common.IPCListenerController
 import com.topview.purejoy.common.IPCModeController
 import com.topview.purejoy.common.IPCPlayerController
+import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.music.service.transformation.MusicItemTransformation
 import com.topview.purejoy.common.music.service.transformation.WrapperTransformation
 import com.topview.purejoy.common.music.util.ExecutorInstance
@@ -34,6 +35,7 @@ import com.topview.purejoy.common.music.service.recover.db.entity.RecoverALData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverARData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverMusicData
 import com.topview.purejoy.common.music.service.recover.db.initDB
+import com.topview.purejoy.common.music.service.url.cache.MusicCacheStrategy
 import com.topview.purejoy.common.music.service.url.viewmodel.MusicURLViewModel
 import com.topview.purejoy.common.music.service.url.viewmodel.MusicURLViewModelImpl
 import okhttp3.*
@@ -275,7 +277,8 @@ class MusicService : MediaService<MusicItem>() {
             file.mkdirs()
         }
         val maxSize = Runtime.getRuntime().freeMemory() / 8
-        val cs = CacheStrategyImpl(cacheDirectory = file, maxMemorySize = maxSize.toInt())
+        val cs = MusicCacheStrategy(cacheDirectory = file, maxMemorySize = maxSize.toInt(),
+            downloadDir = CommonApplication.musicPath)
         cs.loader = object : CacheLoader {
             override fun load(url: String) {
                 val request = Request.Builder().url(url).build()
