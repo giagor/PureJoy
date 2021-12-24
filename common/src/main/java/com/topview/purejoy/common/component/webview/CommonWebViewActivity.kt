@@ -36,8 +36,13 @@ open class CommonWebViewActivity : CommonActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     protected fun initSettings() {
         val webSettings: WebSettings = webView.settings
+        // 调整图片至适合webview的大小
+        webSettings.useWideViewPort = true;
+        // 缩放至屏幕的大小
+        webSettings.loadWithOverviewMode = true;
+        // 开启javascript
         webSettings.javaScriptEnabled = true
-
+        // 网页在WebView中显示，而不是去打开系统浏览器
         webView.webViewClient = WebViewClient()
     }
 
