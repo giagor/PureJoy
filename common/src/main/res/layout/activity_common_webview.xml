@@ -9,6 +9,14 @@
 
     <include layout="@layout/webview_title_bar"/>
     
+    <ProgressBar
+        android:id="@+id/common_pb_loading_progress"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:max="100"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/common_bg_progressbar_loading_style"/>
+    
     <WebView
         android:id="@+id/common_wv"
         android:layout_width="match_parent"

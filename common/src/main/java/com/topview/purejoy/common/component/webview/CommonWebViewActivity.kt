@@ -2,15 +2,19 @@ package com.topview.purejoy.common.component.webview
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ProgressBar
 import com.topview.purejoy.common.R
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.component.webview.WebViewConstant.URL_EXTRA
 
 open class CommonWebViewActivity : CommonActivity() {
     protected lateinit var webView: WebView
+    protected lateinit var progressBar: ProgressBar
     protected lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +35,7 @@ open class CommonWebViewActivity : CommonActivity() {
 
     protected fun initViews() {
         webView = findViewById(R.id.common_wv)
+        progressBar = findViewById(R.id.common_pb_loading_progress)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -44,9 +49,24 @@ open class CommonWebViewActivity : CommonActivity() {
         webSettings.javaScriptEnabled = true
         // 网页在WebView中显示，而不是去打开系统浏览器
         webView.webViewClient = WebViewClient()
+        // 设置ProgressWebChromeClient主要是为了显示网页加载进度条
+        webView.webChromeClient = ProgressWebChromeClient()
     }
 
     protected fun initData() {
         webView.loadUrl(url)
+    }
+
+    private inner class ProgressWebChromeClient : WebChromeClient() {
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            if (newProgress == 100) {
+                progressBar.visibility = View.GONE
+            } else {
+                if (progressBar.visibility != View.VISIBLE) {
+                    progressBar.visibility = View.VISIBLE
+                }
+                progressBar.progress = newProgress
+            }
+        }
     }
 }
