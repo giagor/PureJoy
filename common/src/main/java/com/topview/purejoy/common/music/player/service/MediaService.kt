@@ -30,6 +30,7 @@ import com.topview.purejoy.common.music.player.util.cast
 import com.topview.purejoy.common.music.player.util.castAs
 import com.topview.purejoy.common.music.player.util.ensureSecurity
 import java.lang.ref.WeakReference
+import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class MediaService<T : Item> : Service(), Loader {
     protected val mainHandler: Handler by lazy {
@@ -75,9 +76,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
      * 初始化IPCDataController
      */
     private fun initDataController(position: Position): IPCDataControllerImpl<T> {
-        val dataSource = DataSource<T>()
+        val dataSource = DataSource<T>(list = CopyOnWriteArrayList())
 
-        val wrappers = DataSource<Wrapper>()
+        val wrappers = DataSource<Wrapper>(list = CopyOnWriteArrayList())
         
         position.max = dataSource.size
         val dataController = IPCDataControllerImpl(
@@ -87,7 +88,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
                 if (wrapper == null) {
                     reportOperator(code, null)
                 } else {
-                    reportOperator(code, itemTransformation?.transform(wrapper))
+                    reportOperator(code, itemTransformation.transform(wrapper))
                 }
             }, position = position, transformation = itemTransformation)
         return dataController
@@ -302,9 +303,12 @@ abstract class MediaService<T : Item> : Service(), Loader {
         realController.listenerManger.registerChangeListener(object : PlayStateChangeListener {
             override fun onChange(value: Boolean) {
                 listenerController.invokePlayStateChangeListener(value)
-                showForeground(itemTransformation.transform(
-                    source[realController.position.current()])!!,
-                    realController.isPlaying())
+                val p = realController.position.current()
+                if (source.isNotEmpty() && p < source.size) {
+                    showForeground(itemTransformation.transform(
+                        source[realController.position.current()])!!,
+                        realController.isPlaying())
+                }
             }
         })
 

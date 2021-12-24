@@ -121,7 +121,7 @@ class DiskCache(
     override fun get(key: String): String? {
         val file = File(parent, obtainPath(key))
         return if (file.exists()) {
-            file.absolutePath
+            file.path
         } else {
             null
         }

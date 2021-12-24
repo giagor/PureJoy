@@ -67,6 +67,7 @@ abstract class MusicCommonActivity<VM : MVVMViewModel>
         object : IPCDataSetChangeListener.Stub() {
             override fun onChange(source: MutableList<Wrapper>) {
                 if (source.isEmpty()) {
+                    currentItem.postValue(null)
                     playItems.postValue(mutableListOf())
                 } else {
                     val list = playItems.value ?: mutableListOf()

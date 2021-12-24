@@ -1,5 +1,6 @@
 package com.topview.purejoy.musiclibrary.playlist.detail.view
 
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.LinearLayout
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.util.md5
 import com.topview.purejoy.common.music.activity.MusicCommonActivity
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.player.impl.cache.DiskCache
@@ -25,6 +25,7 @@ import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
+import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
@@ -133,7 +134,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                         music?.url = item.url
                         showToast(this, "已加入下载任务队列",
                             Toast.LENGTH_SHORT)
-                        val name = "${md5(item.url)}${item.url.substring(item.url.lastIndexOf('.'))}"
+                        val name = "${DiskCache.MD5Digest.getInstance().digest(item.url)}${item.url.substring(item.url.lastIndexOf('.'))}"
                         DownloadManager.download(item.url,
                             CommonApplication.musicPath.path,
                             name, null)
@@ -187,7 +188,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
             }
             dataController?.addAll(list)
             playerController?.jumpTo(position)
-
+            startActivity(Intent(this, PlayingActivity::class.java))
 //            handler.postDelayed({ startActivity(Intent(this@PlaylistDetailActivity, PlayingActivity::class.java)) }, 500)
         }
     }
