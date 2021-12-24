@@ -7,6 +7,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
 import android.widget.ProgressBar
 import com.topview.purejoy.common.R
 import com.topview.purejoy.common.base.CommonActivity
@@ -15,6 +16,7 @@ import com.topview.purejoy.common.component.webview.WebViewConstant.URL_EXTRA
 open class CommonWebViewActivity : CommonActivity() {
     protected lateinit var webView: WebView
     protected lateinit var progressBar: ProgressBar
+    protected lateinit var ivBackArrow: ImageView
     protected lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,7 @@ open class CommonWebViewActivity : CommonActivity() {
 
         initVariables()
         initViews()
+        initEvent()
         initSettings()
         initData()
     }
@@ -35,7 +38,18 @@ open class CommonWebViewActivity : CommonActivity() {
 
     protected fun initViews() {
         webView = findViewById(R.id.common_wv)
+        ivBackArrow = findViewById(R.id.common_iv_back_arrow)
         progressBar = findViewById(R.id.common_pb_loading_progress)
+    }
+
+    protected fun initEvent() {
+        ivBackArrow.setOnClickListener {
+            if (webView.canGoBack()) {
+                webView.goBack()
+            } else {
+                finish()
+            }
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -67,6 +81,14 @@ open class CommonWebViewActivity : CommonActivity() {
                 }
                 progressBar.progress = newProgress
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
         }
     }
 }
