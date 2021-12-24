@@ -18,7 +18,7 @@ class MusicCacheStrategy(val downloadDir: File,
             val file = File(downloadDir, DiskCache.MD5Digest.getInstance()
                 .digest(key) + (suffix ?: key.substring(key.lastIndexOf('.'))))
             if (file.exists()) {
-                value = file.absolutePath
+                value = file.path
             }
         }
         return value
