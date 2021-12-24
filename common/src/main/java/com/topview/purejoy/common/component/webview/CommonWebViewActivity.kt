@@ -9,6 +9,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import com.topview.purejoy.common.R
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.component.webview.WebViewConstant.URL_EXTRA
@@ -17,6 +18,7 @@ open class CommonWebViewActivity : CommonActivity() {
     protected lateinit var webView: WebView
     protected lateinit var progressBar: ProgressBar
     protected lateinit var ivBackArrow: ImageView
+    protected lateinit var tvTitle: TextView
     protected lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +41,7 @@ open class CommonWebViewActivity : CommonActivity() {
     protected fun initViews() {
         webView = findViewById(R.id.common_wv)
         ivBackArrow = findViewById(R.id.common_iv_back_arrow)
+        tvTitle = findViewById(R.id.common_tv_title)
         progressBar = findViewById(R.id.common_pb_loading_progress)
     }
 
@@ -63,15 +66,15 @@ open class CommonWebViewActivity : CommonActivity() {
         webSettings.javaScriptEnabled = true
         // 网页在WebView中显示，而不是去打开系统浏览器
         webView.webViewClient = WebViewClient()
-        // 设置ProgressWebChromeClient主要是为了显示网页加载进度条
-        webView.webChromeClient = ProgressWebChromeClient()
+        // 设置WebChromeClient
+        webView.webChromeClient = CustomWebChromeClient()
     }
 
     protected fun initData() {
         webView.loadUrl(url)
     }
 
-    private inner class ProgressWebChromeClient : WebChromeClient() {
+    private inner class CustomWebChromeClient : WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             if (newProgress == 100) {
                 progressBar.visibility = View.GONE
@@ -80,6 +83,12 @@ open class CommonWebViewActivity : CommonActivity() {
                     progressBar.visibility = View.VISIBLE
                 }
                 progressBar.progress = newProgress
+            }
+        }
+
+        override fun onReceivedTitle(view: WebView?, title: String?) {
+            title?.let {
+                tvTitle.text = it
             }
         }
     }
