@@ -3,11 +3,13 @@
     package="com.topview.purejoy.common">
 
     <application>
+        <activity
+            android:name=".component.webview.CommonWebViewActivity"
+            android:exported="false" />
 
         <service
-            android:name="com.topview.purejoy.common.music.service.MusicService"
+            android:name=".music.service.MusicService"
             android:process=":music" />
-
     </application>
 
 </manifest>
