@@ -35,6 +35,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Deps.Compose.version
     }
+    kapt {
+        arguments {
+            arg("AROUTER_MODULE_NAME", project.getName())
+        }
+    }
 }
 
 dependencies {
@@ -67,4 +72,7 @@ dependencies {
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
+
+    // ARouter-kapt
+    kapt(Deps.ARouter.arouterCompile)
 }

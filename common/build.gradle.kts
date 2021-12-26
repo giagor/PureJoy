@@ -35,6 +35,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Deps.Compose.version
     }
+    kapt {
+        arguments {
+            arg("AROUTER_MODULE_NAME", project.getName())
+        }
+    }
 }
 
 dependencies {
@@ -62,4 +67,7 @@ dependencies {
     // 虽然在dependencies模块添加了Room的依赖以及注解处理器kapt，但是在使用到Room的模块中仍然
     // 需要单独添加kapt
     kapt(Deps.Room.roomCompiler)
+    
+    // ARouter-kapt
+    kapt(Deps.ARouter.arouterCompile)
 }
