@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.os.Process
+import com.alibaba.android.arouter.launcher.ARouter
 import com.topview.purejoy.common.component.download.DownloadManager
 import java.io.File
 
@@ -29,6 +31,7 @@ class CommonApplication : Application() {
         if (isAppMainProcess()) {
             initDownloadLibrary()
         }
+        initARouter()
     }
 
     /**
@@ -36,6 +39,17 @@ class CommonApplication : Application() {
      * */
     private fun initDownloadLibrary() {
         DownloadManager.init(this)
+    }
+
+    /**
+     * 对ARouter进行初始化
+     * */
+    private fun initARouter() {
+        if (isDebugVersion(this)) {
+            ARouter.openLog()
+            ARouter.openDebug()
+        }
+        ARouter.init(this)
     }
 
     /**
@@ -71,5 +85,18 @@ class CommonApplication : Application() {
     @Throws(PackageManager.NameNotFoundException::class)
     private fun getMainProcessName(context: Context): String? {
         return context.packageManager.getApplicationInfo(context.packageName, 0).processName
+    }
+
+    /**
+     * 判断是否为debug版本
+     * */
+    private fun isDebugVersion(context: Context): Boolean {
+        try {
+            val info: ApplicationInfo = context.applicationInfo
+            return (info.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
