@@ -27,7 +27,8 @@ object Deps {
         const val uiDebugTool = "androidx.compose.ui:ui-tooling:$version"
         const val junitTest = "androidx.compose.ui:ui-test-junit4:$version"
 
-        const val constraintLayoutDSL = "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+        const val constraintLayoutDSL =
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
     }
 
     object Navigation {
@@ -68,27 +69,37 @@ object Deps {
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
 
-    object Room{
+    object Room {
         private const val version = "2.3.0"
         const val roomRuntime = "androidx.room:room-runtime:$version"
         const val roomCompiler = "androidx.room:room-compiler:$version"
     }
-    
+
+    object ARouter {
+        private const val version = "1.5.2"
+        const val arouterApi = "com.alibaba:arouter-api:$version"
+        const val arouterCompile = "com.alibaba:arouter-compiler:$version"
+    }
+
     const val material = "com.google.android.material:material:1.4.0"
 
     const val okhttp = "com.squareup.okhttp3:okhttp:4.9.2"
 
     const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+
     // Retrofit的gson转换器
     const val retrofitGsonConverter = "com.squareup.retrofit2:converter-gson:2.9.0"
 
     const val glide = "com.github.bumptech.glide:glide:4.12.0"
 
     // RecyclerView - BaseRecyclerViewAdapterHelper
-    const val baseRecyclerViewAdapterHelper = "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
+    const val baseRecyclerViewAdapterHelper =
+        "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
+
     // RecyclerView - GravitySnapHelper
     const val gravitySnapHelper = "com.github.rubensousa:gravitysnaphelper:2.2.2"
 }
+
 object TestDeps {
 
     object Local {

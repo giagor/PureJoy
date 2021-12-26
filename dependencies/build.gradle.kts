@@ -59,4 +59,7 @@ dependencies {
     // Room
     api(Deps.Room.roomRuntime)
     kapt(Deps.Room.roomCompiler)
+    
+    // ARouter
+    api(Deps.ARouter.arouterApi)
 }
