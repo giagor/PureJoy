@@ -149,7 +149,6 @@ class DownloadTask(
                 breakPointDownload = false
                 threadNum = 1
                 handleNewTask(tag, contentLength)
-                doClear()
                 DownloadManager.downloadDispatcher.enqueue(this@DownloadTask)
             }
         })
@@ -275,6 +274,9 @@ class DownloadTask(
      * 处理新任务
      * */
     private fun handleNewTask(tag: String, contentLength: Long) {
+        // 清除本地的文件
+        clearLocalFile()
+        
         if (multiThreadDownload) {
             initMultiThreadDownload(tag, contentLength)
         } else {
@@ -301,7 +303,7 @@ class DownloadTask(
      * */
     private fun handleRetryTask(tag: String, contentLength: Long) {
         // 删除原来的子任务
-        DownloadManager.downDbHelper.deleteSubDownloadTasksByTag(tag)
+        clearTaskInfo()
         // 当做新任务处理
         handleNewTask(tag, contentLength)
     }
@@ -355,11 +357,8 @@ class DownloadTask(
     /**
      * 删除文件 以及 清空数据库中子任务的记录
      * */
-    private fun doClear() {
-        val file = File(path)
-        if (file.exists()) {
-            file.delete()
-        }
+    private fun clearTaskInfo() {
+        clearLocalFile()
 
         if (breakPointDownload) {
             // 数据库中删除对应的子任务
@@ -367,6 +366,16 @@ class DownloadTask(
         }
     }
 
+    /**
+     * 若本地有path关联的文件，则删除
+     * */
+    private fun clearLocalFile() {
+        val file = File(path)
+        if (file.exists()) {
+            file.delete()
+        }
+    }
+    
     /**
      * 通知监听者
      * */
@@ -407,7 +416,7 @@ class DownloadTask(
     }
 
     private fun notifyCanceled() {
-        doClear()
+        clearTaskInfo()
         DownloadManager.handler.post {
             downloadListener?.onCancelled()
         }
@@ -424,7 +433,7 @@ class DownloadTask(
     }
 
     private fun notifyFailure(msg: String) {
-        doClear()
+        clearTaskInfo()
         DownloadManager.handler.post {
             downloadListener?.onFailure()
         }
