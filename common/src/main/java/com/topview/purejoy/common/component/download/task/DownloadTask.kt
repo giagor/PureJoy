@@ -101,6 +101,15 @@ class DownloadTask(
             }
 
             override fun supportRange(contentLength: Long) {
+                // 如果已经下载成功过且下载的文件仍然有效，就调用监听方法，并且return 
+                if (isAlreadyDownload(contentLength)) {
+                    status = DownloadStatus.SUCCESS
+                    DownloadManager.handler.post {
+                        downloadListener?.alreadyDownloaded()
+                    }
+                    return
+                }
+
                 // 设置任务的总大小
                 totalSize = contentLength
 
@@ -276,7 +285,7 @@ class DownloadTask(
     private fun handleNewTask(tag: String, contentLength: Long) {
         // 清除本地的文件
         clearLocalFile()
-        
+
         if (multiThreadDownload) {
             initMultiThreadDownload(tag, contentLength)
         } else {
@@ -355,6 +364,29 @@ class DownloadTask(
     }
 
     /**
+     * 判断文件是否已经下载过
+     * */
+    private fun isAlreadyDownload(contentLength: Long): Boolean {
+        val file = File(path)
+        // 文件不存在，直接返回false
+        if (!file.exists()) {
+            return false
+        }
+
+        // 文件的长度与服务器返回的长度不相等，返回false
+        if (file.length() != contentLength) {
+            return false
+        }
+
+        // 判断数据库中是否有子任务的记录，有则返回false
+        val subTasks = DownloadManager.downDbHelper.getSubDownloadTasksByTag(tag)
+        if (subTasks.isNotEmpty()) {
+            return false
+        }
+        return true
+    }
+
+    /**
      * 删除文件 以及 清空数据库中子任务的记录
      * */
     private fun clearTaskInfo() {
@@ -375,7 +407,7 @@ class DownloadTask(
             file.delete()
         }
     }
-    
+
     /**
      * 通知监听者
      * */
