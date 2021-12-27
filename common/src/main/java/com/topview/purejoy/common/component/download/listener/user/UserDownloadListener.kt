@@ -27,7 +27,7 @@ interface UserDownloadListener {
      * 通知下载已恢复，一般是用户暂停任务后，又继续下载，会回调该方法
      * */
     fun onResumed()
-    
+
     /**
      * 下载失败，一般是内部下载出现错误会回调该方法
      *
@@ -44,4 +44,9 @@ interface UserDownloadListener {
      * 通知下载成功
      * */
     fun onSuccess()
+
+    /**
+     * 通知用户该文件之前已经下载成功过了
+     * */
+    fun alreadyDownloaded()
 }

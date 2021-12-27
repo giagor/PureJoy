@@ -33,4 +33,8 @@ open class SimpleUserDownloadListener : UserDownloadListener {
     override fun onSuccess() {
 
     }
+
+    override fun alreadyDownloaded() {
+        
+    }
 }
