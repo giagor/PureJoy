@@ -1,8 +1,7 @@
 package com.topview.purejoy.common.component.download.task
 
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.net.ResourceDataCallback
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
@@ -22,12 +21,22 @@ private const val BUFFER_SIZE = 1024 * 1024
  * 1.构造器的字段需要是可变(var)的
  * 2.提供一个空构造器
  * */
-@Entity
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = DownloadTask::class,
+        parentColumns = ["id"],
+        childColumns = ["parentId"],
+        onUpdate = CASCADE,
+        onDelete = CASCADE
+    )]
+)
 data class SubDownloadTask(
-    @PrimaryKey var id: Long? = null,
-    var url: String,
-    var path: String,
-    var tag: String,
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    /** Room中，外键需要添加索引，不然无法通过编译 */
+    @ColumnInfo(index = true) var parentId: Long?,
+    @Ignore var url: String,
+    @Ignore var path: String,
+    @Ignore var tag: String,
     /** 子任务开始的位置 */
     var startPos: Long,
     /** 已经下载的大小 */
@@ -35,11 +44,10 @@ data class SubDownloadTask(
     /** 子任务的大小 */
     var subTaskSize: Long,
     /** 是否要断点续传下载 */
-    @Ignore var breakPointDownload: Boolean = true
+    @Ignore var breakPointDownload: Boolean = true,
+    /** 子任务下载的监听器 */
+    @Ignore var subDownloadListener: SubDownloadListener? = null
 ) : Runnable {
-
-    @Ignore
-    var subDownloadListener: SubDownloadListener? = null
 
     @Ignore
     @Volatile
@@ -51,7 +59,7 @@ data class SubDownloadTask(
     @Ignore
     private var downloadSizeOnPause: Long = -1
 
-    constructor() : this(null, "", "", "", 0, 0, 0, true)
+    constructor() : this(null, 0, "", "", "", 0, 0, 0, true, null)
 
     override fun run() {
         status = DownloadStatus.DOWNLOADING
@@ -170,6 +178,22 @@ data class SubDownloadTask(
         return true
     }
 
+    /**
+     * 配置下载的相关信息
+     * */
+    fun configureDownloadInfo(
+        url: String,
+        path: String,
+        tag: String,
+        breakPointDownload: Boolean,
+        subDownloadListener: SubDownloadListener?
+    ) {
+        this.url = url
+        this.path = path
+        this.tag = tag
+        this.breakPointDownload = breakPointDownload
+        this.subDownloadListener = subDownloadListener
+    }
 
     /**
      * 是否完成

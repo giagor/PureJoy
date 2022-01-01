@@ -3,6 +3,8 @@ package com.topview.purejoy.common.component.download.task
 import android.util.SparseArray
 import androidx.core.util.valueIterator
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
+import com.topview.purejoy.common.component.download.task.controller.TaskController
+import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -34,24 +36,28 @@ class BatchDownloadTask {
     ) = apply {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
-        val fullDownloadTask = DownloadTask(
+        val downloadTask = DownloadTask(
+            id = null,
             path = path,
             url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
             downloadListener = listener
         )
-        tasks.put(identifier, fullDownloadTask)
+        tasks.put(identifier, downloadTask)
     }
 
     fun downloadAll() = apply {
         val iterator = tasks.valueIterator()
         while (iterator.hasNext()) {
             val task = iterator.next()
-            task.downloadTask()
+            TaskHandler.handleTask(task)
         }
     }
 
     /**
      * 通过标识符获取任务，如果没有对应的任务，则返回null
      * */
-    fun getTask(identifier: Int): DownloadTask? = tasks.get(identifier)
+    fun getTask(identifier: Int): TaskController? = tasks.get(identifier)
 }
