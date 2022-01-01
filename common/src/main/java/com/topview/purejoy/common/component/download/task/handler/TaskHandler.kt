@@ -198,9 +198,9 @@ object TaskHandler {
                 downloadedSize = 0,
                 subTaskSize = subTaskSize,
                 tag = tag,
-                breakPointDownload = breakPointDownload
+                breakPointDownload = breakPointDownload,
+                subDownloadListener = downloadTask
             )
-            subTask.subDownloadListener = downloadTask
             downloadTask.addTask(subTask)
         }
     }

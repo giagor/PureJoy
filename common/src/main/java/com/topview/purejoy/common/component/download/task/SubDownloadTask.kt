@@ -44,11 +44,10 @@ data class SubDownloadTask(
     /** 子任务的大小 */
     var subTaskSize: Long,
     /** 是否要断点续传下载 */
-    @Ignore var breakPointDownload: Boolean = true
+    @Ignore var breakPointDownload: Boolean = true,
+    /** 子任务下载的监听器 */
+    @Ignore var subDownloadListener: SubDownloadListener? = null
 ) : Runnable {
-
-    @Ignore
-    var subDownloadListener: SubDownloadListener? = null
 
     @Ignore
     @Volatile
@@ -60,7 +59,7 @@ data class SubDownloadTask(
     @Ignore
     private var downloadSizeOnPause: Long = -1
 
-    constructor() : this(null, 0, "", "", "", 0, 0, 0, true)
+    constructor() : this(null, 0, "", "", "", 0, 0, 0, true, null)
 
     override fun run() {
         status = DownloadStatus.DOWNLOADING
