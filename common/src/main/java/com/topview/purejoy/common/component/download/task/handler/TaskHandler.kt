@@ -145,12 +145,8 @@ object TaskHandler {
             DownloadManager.downDbHelper.insertDownloadTask(downloadTask)
         }
         // 初始化子任务
-        initSubTasks(
-            downloadTask.tag,
-            downloadTask.totalSize,
-            downloadTask,
-            downloadTask.breakPointDownload
-        )
+        initSubTasks(downloadTask)
+
         if (downloadTask.breakPointDownload) {
             // 将子任务插入到数据库中
             DownloadManager.downDbHelper.insertSubDownloadTasks(downloadTask.subTasks)
@@ -177,18 +173,13 @@ object TaskHandler {
         downloadTask.addTasks(subTasks)
     }
 
-    private fun initSubTasks(
-        tag: String,
-        contentLength: Long,
-        downloadTask: DownloadTask,
-        breakPointDownload: Boolean
-    ) {
+    private fun initSubTasks(downloadTask: DownloadTask) {
         // 获取平均每个子任务要下载的大小
-        val averageSize = contentLength / downloadTask.threadNum
+        val averageSize = downloadTask.totalSize / downloadTask.threadNum
         for (i in 0 until downloadTask.threadNum) {
             var subTaskSize = averageSize
             if (i == downloadTask.threadNum - 1) {
-                subTaskSize += contentLength % downloadTask.threadNum
+                subTaskSize += downloadTask.totalSize % downloadTask.threadNum
             }
             val subTask = SubDownloadTask(
                 parentId = downloadTask.id,
@@ -197,8 +188,8 @@ object TaskHandler {
                 startPos = i * averageSize,
                 downloadedSize = 0,
                 subTaskSize = subTaskSize,
-                tag = tag,
-                breakPointDownload = breakPointDownload,
+                tag = downloadTask.tag,
+                breakPointDownload = downloadTask.breakPointDownload,
                 subDownloadListener = downloadTask
             )
             downloadTask.addTask(subTask)
