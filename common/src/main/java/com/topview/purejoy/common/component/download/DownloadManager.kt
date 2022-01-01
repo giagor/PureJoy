@@ -16,7 +16,8 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
-import com.topview.purejoy.common.component.download.task.TaskHandler
+import com.topview.purejoy.common.component.download.task.controller.TaskController
+import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -29,13 +30,13 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *
  * 2.下载单个任务
  * 调用方式：
- * val task : DownloadTask = DownloadManager.download(url,saveDir,name,listener)
+ * val taskController : TaskController = DownloadManager.download(url,saveDir,name,listener)
  * 暂停下载：
- * task.pauseDownload()
+ * taskController.pauseDownload()
  * 从暂停中恢复下载：
- * task.resumeDownload()
+ * taskController.resumeDownload()
  * 取消下载：
- * task.cancelDownload()
+ * taskController.cancelDownload()
  *
  * 3.批量下载(下载多个任务)
  * 调用方式：
@@ -48,14 +49,14 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *      .addTask(6, url6, saveDir6, name6, listener6)
  *      .addTask(7, url7, saveDir7, name7, listener7)
  *      .downloadAll()
- * 获取某个具体的任务(通过标识符获取)：
- * val task : DownloadTask? = batchDownloadTask.getTask(1)
+ * 获取某个具体下载任务的控制类(通过标识符获取)：
+ * val taskController : TaskController? = batchDownloadTask.getTask(1)
  * 暂停下载某个具体任务：
- * task?.pauseDownload()
+ * taskController?.pauseDownload()
  * 从暂停中恢复下载某个具体任务：
- * task?.resumeDownload()
+ * taskController?.resumeDownload()
  * 取消下载某个具体任务：
- * task?.cancelDownload()
+ * taskController?.cancelDownload()
  * */
 object DownloadManager {
 
@@ -107,7 +108,7 @@ object DownloadManager {
         saveDir: String,
         name: String,
         listener: UserDownloadListener?
-    ): DownloadTask {
+    ): TaskController {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
         val downloadTask = DownloadTask(

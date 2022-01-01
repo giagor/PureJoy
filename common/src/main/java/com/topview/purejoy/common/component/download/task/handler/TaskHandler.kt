@@ -1,8 +1,10 @@
-package com.topview.purejoy.common.component.download.task
+package com.topview.purejoy.common.component.download.task.handler
 
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.net.ResourcePreviewCallback
 import com.topview.purejoy.common.component.download.status.DownloadStatus
+import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.component.download.task.SubDownloadTask
 import java.io.File
 
 /**
