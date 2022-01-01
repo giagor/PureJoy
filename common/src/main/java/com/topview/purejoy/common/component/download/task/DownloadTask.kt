@@ -1,7 +1,9 @@
 package com.topview.purejoy.common.component.download.task
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.listener.net.ResourcePreviewCallback
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
@@ -11,159 +13,81 @@ import java.util.concurrent.ExecutorService
 import kotlin.concurrent.thread
 
 /**
- * 如果资源太小，则采取单线程下载。因为在资源太小的情况下，如果采取多线程下载，那么线程创建、切换等开销，将
- * 会拖慢整体的下载速度
- * */
-private const val MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE = 20 * 1024 * 1024
-
-/**
  * Created by giagor on 2021/12/18
  *
  * 表示一个完整的下载任务，它可以被分解为多个子任务
  * */
+@Entity
 class DownloadTask(
+    /** 父任务id */
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
     /** 文件的保存路径 */
-    val path: String,
+    var path: String,
     /** 下载资源的url */
-    val url: String,
+    var url: String,
+    /** 记录资源的总大小 */
+    var totalSize: Long,
+    /** 下载的线程数 */
+    @Ignore var threadNum: Int,
+    /** 表示是否要断点续传*/
+    @Ignore var breakPointDownload: Boolean,
     /** 用户的监听器 */
-    val downloadListener: UserDownloadListener? = null,
+    @Ignore var downloadListener: UserDownloadListener? = null,
 ) : SubDownloadListener {
     /**
      * 通过url、path，唯一标识一个下载任务
      * */
-    val tag: String = md5EncryptForStrings(url, path)
+    var tag: String = md5EncryptForStrings(url, path)
 
-    /**
-     * 记录资源的总大小
-     * */
-    var totalSize: Long = 0
-
-    private val subTasks: MutableList<SubDownloadTask> = mutableListOf()
+    @Ignore
+    val subTasks: MutableList<SubDownloadTask> = mutableListOf()
 
     @Volatile
+    @Ignore
     private var status: Int = DownloadStatus.INITIAL
 
     /**
      * 表示已经传输的大小
      * */
+    @Ignore
     private var transmissionTotalSize: Long = 0
 
     /**
      * 成功的子任务数量
      * */
+    @Ignore
     private var successTaskCounts = 0
 
     /**
      * 标记取消的子任务数量
      * */
+    @Ignore
     private var cancelTaskCounts = 0
 
     /**
      * 暂停的子任务数量
      * */
+    @Ignore
     private var pauseTaskCounts = 0
 
     /**
      * 失败的子任务数量
      * */
+    @Ignore
     private var failTaskCounts = 0
-
-    /**
-     * 表示是否要多线程下载，默认为true
-     * */
-    private var multiThreadDownload = true
-
-    /**
-     * 表示是否要断点续传，默认为true
-     * */
-    private var breakPointDownload = true
-
-    private var threadNum: Int = DownloadManager.downloadConfiguration.getDownloadThreadNum()
 
     /**
      * 表示是否从"暂停"的状态中恢复过来，方便回调用户的接口
      * */
+    @Ignore
     private var resumed = false
 
-    internal fun downloadTask() {
-        DownloadManager.downHttpHelper.getContentLength(url, object : ResourcePreviewCallback {
-            override fun onFailure(e: Exception) {
-                DownloadManager.handler.post {
-                    downloadListener?.onFailure("下载出错")
-                }
-            }
+    constructor() : this(
+        null, "", "", 0, 0,
+        false, null
+    )
 
-            override fun resourceErr() {
-                DownloadManager.handler.post {
-                    downloadListener?.onFailure("找不到资源")
-                }
-            }
-
-            override fun supportRange(contentLength: Long) {
-                // 如果已经下载成功过且下载的文件仍然有效，就调用监听方法，并且return 
-                if (isAlreadyDownload(contentLength)) {
-                    status = DownloadStatus.SUCCESS
-                    DownloadManager.handler.post {
-                        downloadListener?.alreadyDownloaded()
-                    }
-                    return
-                }
-
-                // 设置任务的总大小
-                totalSize = contentLength
-
-                // 根据资源的大小，决定是要采用多线程下载，还是单线程下载
-                setDownloadThreadStrategy(contentLength)
-                // 断点续传下载
-                breakPointDownload = true
-
-                // 数据库中查询子任务
-                val localSubTasks =
-                    DownloadManager.downDbHelper.getSubDownloadTasksByTag(tag)
-
-                // 数据库中的子任务列表是不是空的
-                if (localSubTasks.isEmpty()) {
-                    // 列表是空的，说明这是一个新任务，处理一个新任务
-                    handleNewTask(tag, contentLength)
-                } else {
-                    // 计算原来的任务总大小    
-                    var preTotalSize: Long = 0
-                    for (localSubTask in localSubTasks) {
-                        preTotalSize += localSubTask.subTaskSize
-                    }
-                    // 判断数据库记录的总任务大小与服务器获取的任务大小是否相等
-                    if (preTotalSize != totalSize) {
-                        // 不相等，说明服务器的资源长度发生了改变
-                        handleRetryTask(tag, contentLength)
-                    } else {
-                        // 相等，再判断数据库中的子任务条数是否和下载的线程数相等
-                        if (localSubTasks.size != threadNum) {
-                            // 线程数不匹配，重新执行该任务
-                            handleRetryTask(tag, contentLength)
-                        } else {
-                            // 服务器的资源长度未发生变化，并且数据库中记录的子任务数和当前的线程数匹配，那么
-                            // 在之前已下载的基础上，再继续下载    
-                            handleExistingTask(localSubTasks)
-                        }
-                    }
-                }
-
-                DownloadManager.downloadDispatcher.enqueue(this@DownloadTask)
-            }
-
-            override fun unSupportRange(contentLength: Long) {
-                totalSize = contentLength
-                multiThreadDownload = false
-                breakPointDownload = false
-                threadNum = 1
-                handleNewTask(tag, contentLength)
-                DownloadManager.downloadDispatcher.enqueue(this@DownloadTask)
-            }
-        })
-    }
-
-
+    @Synchronized
     fun pauseDownload() {
         if (!canPause()) {
             return
@@ -175,6 +99,7 @@ class DownloadTask(
         }
     }
 
+    @Synchronized
     fun resumeDownload() {
         if (!canResume()) {
             return
@@ -185,6 +110,7 @@ class DownloadTask(
         DownloadManager.downloadDispatcher.enqueue(this)
     }
 
+    @Synchronized
     fun cancelDownload() {
         // 判断是否可以取消下载
         if (!canCancel()) {
@@ -245,88 +171,6 @@ class DownloadTask(
         notifyListener()
     }
 
-    private fun initMultiThreadDownload(tag: String, contentLength: Long) {
-        // 获取平均每个子任务要下载的大小
-        val averageSize = contentLength / threadNum
-        for (i in 0 until threadNum) {
-            var subTaskSize = averageSize
-            if (i == threadNum - 1) {
-                subTaskSize += contentLength % threadNum
-            }
-            val subTask = SubDownloadTask(
-                url = url,
-                path = path,
-                startPos = i * averageSize,
-                downloadedSize = 0,
-                subTaskSize = subTaskSize,
-                tag = tag,
-                breakPointDownload = breakPointDownload
-            )
-            subTasks.add(subTask)
-        }
-    }
-
-    private fun initSingleThreadDownload(tag: String, contentLength: Long) {
-        val subTask = SubDownloadTask(
-            url = url,
-            path = path,
-            startPos = 0,
-            downloadedSize = 0,
-            subTaskSize = contentLength,
-            tag = tag,
-            breakPointDownload = breakPointDownload
-        )
-        subTasks.add(subTask)
-    }
-
-    /**
-     * 处理新任务
-     * */
-    private fun handleNewTask(tag: String, contentLength: Long) {
-        // 清除本地的文件
-        clearLocalFile()
-
-        if (multiThreadDownload) {
-            initMultiThreadDownload(tag, contentLength)
-        } else {
-            initSingleThreadDownload(tag, contentLength)
-        }
-
-        if (breakPointDownload) {
-            // 插入数据库
-            DownloadManager.downDbHelper.insertSubDownloadTasks(subTasks)
-
-            // 再从数据库中查询，这样做的主要目的是让子任务获取Id，方便后面在数据库中更新下载进度
-            subTasks.clear()
-            subTasks.addAll(DownloadManager.downDbHelper.getSubDownloadTasksByTag(tag))
-        }
-
-        // 设置监听器
-        for (subTask in subTasks) {
-            subTask.subDownloadListener = this
-        }
-    }
-
-    /**
-     * 处理现有的任务，但是线程数不匹配
-     * */
-    private fun handleRetryTask(tag: String, contentLength: Long) {
-        // 删除原来的子任务
-        clearTaskInfo()
-        // 当做新任务处理
-        handleNewTask(tag, contentLength)
-    }
-
-    /**
-     * 处理现有的任务
-     * */
-    private fun handleExistingTask(localSubTasks: List<SubDownloadTask>) {
-        for (subTask in localSubTasks) {
-            subTask.subDownloadListener = this
-            subTasks.add(subTask)
-        }
-    }
-
     internal fun executeSubTasks(executorService: ExecutorService) {
         // 仅执行处于INITIAL状态的任务
         if (!checkInitial()) {
@@ -359,31 +203,7 @@ class DownloadTask(
      * */
     private fun restoreFromPause() {
         status = DownloadStatus.INITIAL
-        cancelTaskCounts = 0
         pauseTaskCounts = 0
-    }
-
-    /**
-     * 判断文件是否已经下载过
-     * */
-    private fun isAlreadyDownload(contentLength: Long): Boolean {
-        val file = File(path)
-        // 文件不存在，直接返回false
-        if (!file.exists()) {
-            return false
-        }
-
-        // 文件的长度与服务器返回的长度不相等，返回false
-        if (file.length() != contentLength) {
-            return false
-        }
-
-        // 判断数据库中是否有子任务的记录，有则返回false
-        val subTasks = DownloadManager.downDbHelper.getSubDownloadTasksByTag(tag)
-        if (subTasks.isNotEmpty()) {
-            return false
-        }
-        return true
     }
 
     /**
@@ -393,8 +213,8 @@ class DownloadTask(
         clearLocalFile()
 
         if (breakPointDownload) {
-            // 数据库中删除对应的子任务
-            DownloadManager.downDbHelper.deleteSubDownloadTasksByTag(tag)
+            // 数据库中删除对应的任务
+            DownloadManager.downDbHelper.deleteDownloadTask(this)
         }
     }
 
@@ -432,8 +252,8 @@ class DownloadTask(
         }
 
         if (breakPointDownload) {
-            // 数据库中删除对应的子任务
-            DownloadManager.downDbHelper.deleteSubDownloadTasksByTag(tag)
+            // 数据库中删除对应的任务
+            DownloadManager.downDbHelper.deleteDownloadTask(this)
         }
         DownloadManager.downloadDispatcher.finished(this)
     }
@@ -474,16 +294,24 @@ class DownloadTask(
     }
 
     /**
-     * 设置下载的线程策略，包括「是否采用多线程下载」和「下载的线程数」
+     * 添加单个子任务
      * */
-    private fun setDownloadThreadStrategy(contentLength: Long) {
-        if (contentLength > MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE) {
-            multiThreadDownload = true
-            threadNum = DownloadManager.downloadConfiguration.getDownloadThreadNum()
-        } else {
-            multiThreadDownload = false
-            threadNum = 1
-        }
+    fun addTask(subDownloadTask: SubDownloadTask) {
+        subTasks.add(subDownloadTask)
+    }
+
+    /**
+     * 添加多个子任务
+     * */
+    fun addTasks(subDownloadTasks: List<SubDownloadTask>) {
+        subTasks.addAll(subDownloadTasks)
+    }
+
+    /**
+     * 设置状态
+     * */
+    fun setStatus(status: Int) {
+        this.status = status
     }
 
     private fun getFinishedCount() =

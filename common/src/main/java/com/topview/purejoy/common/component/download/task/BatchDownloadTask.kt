@@ -34,19 +34,23 @@ class BatchDownloadTask {
     ) = apply {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
-        val fullDownloadTask = DownloadTask(
+        val downloadTask = DownloadTask(
+            id = null,
             path = path,
             url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
             downloadListener = listener
         )
-        tasks.put(identifier, fullDownloadTask)
+        tasks.put(identifier, downloadTask)
     }
 
     fun downloadAll() = apply {
         val iterator = tasks.valueIterator()
         while (iterator.hasNext()) {
             val task = iterator.next()
-            task.downloadTask()
+            TaskHandler.handleTask(task)
         }
     }
 

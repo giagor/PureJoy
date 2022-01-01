@@ -16,6 +16,7 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.component.download.task.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -109,13 +110,18 @@ object DownloadManager {
     ): DownloadTask {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
-        val fullDownloadTask = DownloadTask(
+        val downloadTask = DownloadTask(
+            id = null,
             path = path,
             url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
             downloadListener = listener
         )
-        fullDownloadTask.downloadTask()
-        return fullDownloadTask
+        // 处理任务
+        TaskHandler.handleTask(downloadTask)
+        return downloadTask
     }
 
     fun batchDownload() = BatchDownloadTask()
