@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
 }
 
 android {
@@ -57,7 +58,7 @@ dependencies {
     implementation("jp.wasabeef:glide-transformations:3.3.0")
 
     // Room
-    kapt(Deps.Room.roomCompiler)
+    ksp(Deps.Room.roomCompiler)
     // ARouter
     kapt(Deps.ARouter.arouterCompile)
 
