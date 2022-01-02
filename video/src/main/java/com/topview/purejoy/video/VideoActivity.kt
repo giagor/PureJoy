@@ -2,21 +2,18 @@ package com.topview.purejoy.video
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.*
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
-import com.topview.purejoy.common.util.StatusBarUtil
 import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
-import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackground
+import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 import com.topview.purejoy.video.ui.LocalExoPlayer
 import com.topview.purejoy.video.ui.horizontal.HorizontalVideoScreen
@@ -44,7 +41,7 @@ class VideoActivity: ComposeActivity() {
 
     override fun setStatusBarStyle() {
         window.setAutoFitSystemWindows(false)
-            .setStatusBarBackground(Color.BLACK)
+            .setStatusBarBackgroundColor(Color.TRANSPARENT)
             .setStatusBarTextColor(false)
         window.navigationBarColor = Color.BLACK
     }
@@ -90,12 +87,6 @@ class VideoActivity: ComposeActivity() {
                     )
                 }
             }
-        }
-        val composeView = window.decorView
-            .findViewById<ViewGroup>(android.R.id.content)
-            .getChildAt(0) as? ComposeView
-        composeView?.let {
-            StatusBarUtil.fitSystemBar(it)
         }
     }
 }
