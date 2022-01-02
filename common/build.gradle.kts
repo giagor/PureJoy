@@ -37,24 +37,13 @@ android {
     }
     kapt {
         arguments {
-            arg("AROUTER_MODULE_NAME", project.getName())
+            arg("AROUTER_MODULE_NAME", project.name)
         }
     }
 }
 
 dependencies {
     implementation(project(":dependencies"))
-
-    val roomVersion = "2.3.0"
-
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-
-    // To use Kotlin annotation processing tool (kapt)
-    kapt("androidx.room:room-compiler:$roomVersion")
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$roomVersion")
-
     // compose
     implementation(Deps.Compose.composeUiToolingPreview)
     // Coil
@@ -63,11 +52,9 @@ dependencies {
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
-    
-    // 虽然在dependencies模块添加了Room的依赖以及注解处理器kapt，但是在使用到Room的模块中仍然
-    // 需要单独添加kapt
+
+    // Room
     kapt(Deps.Room.roomCompiler)
-    
-    // ARouter-kapt
+    // ARouter
     kapt(Deps.ARouter.arouterCompile)
 }
