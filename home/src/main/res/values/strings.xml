@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Home</string>
-    
+
     <!--底部导航栏相关-->
     <string name="home_bottom_navi_discover">发现</string>
     <string name="home_bottom_navi_mine">我的</string>
@@ -13,7 +13,7 @@
     <string name="home_discover_single_row_text_daily_recommend">每日推荐</string>
     <string name="home_discover_single_row_text_playlist">歌单</string>
     <string name="home_discover_single_row_text_ranking">排行榜</string>
-    
+
     <!--Search相关-->
     <string name="home_search_content_song_tab">单曲</string>
     <string name="home_search_content_playlist_tab">歌单</string>
@@ -40,7 +40,10 @@
     <string name="home_toplist_title">排行榜</string>
     <string name="home_toplist_error_tip">出错啦，点击重新加载</string>
     <string name="home_toplist_loading_tip">加载中......</string>
-    
+
     <!--"我的"界面相关-->
     <string name="home_mine_nickname_tips">昵称</string>
+
+    <!--"轮播图"相关-->
+    <string name="home_banner_invalid_url_tips">不存在有效链接</string>
 </resources>

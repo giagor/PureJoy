@@ -10,10 +10,13 @@ import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.R
 import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.component.webview.WebViewConstant.URL_EXTRA
+import com.topview.purejoy.common.router.CommonRouter
 
+@Route(path = CommonRouter.ACTIVITY_COMMON_WEBVIEW)
 open class CommonWebViewActivity : CommonActivity() {
     protected lateinit var webView: WebView
     protected lateinit var progressBar: ProgressBar
