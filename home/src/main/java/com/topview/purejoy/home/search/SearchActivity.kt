@@ -4,12 +4,15 @@ import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
+import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
 import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 
+@Route(path = ACTIVITY_HOME_SEARCH)
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
     SearchKeywordListener {
 

@@ -18,6 +18,7 @@ import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeDiscoverFragment"
@@ -31,9 +32,9 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initIcon()
         binding.viewModel = viewModel
-        initRecyclerView()
+        initView()
+        initEvent()
         observe()
         initData()
     }
@@ -47,6 +48,17 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     }
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    private fun initView() {
+        initIcon()
+        initRecyclerView()
+    }
+
+    private fun initEvent() {
+        binding.tvSearchClickListener = View.OnClickListener {
+            HomeRouter.routeToSearchActivity()
+        }
+    }
 
     private fun initIcon() {
         val searchIcon =

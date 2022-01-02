@@ -13,6 +13,7 @@
         <import type="androidx.recyclerview.widget.SnapHelper"/>
         <import type="android.graphics.drawable.Drawable"/>
         <import type="com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
@@ -43,6 +44,9 @@
         <variable
             name="dailyRecommendPlayListDecoration"
             type="DailyRecommendPlayListDecoration" />
+        <variable
+            name="tvSearchClickListener"
+            type="OnClickListener" />
     </data>
     
     <ScrollView
@@ -81,7 +85,8 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:text="@string/home_discover_search_hint"
-                    app:compoundDrawable="@{icSearch}"/>
+                    app:compoundDrawable="@{icSearch}"
+                    app:onClickListener="@{tvSearchClickListener}"/>
 
             </LinearLayout>
 
