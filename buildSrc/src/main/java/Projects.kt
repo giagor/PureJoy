@@ -42,6 +42,7 @@ object Deps {
     }
 
     object Ktx {
+        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.4.0"
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
         const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     }
@@ -70,7 +71,8 @@ object Deps {
     }
 
     object Room {
-        private const val version = "2.3.0"
+        private const val version = "2.4.0"
+        const val roomKtx = "androidx.room:room-ktx:$version"
         const val roomRuntime = "androidx.room:room-runtime:$version"
         const val roomCompiler = "androidx.room:room-compiler:$version"
     }
@@ -98,6 +100,8 @@ object Deps {
 
     // RecyclerView - GravitySnapHelper
     const val gravitySnapHelper = "com.github.rubensousa:gravitysnaphelper:2.2.2"
+
+    const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
 }
 
 object TestDeps {

@@ -35,6 +35,7 @@ dependencies {
     api(Deps.AndroidX.constraintLayout)
     api(Deps.Ktx.coreKtx)
     api(Deps.Ktx.viewModelKtx)
+    api(Deps.Ktx.fragmentKtx)
     api(Deps.material)
 
     api(Deps.okhttp)
@@ -58,7 +59,7 @@ dependencies {
     
     // Room
     api(Deps.Room.roomRuntime)
-    kapt(Deps.Room.roomCompiler)
+    api(Deps.Room.roomKtx)
     
     // ARouter
     api(Deps.ARouter.arouterApi)

@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
 }
 
 android {
@@ -37,42 +38,31 @@ android {
     }
     kapt {
         arguments {
-            arg("AROUTER_MODULE_NAME", project.getName())
+            arg("AROUTER_MODULE_NAME", project.name)
         }
     }
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation(Deps.Compose.composeMaterial)
+    implementation(project(":common"))
+    implementation(project(":dependencies"))
+
     implementation(Deps.Compose.composeUiToolingPreview)
-    implementation(Deps.Compose.livedataRuntime)
-    implementation(Deps.Compose.composeNavigation)
-    implementation(Deps.Compose.composeActivity)
-    implementation(Deps.Compose.composeViewBinding)
+
     implementation(Deps.Coil.coilCore)
     implementation(Deps.Coil.composeExtension)
     // ViewPager2
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    val roomVersion = "2.3.0"
+    implementation(Deps.viewPager2)
 
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-
-    // To use Kotlin annotation processing tool (kapt)
-    kapt("androidx.room:room-compiler:$roomVersion")
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("jp.wasabeef:glide-transformations:3.3.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.2")
-    implementation(project(":common"))
-    implementation(project(":dependencies"))
+
+    // Room
+    ksp(Deps.Room.roomCompiler)
+    // ARouter
+    kapt(Deps.ARouter.arouterCompile)
+
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
-
-    // ARouter-kapt
-    kapt(Deps.ARouter.arouterCompile)
 }

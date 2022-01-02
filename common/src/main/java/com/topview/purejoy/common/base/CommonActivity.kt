@@ -5,9 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.topview.purejoy.common.util.StatusBarUtil
-import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
-import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackground
+import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 
 
@@ -32,10 +30,8 @@ abstract class CommonActivity : AppCompatActivity() {
      * 设置状态栏的背景、文字颜色等
      * */
     protected open fun setStatusBarStyle() {
-        window.setAutoFitSystemWindows(false)
-            .setStatusBarBackground(Color.WHITE)
+        window.setStatusBarBackgroundColor(Color.TRANSPARENT)
             .setStatusBarTextColor(true)
-        StatusBarUtil.fitSystemBar(window.decorView)
     }
 
     /**

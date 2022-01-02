@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,6 +18,9 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberImagePainter
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -180,7 +184,7 @@ internal fun HorizontalPagerChild(
                     top.linkTo(parent.top)
                     bottom.linkTo(sliderRef.top)
                     centerHorizontallyTo(parent)
-                }
+                }.fillMaxSize()
             )
         }
         HorizontalBottomSlider(
@@ -190,6 +194,7 @@ internal fun HorizontalPagerChild(
                     bottom.linkTo(parent.bottom)
                     centerHorizontallyTo(parent)
                 }
+                .navigationBarsPadding()
                 .zIndex(1F),
             isCurrentPage = isCurrentPage,
             onProgressChange = {
@@ -208,7 +213,12 @@ internal fun HorizontalPagerChild(
             modifier = Modifier.constrainAs(title) {
                 centerHorizontallyTo(parent)
                 top.linkTo(parent.top, 10.dp)
-            },
+            }.padding(rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemGestures,
+                additionalStart = 15.dp,
+                additionalTop = 5.dp,
+                additionalBottom = 10.dp
+            )),
             isMv = video?.isMv ?: false,
             onBackClick = onBackClick,
             onMoreClick = onMoreClick

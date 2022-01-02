@@ -14,8 +14,8 @@ import com.topview.purejoy.common.music.player.abs.cache.CacheStrategy
 import com.topview.purejoy.common.music.player.abs.core.MusicPlayer
 import com.topview.purejoy.common.music.player.abs.core.Position
 import com.topview.purejoy.common.music.player.abs.listener.ErrorListener
-import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
 import com.topview.purejoy.common.music.player.abs.transformation.IWrapperTransformation
+import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
 import com.topview.purejoy.common.music.player.impl.MediaListenerMangerImpl
 import com.topview.purejoy.common.music.player.impl.controller.MediaControllerImpl
 import com.topview.purejoy.common.music.player.impl.controller.ModeControllerImpl

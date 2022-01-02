@@ -2,11 +2,14 @@ package com.topview.purejoy.musiclibrary.recommendation.music.pop
 
 import android.content.Context
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.TextView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.util.loadBitmap
-import com.topview.purejoy.common.music.service.entity.MusicItem
 
 class RecommendPop(context: Context, width: Int, height: Int, val outWindow: Window) {
 

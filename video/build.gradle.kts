@@ -36,7 +36,7 @@ android {
     }
     kapt {
         arguments {
-            arg("AROUTER_MODULE_NAME", project.getName())
+            arg("AROUTER_MODULE_NAME", project.name)
         }
     }
 }
@@ -67,6 +67,6 @@ dependencies {
     androidTestImplementation(TestDeps.Instrumentation.espresso)
     androidTestImplementation(TestDeps.Instrumentation.junitExtension)
 
-    // ARouter-kapt
+    // ARouter
     kapt(Deps.ARouter.arouterCompile)
 }

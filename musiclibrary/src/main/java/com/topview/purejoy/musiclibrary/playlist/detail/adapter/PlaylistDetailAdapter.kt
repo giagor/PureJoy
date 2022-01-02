@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.musiclibrary.BR
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.CommonBindingAdapter
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
-import com.topview.purejoy.common.music.service.entity.MusicItem
 
 class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
         PlaylistDetailAdapter.PlaylistDetailHolder>(layoutId = R.layout.layout_music_recommend_item) {
