@@ -11,7 +11,7 @@ import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.common.widget.banner.BannerItem
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.util.UrlUtil
+import com.topview.purejoy.home.util.LinkUtil
 
 data class HomeDiscoverBannerItem(val imgUrl: String?, val link: String?) : BannerItem {
 
@@ -28,19 +28,14 @@ data class HomeDiscoverBannerItem(val imgUrl: String?, val link: String?) : Bann
                 .into(imageView)
         }
         // 展示轮播图的网页内容
-        imageView.setOnClickListener {
-            val invalidUrlTips =
-                it.context.resources.getString(R.string.home_banner_invalid_url_tips)
-            if (link != null) {
-                val url = UrlUtil.effectiveUrl(link)
-                if (url != UrlUtil.IN_EFFECTIVE_URL) {
-                    CommonRouter.routeToWebViewActivity(link)
-                } else {
-                    showToast(it.context, invalidUrlTips)
-                }
-            } else {
-                showToast(it.context, invalidUrlTips)
-            }
+        imageView.setOnClickListener { iv ->
+            LinkUtil.executeLink(link, {
+                CommonRouter.routeToWebViewActivity(it)
+            }, {
+                val invalidUrlTips =
+                    iv.context.resources.getString(R.string.home_banner_invalid_url_tips)
+                showToast(iv.context, invalidUrlTips)
+            })
         }
         return view
     }
