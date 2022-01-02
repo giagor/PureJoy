@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.data.repo.HomeRepository
-import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.HomeDiscoverBannerItem
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.entity.Song
 
 class HomeDiscoverViewModel : MVVMViewModel() {

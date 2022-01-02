@@ -2,14 +2,14 @@ package com.topview.purejoy.common.music.service.entity
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.topview.purejoy.common.music.service.transformation.MusicItemTransformation
-import com.topview.purejoy.common.music.service.transformation.WrapperTransformation
 import com.topview.purejoy.common.music.data.ParcelableItem
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverALData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverARData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverMusicData
+import com.topview.purejoy.common.music.service.transformation.MusicItemTransformation
+import com.topview.purejoy.common.music.service.transformation.WrapperTransformation
 
 data class AR(val id: Long, val name: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(

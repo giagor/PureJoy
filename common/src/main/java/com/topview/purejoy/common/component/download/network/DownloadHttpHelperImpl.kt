@@ -5,7 +5,6 @@ import com.topview.purejoy.common.component.download.listener.net.ResourcePrevie
 import com.topview.purejoy.common.component.download.task.SubDownloadTask
 import okhttp3.*
 import java.io.IOException
-import java.lang.Exception
 
 /**
  * Created by giagor on 2021/12/18

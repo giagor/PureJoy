@@ -1,13 +1,7 @@
 package com.topview.purejoy.common.mvvm.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import com.topview.purejoy.common.base.CommonFragment
 import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 

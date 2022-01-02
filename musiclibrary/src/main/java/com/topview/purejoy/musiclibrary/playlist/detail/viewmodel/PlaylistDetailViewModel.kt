@@ -2,16 +2,15 @@ package com.topview.purejoy.musiclibrary.playlist.detail.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.common.net.await
 import com.topview.purejoy.common.music.service.entity.MusicResponse
 import com.topview.purejoy.common.music.service.url.entity.URLItemWrapper
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepository
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepositoryImpl
+import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.net.await
 import com.topview.purejoy.musiclibrary.playlist.detail.repo.IPlaylistDetailRepository
 import com.topview.purejoy.musiclibrary.playlist.detail.repo.PlaylistDetailRepository
 import com.topview.purejoy.musiclibrary.playlist.entity.PlaylistResponse
-import java.lang.StringBuilder
 
 class PlaylistDetailViewModel(
     private val repo: IPlaylistDetailRepository = PlaylistDetailRepository(),

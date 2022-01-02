@@ -1,7 +1,6 @@
 package com.topview.purejoy.common.music.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,10 +22,10 @@ import com.topview.purejoy.common.music.service.entity.getMusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.ExecutorInstance
 import com.topview.purejoy.common.music.util.addViewToContent
-import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 import com.topview.purejoy.common.music.util.getAndConnectService
 import com.topview.purejoy.common.music.util.getDisplaySize
+import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 
 
 @SuppressLint("NotifyDataSetChanged")
