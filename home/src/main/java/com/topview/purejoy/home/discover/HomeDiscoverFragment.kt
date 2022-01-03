@@ -20,6 +20,7 @@ import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecora
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
 import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 private const val TAG = "HomeDiscoverFragment"
 
@@ -60,6 +61,9 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         }
         binding.llTopListClickListener = View.OnClickListener {
             HomeRouter.routeToTopListActivity()
+        }
+        binding.llDailyRecommendClickListener = View.OnClickListener {
+            MusicLibraryRouter.routeToDailyRecommendActivity()
         }
     }
 

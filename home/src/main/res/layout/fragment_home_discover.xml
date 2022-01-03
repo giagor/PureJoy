@@ -50,6 +50,9 @@
         <variable
             name="llTopListClickListener"
             type="OnClickListener" />
+        <variable
+            name="llDailyRecommendClickListener"
+            type="OnClickListener" />
     </data>
     
     <ScrollView
@@ -113,7 +116,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_alignParentStart="true"
-                    android:gravity="center">
+                    android:gravity="center"
+                    app:onClickListener="@{llDailyRecommendClickListener}">
 
                     <ImageView
                         android:layout_width="@dimen/home_discover_single_row_icon_size"
