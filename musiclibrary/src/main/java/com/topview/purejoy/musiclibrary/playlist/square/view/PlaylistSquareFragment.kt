@@ -1,6 +1,5 @@
 package com.topview.purejoy.musiclibrary.playlist.square.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
-import com.topview.purejoy.musiclibrary.playlist.detail.view.PlaylistDetailActivity
 import com.topview.purejoy.musiclibrary.playlist.entity.Playlist
 import com.topview.purejoy.musiclibrary.playlist.square.adapter.PlaylistSquareAdapter
 import com.topview.purejoy.musiclibrary.playlist.square.entity.PlaylistTag
@@ -30,9 +29,7 @@ class PlaylistSquareFragment(val tag: PlaylistTag) : Fragment(R.layout.fragment_
         val a = PlaylistSquareAdapter()
         a.itemClickListener = object : DataClickListener<Playlist> {
             override fun onClick(value: Playlist, position: Int) {
-                val intent = Intent(requireActivity(), PlaylistDetailActivity::class.java)
-                intent.putExtra(PlaylistDetailActivity.PLAYLIST_EXTRA, value.id)
-                startActivity(intent)
+                MusicLibraryRouter.routeToPlaylistDetailActivity(value.id)
             }
         }
         a
