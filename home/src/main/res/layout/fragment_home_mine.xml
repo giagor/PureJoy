@@ -5,9 +5,13 @@
 
     <data>
         <import type="com.topview.purejoy.home.mine.HomeMineFragment"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="homeMineFragment"
             type="HomeMineFragment" />
+        <variable
+            name="tvLoginTipsClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -40,6 +44,14 @@
                 app:userNickName="@{homeMineFragment.userLiveData}"/>
             
         </RelativeLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="#CD5555"
+            app:onClickListener="@{tvLoginTipsClickListener}"
+            app:loginTips="@{homeMineFragment.userLiveData}"/>
         
         <View
             android:layout_width="match_parent"

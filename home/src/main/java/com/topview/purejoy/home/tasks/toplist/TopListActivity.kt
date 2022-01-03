@@ -6,15 +6,18 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.toplist.TopListScreen
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.theme.Gray245
 
-class TopListActivity: ComposeActivity() {
+@Route(path = HomeRouter.ACTIVITY_HOME_TOPLIST)
+class TopListActivity : ComposeActivity() {
 
     private val viewModel by viewModels<TopListViewModel>()
 

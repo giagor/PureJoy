@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation(project(":dependencies"))
     implementation(project(":common"))
+    implementation(project(":musiclibrary"))
 
     implementation(Deps.Compose.composeUiToolingPreview)
     implementation(Deps.Compose.livedataRuntime)

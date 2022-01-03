@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.util.getWindowWidth
@@ -18,7 +19,9 @@ import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 private const val TAG = "HomeDiscoverFragment"
 
@@ -27,13 +30,14 @@ private const val TAG = "HomeDiscoverFragment"
  * */
 private const val RECOMMEND_NEW_SONG_ROW_COUNT = 3
 
+@Route(path = HomeRouter.FRAGMENT_HOME_DISCOVER)
 class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initIcon()
         binding.viewModel = viewModel
-        initRecyclerView()
+        initView()
+        initEvent()
         observe()
         initData()
     }
@@ -47,6 +51,23 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
     }
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    private fun initView() {
+        initIcon()
+        initRecyclerView()
+    }
+
+    private fun initEvent() {
+        binding.tvSearchClickListener = View.OnClickListener {
+            HomeRouter.routeToSearchActivity()
+        }
+        binding.llTopListClickListener = View.OnClickListener {
+            HomeRouter.routeToTopListActivity()
+        }
+        binding.llDailyRecommendClickListener = View.OnClickListener {
+            MusicLibraryRouter.routeToDailyRecommendActivity()
+        }
+    }
 
     private fun initIcon() {
         val searchIcon =
@@ -116,10 +137,5 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
                 Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = HomeDiscoverFragment()
     }
 }

@@ -13,6 +13,7 @@
         <import type="androidx.recyclerview.widget.SnapHelper"/>
         <import type="android.graphics.drawable.Drawable"/>
         <import type="com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="viewModel"
             type="HomeDiscoverViewModel" />
@@ -43,6 +44,15 @@
         <variable
             name="dailyRecommendPlayListDecoration"
             type="DailyRecommendPlayListDecoration" />
+        <variable
+            name="tvSearchClickListener"
+            type="OnClickListener" />
+        <variable
+            name="llTopListClickListener"
+            type="OnClickListener" />
+        <variable
+            name="llDailyRecommendClickListener"
+            type="OnClickListener" />
     </data>
     
     <ScrollView
@@ -81,7 +91,8 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:text="@string/home_discover_search_hint"
-                    app:compoundDrawable="@{icSearch}"/>
+                    app:compoundDrawable="@{icSearch}"
+                    app:onClickListener="@{tvSearchClickListener}"/>
 
             </LinearLayout>
 
@@ -105,7 +116,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_alignParentStart="true"
-                    android:gravity="center">
+                    android:gravity="center"
+                    app:onClickListener="@{llDailyRecommendClickListener}">
 
                     <ImageView
                         android:layout_width="@dimen/home_discover_single_row_icon_size"
@@ -144,7 +156,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_alignParentEnd="true"
-                    android:gravity="center">
+                    android:gravity="center"
+                    app:onClickListener="@{llTopListClickListener}">
 
                     <ImageView
                         android:layout_width="@dimen/home_discover_single_row_icon_size"
@@ -154,7 +167,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/home_discover_single_row_text_ranking" />
+                        android:text="@string/home_discover_single_row_text_ranking"/>
 
                 </LinearLayout>
 
