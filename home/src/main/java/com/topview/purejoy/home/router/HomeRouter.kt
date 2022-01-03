@@ -8,6 +8,7 @@ object HomeRouter {
     const val ACTIVITY_HOME_TOPLIST = "/home/tasks/toplist"
     const val ACTIVITY_HOME_LOGIN = "/home/tasks/login"
     const val FRAGMENT_HOME_DISCOVER = "/home/discover"
+    const val FRAGMENT_HOME_MINE = "/home/mine"
 
     fun routeToSearchActivity() {
         routeWithoutParams(ACTIVITY_HOME_SEARCH)
@@ -23,6 +24,10 @@ object HomeRouter {
 
     fun routeToDiscoverFragment(): Fragment? {
         return routeWithoutParams(FRAGMENT_HOME_DISCOVER) as? Fragment
+    }
+
+    fun routeToMineFragment(): Fragment? {
+        return routeWithoutParams(FRAGMENT_HOME_MINE) as? Fragment
     }
 
     /**
