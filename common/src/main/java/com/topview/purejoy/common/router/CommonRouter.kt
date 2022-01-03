@@ -12,4 +12,15 @@ object CommonRouter {
             .withString(WebViewConstant.URL_EXTRA, url)
             .navigation()
     }
+
+    /**
+     * 不需要传递参数的路由，可以直接调用该方法
+     *
+     * @param path 路由地址
+     * */
+    fun routeWithoutParams(path: String): Any? {
+        return ARouter.getInstance()
+            .build(path)
+            .navigation()
+    }
 }
