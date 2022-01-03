@@ -1,32 +1,35 @@
 package com.topview.purejoy.musiclibrary.recommendation.music.view
 
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.topview.purejoy.common.app.CommonApplication
+import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.common.music.player.impl.cache.DiskCache
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
+import com.topview.purejoy.common.router.CommonRouter
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
+import com.topview.purejoy.musiclibrary.common.util.download
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
-import com.topview.purejoy.musiclibrary.playing.view.PlayingActivity
 import com.topview.purejoy.musiclibrary.recommendation.music.adapter.DailyRecommendAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.recommendation.music.viemmodel.DailySongsViewModel
-import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Route(path = MusicLibraryRouter.ACTIVITY_MUSIC_LIBRARY_DAILY_RECOMMEND)
 class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
@@ -56,7 +59,14 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         }
         p.addItemView(R.drawable.download_32, R.string.download) {
             // 下载
-
+            it?.let { item ->
+                if (item.url != null) {
+                    download(item.url!!)
+                    popWindow.window.dismiss()
+                } else {
+                    viewModel.requestURL(item.id)
+                }
+            }
             popWindow.window.dismiss()
         }
         p
@@ -66,7 +76,6 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
     private val TAG = "DailyRecommend"
 
 
-    private val handler: Handler = Handler(Looper.getMainLooper())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,14 +96,7 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
                 dataController?.clear()
                 dataController?.addAll(viewModel.data.value!!.toWrapperList())
                 playerController?.jumpTo(viewModel.data.value!!.indexOf(item))
-                handler.postDelayed({
-                    startActivity(
-                        Intent(
-                            this@DailyRecommendActivity,
-                            PlayingActivity::class.java
-                        )
-                    )
-                }, 500)
+                CommonRouter.routeToPlayingActivity()
             }
         }, buttonClickListener = object : DailyRecommendAdapter.DailyRecommendItemClickListener {
             override fun onClick(item: SongWithReason) {
@@ -113,9 +115,34 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
                 }
 
             } else {
-                showToast(context = this, text = "Request Error")
+                showToast(context = this, text = "请求错误", duration = Toast.LENGTH_SHORT)
+                finish()
             }
         })
+        viewModel.urlResponse.observe(this) {
+            it?.let { response ->
+                response.data.forEach { item ->
+                    var music: MusicItem? = null
+                    for (m in adapter.data) {
+                        if (m.item.id == item.id) {
+                            music = m.item
+                            break
+                        }
+                    }
+                    if (item.url.isEmpty()) {
+                        showToast(this, "歌曲${music?.name}不能下载", Toast.LENGTH_SHORT)
+                    } else {
+                        music?.url = item.url
+                        showToast(this, "已加入下载任务队列",
+                            Toast.LENGTH_SHORT)
+                        download(item.url)
+                        if (item.id == popWindow.data?.id) {
+                            popWindow.window.dismiss()
+                        }
+                    }
+                }
+            }
+        }
         layout.setOnClickListener {
             // 播放全部歌曲
             if (viewModel.data.value?.isNotEmpty() == true) {
