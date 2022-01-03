@@ -25,6 +25,7 @@ import com.topview.purejoy.common.music.util.addViewToContent
 import com.topview.purejoy.common.music.util.getAndConnectService
 import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 
 
@@ -262,7 +263,7 @@ abstract class MusicCommonActivity<VM : MVVMViewModel>
             }
         }
         bar.setOnClickListener {
-//            startActivity(Intent(this, PlayingActivity::class.java))
+            CommonRouter.routeToPlayingActivity()
         }
         addViewToContent(bar, marginBottom, duration)
         return bar

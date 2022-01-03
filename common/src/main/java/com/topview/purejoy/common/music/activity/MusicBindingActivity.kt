@@ -25,6 +25,7 @@ import com.topview.purejoy.common.music.util.getAndConnectService
 import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.mvvm.activity.MVVMActivity
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 
 @SuppressLint("NotifyDataSetChanged")
@@ -256,7 +257,7 @@ abstract class MusicBindingActivity<VM: MVVMViewModel, T : ViewDataBinding> : MV
             }
         }
         bar.setOnClickListener {
-//            startActivity(Intent(this, PlayingActivity::class.java))
+            CommonRouter.routeToPlayingActivity()
         }
         addViewToContent(bar, marginBottom, duration)
         return bar
