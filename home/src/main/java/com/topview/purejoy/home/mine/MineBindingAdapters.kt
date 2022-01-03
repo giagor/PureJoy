@@ -25,3 +25,12 @@ fun setUserNickname(tv: TextView, user: User?) {
         tv.text = defaultUserNickname
     }
 }
+
+@BindingAdapter("loginTips")
+fun setLoginTips(tv: TextView, user: User?) {
+    if (user != null) {
+        tv.text = tv.context.getString(R.string.home_mine_switch_account)
+    } else {
+        tv.text = tv.context.getString(R.string.home_mine_go_login)
+    }
+}

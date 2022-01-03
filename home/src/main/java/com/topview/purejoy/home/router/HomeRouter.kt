@@ -1,11 +1,11 @@
 package com.topview.purejoy.home.router
 
-import com.alibaba.android.arouter.launcher.ARouter
 import com.topview.purejoy.common.router.CommonRouter
 
 object HomeRouter {
     const val ACTIVITY_HOME_SEARCH = "/home/search"
     const val ACTIVITY_HOME_TOPLIST = "/home/tasks/toplist"
+    const val ACTIVITY_HOME_LOGIN = "/home/tasks/login"
 
     fun routeToSearchActivity() {
         routeWithoutParams(ACTIVITY_HOME_SEARCH)
@@ -13,6 +13,10 @@ object HomeRouter {
 
     fun routeToTopListActivity() {
         routeWithoutParams(ACTIVITY_HOME_TOPLIST)
+    }
+
+    fun routeToLoginActivity() {
+        routeWithoutParams(ACTIVITY_HOME_LOGIN)
     }
 
     /**
