@@ -7,6 +7,15 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import com.topview.purejoy.common.IBinderPool
 
+/**
+ * BinderPoolClient有四种状态：
+ *   INIT_STATE:初始状态
+ *   WAITING_STATE:已调用connectService方法，正在等待连接，在此状态下，再次调用
+ *                 connectService方法无任何作用
+ *   CONNECT_STATE:连接服务成功后处于此状态
+ *   DISCONNECT_STATE:服务断开后处于此状态
+ *
+ */
 open class BinderPoolClient(context: Context,
                             private val clazz: Class<*>) {
     @Volatile
@@ -52,6 +61,9 @@ open class BinderPoolClient(context: Context,
 
     fun isDisconnected() = state == DISCONNECT_STATE
 
+    /**
+     * 注册服务连接时的回调
+     */
     fun registerConnectListener(action: () -> Unit) {
         if (isConnected()) {
             action.invoke()
@@ -59,6 +71,9 @@ open class BinderPoolClient(context: Context,
         connectListeners.add(action)
     }
 
+    /**
+     * 注册服务断开时的回调
+     */
     fun registerDisconnectListener(action: () -> Unit) {
         if (isDisconnected()) {
             action.invoke()
@@ -88,9 +103,12 @@ open class BinderPoolClient(context: Context,
         }
     }
 
+    /**
+     * 连接服务，当不处于WAITING_STATE且不处于CONNECT_STATE有效
+     */
     fun connectService() {
-        if (state != WAITING && !isConnected()) {
-            state = WAITING
+        if (state != WAITING_STATE && !isConnected()) {
+            state = WAITING_STATE
             val intent = Intent(context, clazz)
             context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
@@ -120,7 +138,7 @@ open class BinderPoolClient(context: Context,
         const val CONNECT_STATE = 1
         // 连接断开状态
         const val DISCONNECT_STATE = 2
-        const val WAITING = 3
+        const val WAITING_STATE = 3
     }
 
 }

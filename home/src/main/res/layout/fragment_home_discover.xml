@@ -53,6 +53,9 @@
         <variable
             name="llDailyRecommendClickListener"
             type="OnClickListener" />
+        <variable
+            name="llPlaylistClickListener"
+            type="OnClickListener" />
     </data>
     
     <ScrollView
@@ -137,7 +140,8 @@
                     android:orientation="vertical"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:layout_marginStart="10dp">
+                    android:layout_marginStart="10dp"
+                    app:onClickListener="@{llPlaylistClickListener}">
 
                     <ImageView
                         android:layout_width="@dimen/home_discover_single_row_icon_size"

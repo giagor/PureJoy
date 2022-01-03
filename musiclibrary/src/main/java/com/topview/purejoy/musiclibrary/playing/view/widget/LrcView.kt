@@ -330,7 +330,7 @@ class LrcView : View {
         post {
             if (source.isNotEmpty()) {
                 val i = LrcItem(time = time, content = "", strTime = "")
-                val item = sortSet.ceiling(i)
+                val item = sortSet.floor(i)
                 item?.let {
                     val index = source.indexOf(it)
                     if (state == State.NORMAL && index != outerIndex) {

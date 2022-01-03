@@ -67,6 +67,9 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         binding.llDailyRecommendClickListener = View.OnClickListener {
             MusicLibraryRouter.routeToDailyRecommendActivity()
         }
+        binding.llPlaylistClickListener = View.OnClickListener {
+            MusicLibraryRouter.routeToPlaylistSquareActivity()
+        }
     }
 
     private fun initIcon() {

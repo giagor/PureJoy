@@ -5,15 +5,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.playlist.square.adapter.PlaylistSquareFragmentAdapter
 import com.topview.purejoy.musiclibrary.playlist.square.viewmodel.PlaylistSquareViewModel
 
+@Route(path = MusicLibraryRouter.ACTIVITY_PLAYLIST_SQUARE)
 class PlaylistSquareActivity : MusicCommonActivity<PlaylistSquareViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

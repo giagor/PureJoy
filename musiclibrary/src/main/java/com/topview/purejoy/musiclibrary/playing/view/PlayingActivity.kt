@@ -6,8 +6,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.music.activity.MusicBindingActivity
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
+import com.topview.purejoy.common.router.CommonRouter
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.musiclibrary.BR
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
@@ -18,6 +21,7 @@ import com.topview.purejoy.musiclibrary.common.util.numToString
 import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
 
+@Route(path = CommonRouter.ACTIVITY_PLAYING)
 class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>() {
 
     private val layout: LinearLayout by lazy {

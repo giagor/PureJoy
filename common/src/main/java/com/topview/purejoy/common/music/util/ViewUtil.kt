@@ -23,8 +23,12 @@ fun AppCompatActivity.addViewToContent(view: View, marginBottom: Int,
             as ViewGroup).getChildAt(1) as FrameLayout
     val lp = FrameLayout.LayoutParams(width, height)
     lp.gravity = Gravity.BOTTOM
-    val animator = MarginBottomAnimator(contentView, view, lp, duration, marginBottom)
-    animator.start()
+    if (marginBottom > 0 && duration > 0) {
+        val animator = MarginBottomAnimator(contentView, view, lp, duration, marginBottom)
+        animator.start()
+    } else {
+        contentView.addView(view, lp)
+    }
 }
 
 fun AppCompatActivity.addViewToContent(@LayoutRes layoutId: Int, marginBottom: Int,

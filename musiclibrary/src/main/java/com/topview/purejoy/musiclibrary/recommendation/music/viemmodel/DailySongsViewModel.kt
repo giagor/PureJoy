@@ -2,6 +2,9 @@ package com.topview.purejoy.musiclibrary.recommendation.music.viemmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.topview.purejoy.common.music.service.url.entity.URLItemWrapper
+import com.topview.purejoy.common.music.service.url.repository.MusicURLRepository
+import com.topview.purejoy.common.music.service.url.repository.MusicURLRepositoryImpl
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.common.net.await
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.DailySongsWrapper
@@ -10,7 +13,9 @@ import com.topview.purejoy.musiclibrary.recommendation.music.repository.DailySon
 import com.topview.purejoy.musiclibrary.recommendation.music.repository.DailySongsRepositoryImpl
 
 class DailySongsViewModel(
-    private val repository: DailySongsRepository = DailySongsRepositoryImpl()
+    private val repository: DailySongsRepository = DailySongsRepositoryImpl(),
+    private val urlRepo: MusicURLRepository = MusicURLRepositoryImpl(),
+    val urlResponse: MutableLiveData<URLItemWrapper?> = MutableLiveData()
 ) : MVVMViewModel() {
     val data: MutableLiveData<List<SongWithReason>> by lazy {
         MutableLiveData()
@@ -44,6 +49,20 @@ class DailySongsViewModel(
             onError = {
                 // push null to notify observer that throws exception
                 data.value = null
+            }
+        }
+    }
+
+    fun requestURL(id: Long) {
+        viewModelScope.rxLaunch<URLItemWrapper> {
+            onRequest = {
+                urlRepo.requestMusicURL(id.toString()).await()
+            }
+            onSuccess = {
+                urlResponse.postValue(it)
+            }
+            onError = {
+                urlResponse.postValue(null)
             }
         }
     }
