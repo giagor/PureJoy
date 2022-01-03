@@ -1,11 +1,13 @@
 package com.topview.purejoy.home.router
 
+import androidx.fragment.app.Fragment
 import com.topview.purejoy.common.router.CommonRouter
 
 object HomeRouter {
     const val ACTIVITY_HOME_SEARCH = "/home/search"
     const val ACTIVITY_HOME_TOPLIST = "/home/tasks/toplist"
     const val ACTIVITY_HOME_LOGIN = "/home/tasks/login"
+    const val FRAGMENT_HOME_DISCOVER = "/home/discover"
 
     fun routeToSearchActivity() {
         routeWithoutParams(ACTIVITY_HOME_SEARCH)
@@ -17,6 +19,10 @@ object HomeRouter {
 
     fun routeToLoginActivity() {
         routeWithoutParams(ACTIVITY_HOME_LOGIN)
+    }
+
+    fun routeToDiscoverFragment(): Fragment? {
+        return routeWithoutParams(FRAGMENT_HOME_DISCOVER) as? Fragment
     }
 
     /**

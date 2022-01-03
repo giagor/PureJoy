@@ -8,6 +8,7 @@ import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.home.databinding.ActivityHomeHomeBinding
 import com.topview.purejoy.home.discover.HomeDiscoverFragment
 import com.topview.purejoy.home.mine.HomeMineFragment
+import com.topview.purejoy.home.router.HomeRouter
 
 private const val TAG = "HomeActivity"
 
@@ -44,7 +45,7 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>() {
                 Log.d(TAG, "initEvent: discover")
                 hide(curShowFragment!!)
                 if (discoverFragment == null) {
-                    discoverFragment = HomeDiscoverFragment()
+                    discoverFragment = HomeRouter.routeToDiscoverFragment()
                     addFragment(R.id.home_fl_fragment_layout, discoverFragment!!)
                 } else {
                     show(discoverFragment!!)

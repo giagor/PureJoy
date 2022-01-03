@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.util.getWindowWidth
@@ -29,6 +30,7 @@ private const val TAG = "HomeDiscoverFragment"
  * */
 private const val RECOMMEND_NEW_SONG_ROW_COUNT = 3
 
+@Route(path = HomeRouter.FRAGMENT_HOME_DISCOVER)
 class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -135,10 +137,5 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
                 Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = HomeDiscoverFragment()
     }
 }
