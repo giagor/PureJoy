@@ -47,6 +47,9 @@
         <variable
             name="tvSearchClickListener"
             type="OnClickListener" />
+        <variable
+            name="llTopListClickListener"
+            type="OnClickListener" />
     </data>
     
     <ScrollView
@@ -149,7 +152,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_alignParentEnd="true"
-                    android:gravity="center">
+                    android:gravity="center"
+                    app:onClickListener="@{llTopListClickListener}">
 
                     <ImageView
                         android:layout_width="@dimen/home_discover_single_row_icon_size"
@@ -159,7 +163,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/home_discover_single_row_text_ranking" />
+                        android:text="@string/home_discover_single_row_text_ranking"/>
 
                 </LinearLayout>
 

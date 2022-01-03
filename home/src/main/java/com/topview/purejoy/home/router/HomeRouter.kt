@@ -4,9 +4,14 @@ import com.alibaba.android.arouter.launcher.ARouter
 
 object HomeRouter {
     const val ACTIVITY_HOME_SEARCH = "/home/search"
-
+    const val ACTIVITY_HOME_TOPLIST = "/home/tasks/toplist"
+    
     fun routeToSearchActivity() {
         routeWithoutParams(ACTIVITY_HOME_SEARCH)
+    }
+
+    fun routeToTopListActivity() {
+        routeWithoutParams(ACTIVITY_HOME_TOPLIST)
     }
 
     /**

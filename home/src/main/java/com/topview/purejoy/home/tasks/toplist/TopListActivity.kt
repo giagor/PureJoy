@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
 import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
@@ -19,9 +20,11 @@ import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 import com.topview.purejoy.common.util.pxToDp
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.toplist.TopListScreen
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.theme.Gray245
 
-class TopListActivity: ComposeActivity() {
+@Route(path = HomeRouter.ACTIVITY_HOME_TOPLIST)
+class TopListActivity : ComposeActivity() {
 
     private val viewModel by viewModels<TopListViewModel>()
 
@@ -32,8 +35,9 @@ class TopListActivity: ComposeActivity() {
             .setStatusBarBackground(Gray245.toArgb())
             .setStatusBarTextColor(true)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
-            val systemBar = insets.getInsets(WindowInsetsCompat.Type.statusBars() or
-                WindowInsetsCompat.Type.navigationBars()
+            val systemBar = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or
+                        WindowInsetsCompat.Type.navigationBars()
             )
             v.updatePadding(top = 0, bottom = systemBar.bottom)
             statusBarHeight = pxToDp(systemBar.top)

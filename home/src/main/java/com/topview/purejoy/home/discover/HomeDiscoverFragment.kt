@@ -58,6 +58,9 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         binding.tvSearchClickListener = View.OnClickListener {
             HomeRouter.routeToSearchActivity()
         }
+        binding.llTopListClickListener = View.OnClickListener {
+            HomeRouter.routeToTopListActivity()
+        }
     }
 
     private fun initIcon() {
