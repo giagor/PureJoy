@@ -15,6 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.ScreenTitle
 import com.topview.purejoy.home.components.status.PageState
@@ -25,7 +27,6 @@ import com.topview.purejoy.home.theme.Gray245
 @Composable
 internal fun TopListScreen(
     state: PageState,
-    statusBarPadding: Int,
     topListMap: Map<TopListTab, List<TopList>>?,
     onRetryClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
@@ -37,7 +38,12 @@ internal fun TopListScreen(
                     .padding()
                     .fillMaxWidth()
                     .background(Gray245)
-                    .padding(start = 15.dp, top = (5 + statusBarPadding).dp, bottom = 10.dp),
+                    .padding(rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.systemGestures,
+                        additionalStart = 15.dp,
+                        additionalTop = 5.dp,
+                        additionalBottom = 10.dp
+                    )),
                 onBackClick = onBackClick
             )
         },

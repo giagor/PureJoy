@@ -30,35 +30,12 @@ object StatusBarUtil {
     }
 
     /**
-     * 是否允许DecorView自动适应SystemWindow的高度。注意，关闭适应同时影响StatusBar和NavigationBar
-     */
-    fun Window.setAutoFitSystemWindows(decorFitsSystemWindows: Boolean): Window {
-        WindowCompat.setDecorFitsSystemWindows(this, decorFitsSystemWindows)
-        return this
-    }
-
-    fun Window.setStatusBarBackground(@ColorInt color: Int): Window {
-        statusBarColor = color
-        return this
-    }
-
-    /**
      * 将状态栏的字符改为黑色，这是原生的设置方法，但仅支持6.0以上的系统
      */
     @RequiresApi(Build.VERSION_CODES.M)
     @Deprecated("deprecated in API 30", ReplaceWith("setStatusBarTextColor()"))
     fun Window.setBlackTextToStatusBar() {
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-    }
-
-    /**
-     * 修改状态栏的字符的颜色。设置为黑色的调用在API 23以下不起作用
-     * @param dark 传入true以将状态栏颜色修改为黑色
-     */
-    fun Window.setStatusBarTextColor(dark: Boolean): Window {
-        WindowCompat.getInsetsController(
-                this, decorView)?.isAppearanceLightStatusBars = dark
-        return this
     }
 
     /**
@@ -115,18 +92,56 @@ object StatusBarUtil {
     }
 
     /**
-     * 为传入的[view]设置全局的top padding和bottom padding，以消除StatusBar、NavigationBar与界面的重叠
-     * 注意，这个方法为简单适应策略，所有Inset都已经被消费了，不再派发。
-     * 若并不希望阻塞Insets的传递，请在根布局使用android:fitsSystemWindows="true"属性而不是使用这个函数
+     * 是否允许DecorView自动适应SystemWindow的高度。注意，关闭适应同时影响StatusBar和NavigationBar
      */
-    fun fitSystemBar(view : View) {
+    fun Window.setAutoFitSystemWindows(decorFitsSystemWindows: Boolean): Window {
+        WindowCompat.setDecorFitsSystemWindows(this, decorFitsSystemWindows)
+        return this
+    }
+
+    /**
+     * 修改系统顶部栏的背景颜色
+     */
+    fun Window.setStatusBarBackgroundColor(@ColorInt color: Int): Window {
+        statusBarColor = color
+        return this
+    }
+
+    /**
+     * 修改系统底部导航栏的背景颜色
+     */
+    fun Window.setNavigationBarBackgroundColor(@ColorInt color: Int): Window {
+        navigationBarColor = color
+        return this
+    }
+
+    /**
+     * 修改状态栏的字符的颜色。设置为黑色的调用在API 23以下不起作用
+     * @param dark 传入true以将状态栏颜色修改为黑色
+     */
+    fun Window.setStatusBarTextColor(dark: Boolean): Window {
+        WindowCompat.getInsetsController(
+            this, decorView)?.isAppearanceLightStatusBars = dark
+        return this
+    }
+
+    /**
+     * 为传入的[view]设置全局的top padding和bottom padding，以消除StatusBar、NavigationBar与界面的重叠。
+     * 使用前请务必调用[setAutoFitSystemWindows]来关闭DecorView对StatusBar的适配，否则将会重复设置padding
+     * 不建议传入window.decorView作为接受padding的view，这会导致无法通过[setStatusBarBackgroundColor]
+     * 来修改状态栏背景。[consumed]默认为false，表示不消费Insets，在API>=30，同层的Insets消费与否不再会互相干扰
+     */
+    fun fitSystemBar(view: View, consumed: Boolean = true) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBar = insets.getInsets(
                 WindowInsetsCompat.Type.systemGestures()
                     or WindowInsetsCompat.Type.navigationBars())
             v.updatePadding(top = systemBar.top, bottom = systemBar.bottom)
-            // TODO 仅挑选一部分Inset进行消费，其他的继续传递
-            WindowInsetsCompat.CONSUMED
+            if (consumed) {
+                WindowInsetsCompat.CONSUMED
+            } else {
+                insets
+            }
         }
     }
 }

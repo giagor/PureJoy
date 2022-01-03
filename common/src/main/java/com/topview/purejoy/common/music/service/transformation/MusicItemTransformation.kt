@@ -1,8 +1,8 @@
 package com.topview.purejoy.common.music.service.transformation
 
 import com.topview.purejoy.common.music.data.Wrapper
-import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.common.music.service.entity.MusicItem
 
 object MusicItemTransformation : ItemTransformation<MusicItem> {
     const val ITEM_EXTRA = "MusicItem"

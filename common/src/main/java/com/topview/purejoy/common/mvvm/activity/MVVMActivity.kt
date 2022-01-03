@@ -1,10 +1,7 @@
 package com.topview.purejoy.common.mvvm.activity
 
-import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 

@@ -4,8 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.topview.purejoy.musiclibrary.playlist.square.entity.PlaylistTag
-import com.topview.purejoy.musiclibrary.playlist.square.view.PlaylistSquareFragment
 
 class PlaylistSquareFragmentAdapter(
     fm: FragmentManager,

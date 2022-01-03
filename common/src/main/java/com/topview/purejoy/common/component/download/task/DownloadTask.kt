@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
+import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
 import java.util.concurrent.ExecutorService
