@@ -18,7 +18,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -56,11 +59,14 @@ dependencies {
     api(Deps.baseRecyclerViewAdapterHelper)
     // RecyclerView - GravitySnapHelper
     api(Deps.gravitySnapHelper)
-    
+
     // Room
     api(Deps.Room.roomRuntime)
     api(Deps.Room.roomKtx)
-    
+
     // ARouter
     api(Deps.ARouter.arouterApi)
+
+    // LeakCanary
+    debugApi(Deps.Debug.leakCanary)
 }
