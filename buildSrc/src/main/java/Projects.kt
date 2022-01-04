@@ -83,6 +83,10 @@ object Deps {
         const val arouterCompile = "com.alibaba:arouter-compiler:$version"
     }
 
+    object Debug {
+        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
+    }
+
     const val material = "com.google.android.material:material:1.4.0"
 
     const val okhttp = "com.squareup.okhttp3:okhttp:4.9.2"
