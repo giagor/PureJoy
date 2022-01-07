@@ -1,4 +1,4 @@
-package com.topview.purejoy.video.ui.horizontal
+package com.topview.purejoy.video.ui.vertical
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -20,10 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.video.R
-import com.topview.purejoy.video.VideoViewModel
-import com.topview.purejoy.video.entity.Video
-import com.topview.purejoy.video.ui.MarqueeText
+import com.topview.purejoy.video.ui.VideoViewModel
+import com.topview.purejoy.video.ui.components.MarqueeText
 import com.topview.purejoy.video.ui.state.BottomSliderState
 import com.topview.purejoy.video.ui.state.VideoLoadState
 import com.topview.purejoy.video.ui.theme.Gray155
@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.collectLatest
  * 横向视频的底部控制栏
  */
 @Composable
-internal fun HorizontalBottomSlider(
+internal fun VerticalBottomSlider(
     modifier: Modifier = Modifier,
     video: Video?,
     isCurrentPage: Boolean,
@@ -47,7 +47,8 @@ internal fun HorizontalBottomSlider(
     onProgressChangeFinished: () -> Unit = {}
 ) {
     val videoLoadState by videoViewModel.videoLoadState.collectAsState()
-    val sliderRange = if (video == null) 0F..0F else 0F..video.duration.toFloat()
+    val sliderRange = if (video == null || video.duration == Video.UNSPECIFIED_LONG) 0F..0F else
+        0F..video.duration.toFloat()
     var dragging by remember {
         mutableStateOf(false)
     }

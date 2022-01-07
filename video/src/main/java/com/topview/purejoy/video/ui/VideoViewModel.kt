@@ -1,24 +1,28 @@
-package com.topview.purejoy.video
+package com.topview.purejoy.video.ui
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.topview.purejoy.common.app.CommonApplication
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.video.data.repo.VideoRepository
-import com.topview.purejoy.video.entity.Video
 import com.topview.purejoy.video.ui.state.VideoLoadState
+import com.topview.purejoy.video.videoConfiguration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
-import java.util.*
 
-class VideoViewModel(initialList: ArrayList<Video>): MVVMViewModel(), Player.Listener {
+class VideoViewModel: MVVMViewModel(), Player.Listener {
 
-    private val repository = VideoRepository(initialList)
+    private val repository = VideoRepository(
+        videoConfiguration.initialList
+    )
 
     val exoPlayer = ExoPlayer.Builder(CommonApplication.getContext()).build()
 
@@ -49,7 +53,7 @@ class VideoViewModel(initialList: ArrayList<Video>): MVVMViewModel(), Player.Lis
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        _videoLoadState.value = VideoLoadState.Error
+        _videoLoadState.value = VideoLoadState.Error(errorCode = error.errorCode)
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -97,9 +101,15 @@ class VideoViewModel(initialList: ArrayList<Video>): MVVMViewModel(), Player.Lis
      * 当页面切换时触发的处理函数。这个函数在首次加载到第一页的时候也可以触发
      */
     fun onPageChange(video: Video?) {
+        exoPlayer.stop()
         video?.apply {
-            exoPlayer.setMediaItem(MediaItem.fromUri(video.videoUrl))
-            exoPlayer.prepare()
+            if (hasEmptyField()) {
+                loadDetail(this)
+            }
+            videoUrl?.let {
+                exoPlayer.setMediaItem(MediaItem.fromUri(it))
+                exoPlayer.prepare()
+            } ?: applyVideoUrl()
         }
         if (_videoLoadState.value !is VideoLoadState.Loading) {
             _videoLoadState.value = VideoLoadState.Loading
@@ -114,4 +124,66 @@ class VideoViewModel(initialList: ArrayList<Video>): MVVMViewModel(), Player.Lis
     }
 
     fun getPagingVideoFlow() = repository.getPagingVideoFlow()
+
+
+    private fun Video.applyVideoUrl() {
+        viewModelScope.rxLaunch<String> {
+            onRequest = {
+                if (isMv) {
+                    repository.getMVPlayUrl(id)
+                } else {
+                    repository.getVideoPlayUrl(id)
+                }
+            }
+            onSuccess = {
+                videoUrl = it
+                exoPlayer.setMediaItem(MediaItem.fromUri(it))
+                exoPlayer.prepare()
+            }
+            onError = {
+                _videoLoadState.value = VideoLoadState.Error(
+                    PlaybackException.ERROR_CODE_UNSPECIFIED
+                )
+            }
+            onEmpty = {
+                _videoLoadState.value = VideoLoadState.Error(
+                    PlaybackException.ERROR_CODE_UNSPECIFIED
+                )
+            }
+        }
+    }
+
+    /**
+     * 检测是否存在尚未加载数据的域
+     */
+    private fun Video.hasEmptyField(): Boolean {
+        return duration == Video.UNSPECIFIED_LONG ||
+                likedCount == Video.UNSPECIFIED ||
+                shareCount == Video.UNSPECIFIED ||
+                commentCount == Video.UNSPECIFIED
+    }
+
+    private fun loadDetail(video: Video) {
+        viewModelScope.rxLaunch<Unit> {
+            onRequest = {
+                repository.loadDetailOfVideo(video = video)
+            }
+            onError = {
+                print(it)
+            }
+        }
+    }
+
+    fun print(e: Exception) {
+        val elements = e.stackTrace
+        Log.d("this", "错误原因" + e.message)
+        Log.d("this", "错误有" + elements.size + "行")
+        for (i in elements.indices) {
+            Log.d(
+                "this", "at " + elements[i].className
+                        + "." + elements[i].methodName + "  " +
+                        elements[i].lineNumber + "行"
+            )
+        }
+    }
 }

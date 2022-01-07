@@ -1,4 +1,4 @@
-package com.topview.purejoy.video.ui.horizontal
+package com.topview.purejoy.video.ui.vertical
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -22,9 +22,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.common.widget.compose.RoundImageViewCompose
 import com.topview.purejoy.video.R
-import com.topview.purejoy.video.entity.Video
 import com.topview.purejoy.video.ui.theme.FollowRed
 import com.topview.purejoy.video.ui.theme.HalfAlphaWhite
 
@@ -54,7 +54,7 @@ internal fun MVSign(
  * 顶部标题
  */
 @Composable
-internal fun HorizontalPagerTitle(
+internal fun VerticalPagerTitle(
     modifier: Modifier = Modifier,
     isMv: Boolean = false,
     onBackClick: () -> Unit = {},
@@ -157,7 +157,7 @@ internal fun DescriptionView(
 }
 
 @Composable
-internal fun HorizontalErrorComponents(
+internal fun VerticalErrorComponents(
     modifier: Modifier = Modifier,
     onRetryClick: (Video?) -> Unit,
     video: Video?
@@ -202,7 +202,7 @@ internal fun HorizontalErrorComponents(
 }
 
 @Composable
-internal fun HorizontalLoadingComponents(
+internal fun VerticalLoadingComponents(
     modifier: Modifier = Modifier
 ) {
     CircularProgressIndicator(
@@ -215,7 +215,7 @@ internal fun HorizontalLoadingComponents(
  * 暂停时显示的图标
  */
 @Composable
-internal fun HorizontalPlayIcon(
+internal fun VerticalPlayIcon(
     modifier: Modifier = Modifier
 ) {
     Icon(

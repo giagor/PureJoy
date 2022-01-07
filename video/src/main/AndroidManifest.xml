@@ -7,7 +7,7 @@
     <application
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".VideoActivity"
+            android:name=".ui.VideoActivity"
             android:exported="false">
         </activity>
     </application>
