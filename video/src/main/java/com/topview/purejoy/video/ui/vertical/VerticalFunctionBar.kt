@@ -1,4 +1,4 @@
-package com.topview.purejoy.video.ui.horizontal
+package com.topview.purejoy.video.ui.vertical
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -15,14 +15,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.video.R
-import com.topview.purejoy.video.entity.Video
 
 /**
  * 功能按钮列表
  */
 @Composable
-internal fun HorizontalFunctionBar(
+internal fun VerticalFunctionBar(
     modifier: Modifier = Modifier,
     video: Video?
 ) {
@@ -32,7 +32,7 @@ internal fun HorizontalFunctionBar(
     ) {
         VideoFunctionButton(
             drawableId = R.drawable.ic_video_likes,
-            text = getFormatString(video?.praisedCount)
+            text = getFormatString(video?.likedCount)
         )
         VideoFunctionButton(
             drawableId = R.drawable.ic_video_comment,
@@ -81,6 +81,9 @@ internal fun VideoFunctionButton(
  * 例如，36500转换为3.6万，99999999转换为9999万
  */
 private fun getFormatString(count: Int?): String {
+    if (count == Video.UNSPECIFIED) {
+        return "--"
+    }
     if (count == null || count < 0) {
         return "0"
     }

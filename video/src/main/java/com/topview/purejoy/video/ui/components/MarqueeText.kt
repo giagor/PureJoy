@@ -1,4 +1,4 @@
-package com.topview.purejoy.video.ui
+package com.topview.purejoy.video.ui.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
