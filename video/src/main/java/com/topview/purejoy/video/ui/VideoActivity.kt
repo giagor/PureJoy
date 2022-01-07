@@ -1,4 +1,4 @@
-package com.topview.purejoy.video
+package com.topview.purejoy.video.ui
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,36 +8,25 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
 import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
-import com.topview.purejoy.video.ui.LocalExoPlayer
-import com.topview.purejoy.video.ui.horizontal.HorizontalVideoScreen
+import com.topview.purejoy.video.router.VideoRouter
 import com.topview.purejoy.video.ui.state.VideoLoadState
-import com.topview.purejoy.video.util.RouterParamsConstant
+import com.topview.purejoy.video.ui.vertical.VerticalVideoScreen
+import com.topview.purejoy.video.videoConfiguration
 
+@Route(path = VideoRouter.ACTIVITY_VIDEO)
 class VideoActivity: ComposeActivity() {
 
-    private val viewModel by viewModels<VideoViewModel>(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    if (modelClass == VideoViewModel::class.java) {
-                        return VideoViewModel(
-                            intent.extras?.getParcelableArrayList(
-                                RouterParamsConstant.VIDEO_ARRAYLIST)!!
-                        ) as T
-                    } else {
-                        throw IllegalArgumentException("Illegal ViewModel Class")
-                    }
-                }
-            }
-        }
-    )
+    private val viewModel by viewModels<VideoViewModel>()
 
     override fun setStatusBarStyle() {
         window.setAutoFitSystemWindows(false)
@@ -67,9 +56,8 @@ class VideoActivity: ComposeActivity() {
                 })
 
                 CompositionLocalProvider(LocalExoPlayer provides viewModel.exoPlayer) {
-                    HorizontalVideoScreen(
+                    VerticalVideoScreen(
                         items = videoItem,
-                        videoLoadState = videoLoadState,
                         onPageChange = {
                             viewModel.onPageChange(it)
                         },
@@ -88,5 +76,16 @@ class VideoActivity: ComposeActivity() {
                 }
             }
         }
+        registerLifecycleObserver()
+    }
+
+    private fun registerLifecycleObserver() {
+        this.lifecycle.addObserver(object : LifecycleObserver{
+            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+            fun onDestroy() {
+                videoConfiguration.onCloseListener?.invoke()
+                viewModel.exoPlayer.release()
+            }
+        })
     }
 }
