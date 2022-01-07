@@ -3,26 +3,62 @@ package com.topview.purejoy.video.data.repo
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.common.net.ServiceCreator
+import com.topview.purejoy.common.net.await
 import com.topview.purejoy.video.data.VideoSource
 import com.topview.purejoy.video.data.api.VideoService
-import com.topview.purejoy.video.entity.Video
+import com.topview.purejoy.video.data.bean.toVideo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import kotlinx.coroutines.withContext
 
 class VideoRepository(
-    private val videoList: ArrayList<Video>,
+    private val videoList: List<Video>,
     private val maxPage: Int = Int.MAX_VALUE
 ) {
     private val videoService = ServiceCreator.create(VideoService::class.java)
-
-    fun getPagingVideoFlow(): Flow<PagingData<Video>> {
-        return Pager(
+    private val pager: Pager<Int, Video> by lazy {
+        Pager(
             config = PagingConfig(
                 pageSize = maxPage,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = { VideoSource(videoService, videoList, maxPage) }
-        ).flow
+        )
+    }
+
+    fun getPagingVideoFlow(): Flow<PagingData<Video>> {
+        return pager.flow
+    }
+
+    suspend fun getVideoPlayUrl(vid: String): String? =
+        withContext(Dispatchers.IO) {
+            val json = videoService.getVideoUrl(vid = vid).await()
+            json?.url?.get(0)?.url
+        }
+
+
+    suspend fun getMVPlayUrl(id: String): String? =
+        withContext(Dispatchers.IO) {
+            val json = videoService.getMVUrl(id).await()
+            json?.data?.url
+        }
+
+
+    suspend fun loadDetailOfVideo(video: Video) {
+        withContext(Dispatchers.IO) {
+            if (video.isMv) {
+                val detailJson = videoService.getMVDetail(video.id).await()
+                detailJson?.mappingToVideo(video)
+                val likeJson = videoService.getMVLikeInfo(video.id).await()
+                video.likedCount = likeJson?.likedCount ?: 0
+            } else {
+                val json = videoService.getVideoDetail(video.id).await()
+                json?.data?.toVideo()?.let {
+                    video.merge(it)
+                }
+            }
+        }
     }
 }
