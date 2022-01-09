@@ -11,37 +11,49 @@ class RandomPosition(override var max: Int,
 ) : Position {
 
     override fun current(): Int {
-        return current
+        synchronized(this) {
+            return current
+        }
     }
 
     override fun next(): Int {
-        if (nextMap.containsKey(current)) {
-            current = nextMap[current]!!
-        } else {
-            val index = random.nextInt(max)
-            nextMap[current] = index
-            lastMap[index] = current
-            current = index
+        synchronized(this) {
+            if (nextMap.containsKey(current)) {
+                current = nextMap[current]!!
+            } else {
+                val index = random.nextInt(max)
+                nextMap[current] = index
+                lastMap[index] = current
+                current = index
+            }
+            return current
         }
-        return current
     }
 
     override fun last(): Int {
-        if(lastMap.containsKey(current)) {
-            current = lastMap[current]!!
-        } else {
-            val index = random.nextInt(max)
-            nextMap[index] = current
-            lastMap[current] = index
-            current = index
+        synchronized(this) {
+            if(lastMap.containsKey(current)) {
+                current = lastMap[current]!!
+            } else {
+                val index = random.nextInt(max)
+                nextMap[index] = current
+                lastMap[current] = index
+                current = index
+            }
+            return current
         }
-        return current
     }
 
     override fun with(position: Position) {
-        lastMap.clear()
-        nextMap.clear()
-        current = position.current()
-        max = position.max
+        synchronized(this) {
+            lastMap.clear()
+            nextMap.clear()
+            current = position.current()
+            max = position.max
+        }
+    }
+
+    override fun toString(): String {
+        return "[RandomPosition current = $current, max = $max]"
     }
 }

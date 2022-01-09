@@ -4,19 +4,27 @@ import com.topview.purejoy.common.music.player.abs.core.Position
 
 open class LoopPosition(override var max: Int, private var current: Int) : Position {
     override fun current(): Int {
-        return current
+        synchronized(this) {
+            return current
+        }
     }
 
     override fun next(): Int {
-        return current
+        return current()
     }
 
     override fun last(): Int {
-        return current
+        return current()
     }
 
     override fun with(position: Position) {
-        current = position.current()
-        max = position.max
+        synchronized(this) {
+            current = position.current()
+            max = position.max
+        }
+    }
+
+    override fun toString(): String {
+        return "[LoopPosition current = $current, max = $max]"
     }
 }
