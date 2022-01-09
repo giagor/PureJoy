@@ -1,4 +1,4 @@
-package com.topview.purejoy.common.music.activity.pop
+package com.topview.purejoy.common.music.view.pop
 
 import android.graphics.Color
 import android.widget.ImageView
