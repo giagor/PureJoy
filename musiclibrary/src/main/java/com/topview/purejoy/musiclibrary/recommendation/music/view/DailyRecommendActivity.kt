@@ -11,17 +11,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.app.CommonApplication
-import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.music.activity.MusicCommonActivity
-import com.topview.purejoy.common.music.player.impl.cache.DiskCache
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
+import com.topview.purejoy.common.music.view.bottom.MusicController
 import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.router.CommonRouter
-import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
+import com.topview.purejoy.musiclibrary.common.NoBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.util.download
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
@@ -30,9 +28,16 @@ import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReas
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperList
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.recommendation.music.viemmodel.DailySongsViewModel
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Route(path = MusicLibraryRouter.ACTIVITY_MUSIC_LIBRARY_DAILY_RECOMMEND)
-class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
+class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
+
+    private val musicController: MusicController = MusicController()
+
+    private val bottomView: MusicBottomView by lazy {
+        MusicBottomView(this, musicController)
+    }
 
     override fun getLayoutId(): Int = R.layout.coordinatorlayout_activity_daily_recommend
 
@@ -45,13 +50,13 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) { item ->
             item?.let {
                 val w = it.wrap()
-                if (currentItem.value == null) {
-                    dataController?.add(w)
-                    playerController?.jumpTo(0)
+                if (musicController.currentItem.value == null) {
+                    musicController.dataController?.add(w)
+                    musicController.playerController?.jumpTo(0)
                 } else {
-                    val index = playItems.value?.indexOf(currentItem.value)
+                    val index = musicController.playItems.value?.indexOf(musicController.currentItem.value)
                     if (index != null && index != -1) {
-                        dataController?.addAfter(w, index)
+                        musicController.dataController?.addAfter(w, index)
                     }
                 }
                 popWindow.window.dismiss()
@@ -93,9 +98,9 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         val adapter = DailyRecommendAdapter(itemClickListener = object :
             DailyRecommendAdapter.DailyRecommendItemClickListener {
             override fun onClick(item: SongWithReason) {
-                dataController?.clear()
-                dataController?.addAll(viewModel.data.value!!.toWrapperList())
-                playerController?.jumpTo(viewModel.data.value!!.indexOf(item))
+                musicController.dataController?.clear()
+                musicController.dataController?.addAll(viewModel.data.value!!.toWrapperList())
+                musicController.playerController?.jumpTo(viewModel.data.value!!.indexOf(item))
                 CommonRouter.routeToPlayingActivity()
             }
         }, buttonClickListener = object : DailyRecommendAdapter.DailyRecommendItemClickListener {
@@ -146,13 +151,13 @@ class DailyRecommendActivity : MusicCommonActivity<DailySongsViewModel>() {
         layout.setOnClickListener {
             // 播放全部歌曲
             if (viewModel.data.value?.isNotEmpty() == true) {
-                dataController?.clear()
-                dataController?.addAll(viewModel.data.value!!.toWrapperList())
-                playerController?.jumpTo(0)
+                musicController.dataController?.clear()
+                musicController.dataController?.addAll(viewModel.data.value!!.toWrapperList())
+                musicController.playerController?.jumpTo(0)
             }
         }
         viewModel.requestDailySongs()
-        addMusicBottomBar(0)
+        bottomView.addMusicBottomBar()
     }
 
     override fun onDestroy() {
