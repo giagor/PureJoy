@@ -8,16 +8,21 @@ import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.topview.purejoy.common.music.activity.MusicCommonActivity
-import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
+import com.topview.purejoy.musiclibrary.common.NoBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.playlist.square.adapter.PlaylistSquareFragmentAdapter
 import com.topview.purejoy.musiclibrary.playlist.square.viewmodel.PlaylistSquareViewModel
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Route(path = MusicLibraryRouter.ACTIVITY_PLAYLIST_SQUARE)
-class PlaylistSquareActivity : MusicCommonActivity<PlaylistSquareViewModel>() {
+class PlaylistSquareActivity : NoBindingActivity<PlaylistSquareViewModel>() {
+    private val bar: MusicBottomView by lazy {
+        MusicBottomView(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val toolBar: Toolbar = findViewById(R.id.playlist_square_tool_bar)
@@ -47,7 +52,7 @@ class PlaylistSquareActivity : MusicCommonActivity<PlaylistSquareViewModel>() {
                 adapter.notifyItemRangeInserted(0, adapter.fragments.size)
             }
         }
-        addMusicBottomBar(0)
+        bar.addMusicBottomBar()
         viewModel.requireTags()
     }
 
