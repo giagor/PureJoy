@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.topview.purejoy.common.R
 import com.topview.purejoy.common.music.service.entity.MusicItem
+import com.topview.purejoy.common.util.dpToPx
 
 @SuppressLint("UnspecifiedImmutableFlag")
 class MusicNotification(
@@ -73,7 +74,7 @@ class MusicNotification(
 
     private fun updateBitmap(url: String) {
         // 更新歌曲图片
-        Glide.with(context).asBitmap().load(url)
+        Glide.with(context).asBitmap().load(url).override(dpToPx(64))
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     remoteViews.setImageViewBitmap(R.id.music_notification_img, resource)

@@ -132,7 +132,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
             override fun prepared() {
                 mainHandler.post {
                     ensureSecurity(source, mediaController.position) {
-                        mediaController.listenerManger.invokeChangeListener(source[position.current()], ItemFilter)
+//                        mediaController.listenerManger.invokeChangeListener(source[position.current()], ItemFilter)
                         mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
                         mediaController.preparedListener?.onPrepared(
                             source[mediaController.position.current()])

@@ -7,10 +7,12 @@ import android.widget.TextView
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.music.activity.MusicBindingActivity
+import com.topview.purejoy.common.music.view.bottom.MusicController
+import com.topview.purejoy.common.music.view.bottom.MusicPopHelper
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
+import com.topview.purejoy.common.music.util.getDisplaySize
+import com.topview.purejoy.common.mvvm.activity.MVVMActivity
 import com.topview.purejoy.common.router.CommonRouter
-import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 import com.topview.purejoy.musiclibrary.BR
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
@@ -22,10 +24,18 @@ import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
 
 @Route(path = CommonRouter.ACTIVITY_PLAYING)
-class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>() {
+class PlayingActivity : MVVMActivity<PlayingViewModel, ViewDataBinding>() {
 
     private val layout: LinearLayout by lazy {
         binding.root.findViewById(R.id.music_playing_layout)
+    }
+
+    private val musicController: MusicController = MusicController()
+
+    private val popHelper: MusicPopHelper by lazy {
+        val size = getDisplaySize()
+        MusicPopHelper(this, size.width(),
+            size.height() / 3 * 2, musicController)
     }
     
     private val TAG = "Playing"
@@ -37,7 +47,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
     private val listener: MusicProgressBar.MusicProgressBarListener by lazy {
         object : MusicProgressBar.MusicProgressBarListenerAdapter {
             override fun onStopTracking(musicProgressBar: MusicProgressBar) {
-                playerController?.seekTo(musicProgressBar.value)
+                musicController.playerController?.seekTo(musicProgressBar.value)
             }
         }
     }
@@ -61,27 +71,29 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     private val timerWrapper = TimerWrapper(duration = 100) {
         if (viewModel.playState.value == true) {
-            viewModel.progress.postValue(playerController?.progress() ?: 0)
+            viewModel.progress.postValue(musicController.playerController?.progress() ?: 0)
         }
     }
 
 
 
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        viewModel.progress.postValue(playerController?.progress() ?: 0)
-        viewModel.duration.postValue(playerController?.duration() ?: 0)
+    fun onServiceConnected() {
+        viewModel.progress.postValue(musicController.playerController?.progress() ?: 0)
+        viewModel.duration.postValue(musicController.playerController?.duration() ?: 0)
         timerWrapper.start()
     }
 
 
-    override fun onServiceDisconnected() {
+    fun onServiceDisconnected() {
         timerWrapper.reset()
-        super.onServiceDisconnected()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        musicController.registerServiceListener()
+        musicController.client.registerConnectListener(this::onServiceConnected)
+        musicController.client.registerDisconnectListener(this::onServiceDisconnected)
+        musicController.client.connectService()
         initView()
         observeData()
         observeViewModel()
@@ -89,17 +101,17 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
     }
 
     private fun observeData() {
-        currentItem.observe(this) {
+        musicController.currentItem.observe(this) {
             viewModel.currentItem.postValue(it)
             viewModel.progress.postValue(0)
-            val duration = playerController?.duration() ?: 0
+            val duration = musicController.playerController?.duration() ?: 0
             viewModel.duration.postValue(duration)
 
         }
-        playState.observe(this) {
+        musicController.playState.observe(this) {
             viewModel.playState.postValue(it)
         }
-        currentMode.observe(this) {
+        musicController.currentMode.observe(this) {
             modeBt.post {
                 val resId = when(it) {
                     MediaModeSetting.ORDER -> R.drawable.music_playing_order_48
@@ -110,7 +122,7 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
                 modeBt.setImageResource(resId)
             }
         }
-        playItems.observe(this) { source ->
+        musicController.playItems.observe(this) { source ->
             if (source != null) {
                 viewModel.playingItems.postValue(source)
                 if (source.isEmpty()) {
@@ -135,23 +147,23 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
             finish()
         }
         binding.root.findViewById<ImageButton>(R.id.music_playing_previous_bt).setOnClickListener {
-            playerController?.last()
+            musicController.playerController?.last()
         }
         binding.root.findViewById<ImageButton>(R.id.music_playing_next_bt).setOnClickListener {
-            playerController?.next()
+            musicController.playerController?.next()
         }
         controlBt.setOnClickListener {
-            playerController?.playOrPause()
+            musicController.playerController?.playOrPause()
         }
         modeBt.setOnClickListener {
-            modeController?.nextMode()
+            musicController.modeController?.nextMode()
         }
 
 
 
 
         binding.root.findViewById<ImageButton>(R.id.music_playing_list_bt).setOnClickListener {
-            musicPopWindow.showDownAt(binding.root, 1f)
+            popHelper.musicPopWindow.showDownAt(binding.root, 1f)
         }
         progressBar.listener = listener
     }
@@ -183,6 +195,9 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
                 R.drawable.music_playing_play_64
             }
             controlBt.setImageResource(resId)
+            if (viewModel.duration.value != null || viewModel.duration.value == 0) {
+                viewModel.duration.postValue(musicController.playerController?.duration() ?: 0)
+            }
         }
         viewModel.playingItems.observe(this) {
             if (it == null) {
@@ -196,6 +211,9 @@ class PlayingActivity : MusicBindingActivity<PlayingViewModel, ViewDataBinding>(
 
     override fun onDestroy() {
         timerWrapper.reset()
+        musicController.unregisterServiceListener()
+        musicController.client.unregisterConnectListener(this::onServiceConnected)
+        musicController.client.unregisterDisconnectListener(this::onServiceDisconnected)
         super.onDestroy()
     }
 
