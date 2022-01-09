@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.music.activity.MusicCommonActivity
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
+import com.topview.purejoy.common.music.view.bottom.MusicController
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
@@ -20,6 +21,7 @@ import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 import com.topview.purejoy.musiclibrary.R
+import com.topview.purejoy.musiclibrary.common.NoBindingActivity
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
 import com.topview.purejoy.musiclibrary.common.util.download
@@ -30,7 +32,11 @@ import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Route(path = MusicLibraryRouter.ACTIVITY_PLAYLIST_DETAIL)
-class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
+class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
+    private val musicController: MusicController = MusicController()
+    private val bottomView: MusicBottomView by lazy {
+        MusicBottomView(this, musicController)
+    }
 
     private val popWindow: RecommendPop by lazy {
         val size = getDisplaySize()
@@ -42,16 +48,16 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 val w = it.wrap()
                 val items = viewModel.songsResponse.value!!.songs
                 if (items.isEmpty()) {
-                    dataController?.add(w)
-                    playerController?.jumpTo(0)
+                    musicController.dataController?.add(w)
+                    musicController.playerController?.jumpTo(0)
                 } else {
-                    val index = items.indexOf(currentItem.value)
+                    val index = items.indexOf(musicController.currentItem.value)
                     if (index != -1) {
-                        dataController?.addAfter(w, index)
+                        musicController.dataController?.addAfter(w, index)
                     } else {
-                        dataController?.clear()
-                        dataController?.add(w)
-                        playerController?.jumpTo(0)
+                        musicController.dataController?.clear()
+                        musicController.dataController?.add(w)
+                        musicController.playerController?.jumpTo(0)
                     }
                 }
                 popWindow.window.dismiss()
@@ -166,7 +172,7 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
                 adapter.notifyItemRangeInserted(0, adapter.data.size)
             }
         }
-        addMusicBottomBar(0)
+        bottomView.addMusicBottomBar(marginBottom = 0)
         viewModel.getDetails(playlistId)
 
 
@@ -176,13 +182,13 @@ class PlaylistDetailActivity : MusicCommonActivity<PlaylistDetailViewModel>() {
 
     private fun handleClick(position: Int, data: List<MusicItem>) {
         if (data.isNotEmpty()) {
-            dataController?.clear()
+            musicController.dataController?.clear()
             val list = mutableListOf<Wrapper>()
             for (d in data) {
                 list.add(d.wrap())
             }
-            dataController?.addAll(list)
-            playerController?.jumpTo(position)
+            musicController.dataController?.addAll(list)
+            musicController.playerController?.jumpTo(position)
             CommonRouter.routeToPlayingActivity()
         }
     }
