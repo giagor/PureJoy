@@ -1,6 +1,5 @@
 package com.topview.purejoy.video.ui
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -171,19 +170,6 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
             onError = {
                 print(it)
             }
-        }
-    }
-
-    fun print(e: Exception) {
-        val elements = e.stackTrace
-        Log.d("this", "错误原因" + e.message)
-        Log.d("this", "错误有" + elements.size + "行")
-        for (i in elements.indices) {
-            Log.d(
-                "this", "at " + elements[i].className
-                        + "." + elements[i].methodName + "  " +
-                        elements[i].lineNumber + "行"
-            )
         }
     }
 }

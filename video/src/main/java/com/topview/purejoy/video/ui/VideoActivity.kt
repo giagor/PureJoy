@@ -16,11 +16,11 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.topview.purejoy.common.base.ComposeActivity
 import com.topview.purejoy.common.util.StatusBarUtil.setAutoFitSystemWindows
+import com.topview.purejoy.common.util.StatusBarUtil.setNavigationBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarBackgroundColor
 import com.topview.purejoy.common.util.StatusBarUtil.setStatusBarTextColor
 import com.topview.purejoy.video.router.VideoRouter
 import com.topview.purejoy.video.ui.state.VideoLoadState
-import com.topview.purejoy.video.ui.vertical.VerticalVideoScreen
 import com.topview.purejoy.video.videoConfiguration
 
 @Route(path = VideoRouter.ACTIVITY_VIDEO)
@@ -32,7 +32,7 @@ class VideoActivity: ComposeActivity() {
         window.setAutoFitSystemWindows(false)
             .setStatusBarBackgroundColor(Color.TRANSPARENT)
             .setStatusBarTextColor(false)
-        window.navigationBarColor = Color.BLACK
+            .setNavigationBarBackgroundColor(Color.TRANSPARENT)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +55,10 @@ class VideoActivity: ComposeActivity() {
                     }
                 })
 
-                CompositionLocalProvider(LocalExoPlayer provides viewModel.exoPlayer) {
-                    VerticalVideoScreen(
+                CompositionLocalProvider(
+                    LocalExoPlayer provides viewModel.exoPlayer
+                ) {
+                    VideoScreen(
                         items = videoItem,
                         onPageChange = {
                             viewModel.onPageChange(it)
@@ -70,7 +72,7 @@ class VideoActivity: ComposeActivity() {
                         },
                         onRetryClick = viewModel::reloadVideo,
                         onBackClick = {
-                            finish()
+                            onBackPressed()
                         },
                     )
                 }
