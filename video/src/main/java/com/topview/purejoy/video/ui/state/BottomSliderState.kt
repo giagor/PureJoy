@@ -6,4 +6,5 @@ import androidx.compose.runtime.setValue
 
 class BottomSliderState {
     var progress: Float by mutableStateOf(0F)
+    var dragging by mutableStateOf(false)
 }
