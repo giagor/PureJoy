@@ -1,6 +1,6 @@
 package com.topview.purejoy.common.music.view.bottom
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
 import com.topview.purejoy.common.*
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.instance.BinderPoolClientInstance
@@ -32,6 +32,8 @@ open class MusicController {
     val playState: MutableLiveData<Boolean> = MutableLiveData()
     // 当前播放模式
     val currentMode: MutableLiveData<Int> = MutableLiveData()
+
+    private val TAG = "MusicController"
 
     val client: BinderPoolClient by lazy {
         val c = BinderPoolClientInstance.getInstance().getClient(MusicService::class.java)
