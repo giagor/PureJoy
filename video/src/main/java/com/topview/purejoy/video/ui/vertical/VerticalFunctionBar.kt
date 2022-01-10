@@ -31,15 +31,15 @@ internal fun VerticalFunctionBar(
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         VideoFunctionButton(
-            drawableId = R.drawable.ic_video_likes,
+            drawableId = R.drawable.video_ic_likes,
             text = getFormatString(video?.likedCount)
         )
         VideoFunctionButton(
-            drawableId = R.drawable.ic_video_comment,
+            drawableId = R.drawable.video_ic_comment,
             text = getFormatString(video?.commentCount)
         )
         VideoFunctionButton(
-            drawableId = R.drawable.ic_video_share,
+            drawableId = R.drawable.video_ic_video_share,
             text = getFormatString(video?.shareCount)
         )
     }
