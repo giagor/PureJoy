@@ -1,5 +1,6 @@
 package com.topview.purejoy.video.ui.vertical
 
+import android.content.pm.ActivityInfo
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,64 +25,48 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.ui.PlayerView
 import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.video.ui.LocalExoPlayer
 import com.topview.purejoy.video.ui.VideoViewModel
+import com.topview.purejoy.video.ui.components.CreatorView
+import com.topview.purejoy.video.ui.components.ErrorComponents
+import com.topview.purejoy.video.ui.components.OrientationChangeIcon
+import com.topview.purejoy.video.ui.components.PlayIcon
+import com.topview.purejoy.video.ui.state.BottomSliderState
 import com.topview.purejoy.video.ui.state.VideoLoadState
 import com.topview.purejoy.video.util.ProgressUtil
+import com.topview.purejoy.video.util.setOrientation
 import kotlin.math.roundToLong
 
 /**
  * 短视频样式的竖屏视频播放页面
  * @param items Paging组件获取的延时加载Item
+ * @param sliderState 跟随着播放进度而变化的底部进度条的状态，当前页面的进度条才需要使用
  * @param onVideoSurfaceClick 点击事件，点击视频表面触发
  * @param onRetryClick 点击事件，点击重试按钮触发
  * @param onBackClick 点击事件，点击左上角返回按钮触发
  * @param onMoreClick 点击事件，点击右上角的菜单项触发
  */
-@OptIn(ExperimentalPagerApi::class)
+@ExperimentalPagerApi
 @Composable
 internal fun VerticalVideoScreen(
     items: LazyPagingItems<Video>,
-    onPageChange: (Video?) -> Unit,
+    sliderState: BottomSliderState,
     onVideoSurfaceClick: () -> Unit,
     onRetryClick: (Video?) -> Unit,
     onBackClick: () -> Unit,
     onMoreClick: () -> Unit = {},
-    viewModel: VideoViewModel = viewModel()
+    pagerState: PagerState = rememberPagerState(),
 ) {
-    val pagerState = rememberPagerState()
     val currentPage by remember {
         snapshotFlow {
             pagerState.currentPage
         }
     }.collectAsState(initial = 0)
-    // 上拉/下滑到新的一页的处理逻辑
-    LaunchedEffect(currentPage) {
-        onPageChange(if (items.itemCount <= currentPage) null else items[currentPage])
-    }
-    // 初始状态下为exoPlayer提供数据的Effect
-    LaunchedEffect(items.itemCount > 0) {
-        if (items.itemCount > 0) {
-            onPageChange(items[0])
-        }
-    }
-    // 监听Video的加载状态
-    LaunchedEffect(viewModel.videoLoadState.value) {
-        viewModel.videoLoadState.value.apply {
-            if (this is VideoLoadState.Error) {
-                // 当StatusCode或者是ContentType出现异常，抛弃掉原先的播放地址，这允许重新加载播放地址
-                if (errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
-                    errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE) {
-                    items[currentPage]?.videoUrl = null
-                }
-            }
-        }
-    }
 
     Box(
         modifier = Modifier.background(color = Color.Black)
@@ -98,17 +83,21 @@ internal fun VerticalVideoScreen(
             if (isCurrentPage) {
                 VerticalPagerChild(
                     isCurrentPage = true,
-                    videoState = mutableStateOf(items[page]) ,
+                    videoState = remember(page) {
+                        mutableStateOf(items[page])
+                    },
+                    sliderState = sliderState,
                     onVideoSurfaceClick = onVideoSurfaceClick,
                     onMoreClick = onMoreClick,
                     onBackClick = onBackClick,
                     onRetryClick = onRetryClick
                 )
-
             } else {
                 VerticalPagerChild(
                     isCurrentPage = false,
-                    videoState = mutableStateOf(items[page]),
+                    videoState = remember(page) {
+                        mutableStateOf(items[page])
+                    },
                     onMoreClick = onMoreClick,
                     onBackClick = onBackClick
                 )
@@ -127,23 +116,21 @@ internal fun VerticalPagerChild(
     videoState: State<Video?>,
     isCurrentPage: Boolean,
     onBackClick: () -> Unit,
+    sliderState: BottomSliderState? = null,
     onRetryClick: (Video?) -> Unit = {},
     onMoreClick: () -> Unit = {},
     onVideoSurfaceClick: () -> Unit = {},
     viewModel: VideoViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    var isDragging by remember {
-        mutableStateOf(false)
-    }
-    var progress by remember {
-        mutableStateOf(0F)
-    }
+
+    // 确认是否存在传入的进度条State，如果没有，使用已经记忆的State
+    val realSliderState = sliderState ?: remember(isCurrentPage) { BottomSliderState() }
 
     ConstraintLayout(
         modifier = modifier.fillMaxSize()
     ) {
-        val (content, functionBar, title, creator, description, sliderRef) = createRefs()
+        val (content, functionBar, title, creator, description, sliderRef, screen) = createRefs()
 
         if (isCurrentPage && videoState.value != null) {
             val exoPlayer = LocalExoPlayer.current
@@ -159,17 +146,20 @@ internal fun VerticalPagerChild(
                         )
                     }
                 },
-                modifier = Modifier.clickable(
+                modifier = Modifier
+                    .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = onVideoSurfaceClick
-                    ).constrainAs(content) {
+                    )
+                    .constrainAs(content) {
                         top.linkTo(parent.top)
                         bottom.linkTo(sliderRef.top)
                         centerHorizontallyTo(parent)
                     }
             )
 
+            // 布置在正中间的反映Video加载状态和播放状态的控件
             val (indicator, errorTip, playIcon) = createRefs()
             when(loadState.value) {
                 is VideoLoadState.Loading -> {
@@ -180,7 +170,7 @@ internal fun VerticalPagerChild(
                     )
                 }
                 is VideoLoadState.Error -> {
-                    VerticalErrorComponents(
+                    ErrorComponents(
                         modifier = Modifier.constrainAs(errorTip) {
                             centerTo(parent)
                         },
@@ -188,8 +178,8 @@ internal fun VerticalPagerChild(
                         video = videoState.value
                     )
                 }
-                is VideoLoadState.Pause-> {
-                    VerticalPlayIcon(
+                is VideoLoadState.Pause -> {
+                    PlayIcon(
                         modifier = Modifier.constrainAs(playIcon) {
                             centerTo(parent)
                         }
@@ -198,6 +188,7 @@ internal fun VerticalPagerChild(
                 else -> {}
             }
         } else {
+            // 该页面不是正在显示的页面，而是备选页面，那么仅展示图片
             val imageRef = createRef()
             Image(
                 painter = rememberImagePainter(videoState.value?.coverUrl),
@@ -211,6 +202,8 @@ internal fun VerticalPagerChild(
                     .fillMaxSize()
             )
         }
+        // 以下控件无论是不是正在显示的页面，都会显示出来
+        // 底部的进度条
         VerticalBottomSlider(
             video = videoState.value,
             modifier = Modifier
@@ -221,18 +214,9 @@ internal fun VerticalPagerChild(
                 .navigationBarsPadding()
                 .zIndex(1F),
             isCurrentPage = isCurrentPage,
-            onProgressChange = {
-                if (!isDragging) {
-                    isDragging = true
-                }
-                progress = it
-            },
-            onProgressChangeFinished = {
-                if (isDragging) {
-                    isDragging = false
-                }
-            }
+            sliderState = realSliderState
         )
+        // 顶部标题
         VerticalPagerTitle(
             modifier = Modifier
                 .constrainAs(title) {
@@ -251,7 +235,8 @@ internal fun VerticalPagerChild(
             onBackClick = onBackClick,
             onMoreClick = onMoreClick
         )
-        if (!isDragging) {
+        // 若进度条被拖动时隐藏的控件
+        if (!realSliderState.dragging) {
             VerticalFunctionBar(
                 video = videoState.value,
                 modifier = Modifier.constrainAs(functionBar) {
@@ -275,10 +260,21 @@ internal fun VerticalPagerChild(
                         start.linkTo(parent.start, 15.dp)
                     }
             )
+            // 转横屏按钮
+            OrientationChangeIcon(
+                modifier = Modifier.constrainAs(screen) {
+                    end.linkTo(parent.end, 10.dp)
+                    bottom.linkTo(functionBar.top, 30.dp)
+                },
+                onRotateScreenClick = {
+                    context.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                }
+            )
         } else {
+            // 进度条被拖动时显示的进度控件
             val progressText = createRef()
             ProgressText(
-                progress = ProgressUtil.toTimeText(progress.roundToLong()),
+                progress = ProgressUtil.toTimeText(realSliderState.progress.roundToLong()),
                 duration = ProgressUtil.toTimeText(videoState.value?.duration ?: 0L),
                 modifier = Modifier.constrainAs(progressText) {
                     bottom.linkTo(sliderRef.top, 36.dp)

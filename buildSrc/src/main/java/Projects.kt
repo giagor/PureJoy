@@ -65,7 +65,7 @@ object Deps {
     }
 
     object Accompanist {
-        const val version = "0.20.2"
+        const val version = "0.20.3"
         const val accompanistInsets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
     }
@@ -106,6 +106,8 @@ object Deps {
     const val gravitySnapHelper = "com.github.rubensousa:gravitysnaphelper:2.2.2"
 
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
+
+    const val kspVersion = "1.5.31-1.0.0"
 }
 
 object TestDeps {

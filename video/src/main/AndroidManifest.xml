@@ -8,6 +8,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.VideoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false">
         </activity>
     </application>
