@@ -24,13 +24,13 @@ import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.video.R
 import com.topview.purejoy.video.ui.VideoViewModel
 import com.topview.purejoy.video.ui.components.MarqueeText
+import com.topview.purejoy.video.ui.components.sliderHeight
 import com.topview.purejoy.video.ui.state.BottomSliderState
 import com.topview.purejoy.video.ui.state.VideoLoadState
 import com.topview.purejoy.video.ui.theme.Gray155
 import com.topview.purejoy.video.ui.theme.Gray77
 import com.topview.purejoy.video.ui.theme.Gray92
 import com.topview.purejoy.video.ui.theme.HalfAlphaWhite
-import kotlinx.coroutines.flow.collectLatest
 
 /**
  * 横向视频的底部控制栏
@@ -43,26 +43,12 @@ internal fun VerticalBottomSlider(
     sliderState: BottomSliderState = remember(isCurrentPage) { BottomSliderState() },
     videoViewModel: VideoViewModel = viewModel(),
     alphaAnimateDuration: Int = 1500,
-    onProgressChange: (Float) -> Unit = {},
-    onProgressChangeFinished: () -> Unit = {}
 ) {
     val videoLoadState by videoViewModel.videoLoadState.collectAsState()
     val sliderRange = if (video == null || video.duration == Video.UNSPECIFIED_LONG) 0F..0F else
         0F..video.duration.toFloat()
-    var dragging by remember {
-        mutableStateOf(false)
-    }
 
-    LaunchedEffect(isCurrentPage) {
-        if (isCurrentPage) {
-            videoViewModel.progressFlow.collectLatest {
-                if (videoLoadState is VideoLoadState.Playing && !dragging) {
-                    sliderState.progress = it.toFloat()
-                }
-            }
-        }
-    }
-
+    // 透明度变化的Animate
     val alpha = remember {
         Animatable(1F)
     }
@@ -91,17 +77,15 @@ internal fun VerticalBottomSlider(
         Slider(
             value = sliderState.progress,
             onValueChange = {
-                dragging = true
-                onProgressChange(it)
+                sliderState.dragging = true
                 sliderState.progress = it
             },
             onValueChangeFinished = {
-                onProgressChangeFinished()
                 videoViewModel.seekTo(sliderState.progress.toLong())
-                dragging = false
+                sliderState.dragging = false
             },
             modifier = Modifier
-                .height(20.dp)
+                .height(sliderHeight)
                 .wrapContentWidth()
                 .alpha(alpha.value),
             colors = SliderDefaults.colors(
@@ -119,7 +103,7 @@ internal fun VerticalBottomSlider(
                 )
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_video_music_note_24),
+                painter = painterResource(id = R.drawable.video_ic_music_note_24),
                 contentDescription = null,
                 tint = Gray77,
                 modifier = Modifier.size(20.dp)
@@ -135,6 +119,9 @@ internal fun VerticalBottomSlider(
     }
 }
 
+/**
+ * 竖屏状态中拖动进度条出现的进度提示
+ */
 @Composable
 internal fun ProgressText(
     modifier: Modifier = Modifier,
