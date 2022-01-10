@@ -4,19 +4,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.topview.purejoy.common.base.binding.BindingActivity
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.databinding.ActivityHomeHomeBinding
 import com.topview.purejoy.home.discover.HomeDiscoverFragment
 import com.topview.purejoy.home.router.HomeRouter
 
 private const val TAG = "HomeActivity"
 
-class HomeActivity : BindingActivity<ActivityHomeHomeBinding>() {
+class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
+
+    private val bottomMusicBar: MusicBottomView by lazy {
+        MusicBottomView(activity = this)
+    }
 
     private var discoverFragment: Fragment? = null
     private var mineFragment: Fragment? = null
     private var videoFragment: Fragment? = null
     private var curShowFragment: Fragment? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +40,11 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>() {
         discoverFragment = HomeDiscoverFragment()
         curShowFragment = discoverFragment
         addFragment(R.id.home_fl_fragment_layout, curShowFragment!!)
+        
+        bottomNavigationView = binding.homeBnvBottomNavigation
+        bottomNavigationView.post {
+            bottomMusicBar.addMusicBottomBar(bottomNavigationView.height)
+        }
     }
 
     /**

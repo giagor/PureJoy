@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.base.binding.BindingActivity
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
 import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
@@ -15,6 +16,10 @@ import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 @Route(path = ACTIVITY_HOME_SEARCH)
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
     SearchKeywordListener {
+
+    private val bottomMusicBar: MusicBottomView by lazy {
+        MusicBottomView(this)
+    }
 
     /**
      * 存放用户搜索的关键字
@@ -42,6 +47,8 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         initBinding()
         observe()
         addFragment(R.id.home_fl_fragment_layout, SearchContentRecommendFragment.newInstance())
+
+        bottomMusicBar.addMusicBottomBar()
     }
 
     private fun initView() {

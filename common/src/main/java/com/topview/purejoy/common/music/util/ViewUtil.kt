@@ -15,26 +15,31 @@ import com.topview.purejoy.common.base.CommonActivity
 import com.topview.purejoy.common.music.instance.BinderPoolClientInstance
 import com.topview.purejoy.common.music.player.client.BinderPoolClient
 
-fun AppCompatActivity.addViewToContent(view: View, marginBottom: Int,
-                                       duration: Long = 1000L,
-                                       width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
-                                       height: Int = ViewGroup.LayoutParams.WRAP_CONTENT) {
+fun AppCompatActivity.addViewToContent(
+    view: View, marginBottom: Int,
+    duration: Long = 1000L,
+    width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
+    height: Int = ViewGroup.LayoutParams.WRAP_CONTENT
+) {
     val contentView = ((window.decorView as ViewGroup).getChildAt(0)
             as ViewGroup).getChildAt(1) as FrameLayout
     val lp = FrameLayout.LayoutParams(width, height)
     lp.gravity = Gravity.BOTTOM
-    if (marginBottom > 0 && duration > 0) {
+    if (duration > 0) {
         val animator = MarginBottomAnimator(contentView, view, lp, duration, marginBottom)
         animator.start()
     } else {
+        lp.bottomMargin = marginBottom
         contentView.addView(view, lp)
     }
 }
 
-fun AppCompatActivity.addViewToContent(@LayoutRes layoutId: Int, marginBottom: Int,
-                                       duration: Long = 1000L,
-                                       width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
-                                       height: Int = ViewGroup.LayoutParams.WRAP_CONTENT) {
+fun AppCompatActivity.addViewToContent(
+    @LayoutRes layoutId: Int, marginBottom: Int,
+    duration: Long = 1000L,
+    width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
+    height: Int = ViewGroup.LayoutParams.WRAP_CONTENT
+) {
     val view = LayoutInflater.from(this).inflate(layoutId, null)
     addViewToContent(view, marginBottom, duration, width, height)
 }
@@ -46,7 +51,8 @@ private class MarginBottomAnimator(
     val childView: View,
     val lp: FrameLayout.LayoutParams,
     duration: Long,
-    marginBottom: Int) : ValueAnimator(), ValueAnimator.AnimatorUpdateListener {
+    marginBottom: Int
+) : ValueAnimator(), ValueAnimator.AnimatorUpdateListener {
 
     init {
         addUpdateListener(this)
