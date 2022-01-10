@@ -153,6 +153,7 @@ open class MediaControllerImpl<T : Item>(
         position.with(p)
         val item = list[position.current()]
         setDataSource(item)
+        notifyItemChange()
     }
 
     private class TempPosition(override var max: Int, val current: Int) : Position {

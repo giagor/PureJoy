@@ -31,7 +31,7 @@ class MusicBottomView(
 
     var bar: View? = null
 
-
+    private val TAG = "Bottom"
 
     fun addMusicBottomBar(marginBottom: Int = 0, duration: Long = 0): View {
         if (this.bar != null) throw IllegalStateException("Bottom view has been added once")
@@ -60,15 +60,6 @@ class MusicBottomView(
         }
         stateIv.setOnClickListener {
             controller.playerController?.playOrPause()
-        }
-        controller.currentItem.observe(activity) {
-            if (it == null) {
-                bar.visibility = View.GONE
-            } else {
-                if (bar.visibility != View.VISIBLE) {
-                    bar.visibility = View.VISIBLE
-                }
-            }
         }
         listIv.setOnClickListener {
             if (!popHelper.musicPopWindow.popWindow.isShowing) {
