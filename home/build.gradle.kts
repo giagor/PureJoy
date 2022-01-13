@@ -46,20 +46,26 @@ dependencies {
     implementation(project(":dependencies"))
     implementation(project(":common"))
     implementation(project(":musiclibrary"))
+    implementation(project(":video"))
 
     implementation(Deps.Compose.composeUiToolingPreview)
     implementation(Deps.Compose.livedataRuntime)
     implementation(Deps.Compose.composeNavigation)
     implementation(Deps.Compose.composeActivity)
     implementation(Deps.Compose.composeViewBinding)
+    implementation(Deps.Compose.constraintLayoutDSL)
     implementation(Deps.Coil.coilCore)
     implementation(Deps.Coil.composeExtension)
-    implementation(Deps.Compose.constraintLayoutDSL)
 
     implementation(Deps.Navigation.fragmentKtx)
     implementation(Deps.Navigation.navigationUiKtx)
 
+    implementation(Deps.Paging.runtime)
+    implementation(Deps.Paging.compose)
+
     implementation(Deps.Accompanist.accompanistInsets)
+    implementation(Deps.Accompanist.swipeRefresh)
+    implementation(Deps.Accompanist.pager)
 
     debugImplementation(Deps.Compose.uiDebugTool)
     androidTestImplementation(Deps.Compose.junitTest)

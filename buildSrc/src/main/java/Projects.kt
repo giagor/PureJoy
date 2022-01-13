@@ -29,6 +29,7 @@ object Deps {
 
         const val constraintLayoutDSL =
             "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+        const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
     }
 
     object Navigation {
@@ -68,6 +69,7 @@ object Deps {
         const val version = "0.20.3"
         const val accompanistInsets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
+        const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
     }
 
     object Room {
@@ -85,6 +87,11 @@ object Deps {
 
     object Debug {
         const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
+    }
+
+    object Paging {
+        const val runtime = "androidx.paging:paging-runtime-ktx:3.1.0"
+        const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
     }
 
     const val material = "com.google.android.material:material:1.4.0"
