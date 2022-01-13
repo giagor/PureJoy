@@ -3,7 +3,6 @@ package com.topview.purejoy.home.entity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.topview.purejoy.home.components.toplist.TopListTab
 
 data class TopList(
     val id: Long,

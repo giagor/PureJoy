@@ -3,9 +3,9 @@ package com.topview.purejoy.home.tasks.toplist
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.components.status.PageState
-import com.topview.purejoy.home.components.toplist.TopListTab
 import com.topview.purejoy.home.data.repo.TopListRepository
 import com.topview.purejoy.home.entity.TopList
+import com.topview.purejoy.home.entity.TopListTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

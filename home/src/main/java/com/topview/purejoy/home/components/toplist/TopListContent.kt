@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.common.util.dpToPx
 import com.topview.purejoy.home.entity.TopList
+import com.topview.purejoy.home.entity.TopListTab
 import com.topview.purejoy.home.theme.Gray235
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.theme.defaultTopListCardColor
@@ -102,7 +103,8 @@ internal fun TopListContent(
                         }
                     },
                     modifier = Modifier.padding(vertical = 15.dp),
-                    backgroundColor = Gray245
+                    backgroundColor = Gray245,
+                    tabArray = TopListTab.values()
                 )
             }
             Column(modifier = Modifier.verticalScroll(scrollState)) {
