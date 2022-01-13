@@ -6,5 +6,5 @@ object ImageUtil {
      */
     fun limitImageSize(url: String?, size: Int): String = limitImageSize(url, size, size)
 
-    fun limitImageSize(url: String?, width: Int, height: Int) = "$url?param${width}y$height"
+    fun limitImageSize(url: String?, width: Int, height: Int) = "$url?param=${width}y$height"
 }

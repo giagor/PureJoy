@@ -84,7 +84,7 @@ internal fun TopListGridChild(
         ) {
             Image(
                 painter = rememberImagePainter(ImageUtil.limitImageSize(
-                    topList.coverUrl, 120)
+                    topList.coverUrl, 450)
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(imageSize)
