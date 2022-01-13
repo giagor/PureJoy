@@ -4,6 +4,8 @@ import java.text.DecimalFormat
 
 object ProgressUtil {
 
+    private val arrayOfByteUnit = arrayOf('K', 'M', 'G')
+
     /**
      * 将以毫秒为单位的十进制时间转换为00:00的60进制形式
      */
@@ -13,24 +15,18 @@ object ProgressUtil {
         val totalSecond = (milliSecond / 1000).toInt()
         val totalMinute = totalSecond / 60
         val second = totalSecond % 60
-        val minuteString = if (totalMinute < 10) {
-            "0$totalMinute"
-        } else {
-            totalMinute
-        }
-        val secondString = if (second < 10) {
-            "0$second"
-        } else {
-            second
-        }
-        return "$minuteString:$secondString"
+        val builder = StringBuilder()
+        val decimalFormat = DecimalFormat("00")
+        builder.append(decimalFormat.format(totalMinute))
+        builder.append(':')
+        builder.append(decimalFormat.format(second))
+        return builder.toString()
     }
 
     /**
      * 将以字节为单位的网络流量按照2的十次方进制转换为KB、MB、GB单位
      */
     fun toTrafficBytes(bytes: Long): String {
-        val array = arrayOf('K', 'M', 'G')
         var index = -1
         var result: Double = bytes.toDouble()
         do {
@@ -45,7 +41,7 @@ object ProgressUtil {
             DecimalFormat("0.##")
         }
         builder.append(decimalFormat.format(result))
-        builder.append(array[index])
+        builder.append(arrayOfByteUnit[index])
         builder.append('B')
         return builder.toString()
     }

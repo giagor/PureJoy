@@ -5,6 +5,7 @@ import com.topview.purejoy.common.entity.Video
 
 data class RecommendVideoJson(
     val code: Int,
+    @SerializedName("msg") val message: String?,
     @SerializedName("hasmore") val hasMore: Boolean?,
     @SerializedName("datas") val outerList: List<OuterData>?
 )
@@ -23,7 +24,9 @@ class RecommendData(
     val creator: RecommendCreator?,
     val urlInfo: UrlInfo?,
     @SerializedName("durationms") val duration: Long,
-    @SerializedName("relateSong") val songs: List<SongJson>?
+    @SerializedName("relateSong") val songs: List<SongJson>?,
+    @SerializedName("playTime") val playCount: Long,
+    val previewUrl: String?
 )
 
 class UrlInfo(
@@ -38,7 +41,7 @@ class SongJson(val name: String, @SerializedName("ar") val artists: List<Recomme
 
 class RecommendArtist(val name: String)
 
-internal fun RecommendVideoJson.toVideos(): List<Video> {
+fun RecommendVideoJson.toVideos(): List<Video> {
     val list: MutableList<Video> = mutableListOf()
     outerList?.let { videoData ->
         if (videoData.isNotEmpty()) {
@@ -51,7 +54,7 @@ internal fun RecommendVideoJson.toVideos(): List<Video> {
     }
     return list
 }
-internal fun RecommendData.toVideo(): Video =
+fun RecommendData.toVideo(): Video =
     Video(
         id = vid,
         isMv = false,
