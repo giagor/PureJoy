@@ -26,7 +26,8 @@ class RecommendData(
     @SerializedName("durationms") val duration: Long,
     @SerializedName("relateSong") val songs: List<SongJson>?,
     @SerializedName("playTime") val playCount: Long,
-    val previewUrl: String?
+    val previewUrl: String?,
+    val videoGroup: List<VideoGroupJson>?
 )
 
 class UrlInfo(
@@ -40,6 +41,8 @@ class RecommendCreator(
 class SongJson(val name: String, @SerializedName("ar") val artists: List<RecommendArtist>?)
 
 class RecommendArtist(val name: String)
+
+class VideoGroupJson(val name: String?)
 
 fun RecommendVideoJson.toVideos(): List<Video> {
     val list: MutableList<Video> = mutableListOf()

@@ -34,5 +34,8 @@
         <attr name="percent" format="integer"/>
         <attr name="android:src" format="reference"/>
         <attr name="android:contentDescription" format="string" />
+        <attr name="borderWidth" format="dimension"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
     </declare-styleable>
 </resources>
