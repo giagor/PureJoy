@@ -381,7 +381,7 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         fun isSingleImage(): Boolean = if (getSize() == 1) true else false
     }
 
-    private inner class ScheduleRunnable(bannerView: BannerView) : Runnable {
+    private class ScheduleRunnable(bannerView: BannerView) : Runnable {
 
         /**
          * 通过"弱引用"的方式持有BannerView，有效地防止内存泄漏
@@ -396,21 +396,21 @@ class BannerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             }
 
             // 如果任务触发时，用户正在"拖拽"轮播图，那么就取消此次图片的"自动滚动"，推送下一次的任务
-            if (isDragging) {
+            if (bannerView.isDragging) {
                 // 推送任务
-                startSchedule()
+                bannerView.startSchedule()
                 return
             }
 
             val now = System.currentTimeMillis()
             // 判断用户前一个阶段周期中是否有去"拖拽"轮播图，以及计算 "现在 - 拖拽轮播图" 的时间差
-            if (now - draggingTime > allowAutoScrollSpac) {
+            if (now - bannerView.draggingTime > bannerView.allowAutoScrollSpac) {
                 // 正常触发任务
                 val vp: ViewPager = bannerView.viewPager
                 vp.currentItem = vp.currentItem + 1
             }
             // 推送任务
-            startSchedule()
+            bannerView.startSchedule()
         }
     }
 }
