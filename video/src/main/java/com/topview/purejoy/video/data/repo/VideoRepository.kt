@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.common.net.ServiceCreator
-import com.topview.purejoy.common.net.await
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.video.data.VideoSource
 import com.topview.purejoy.video.data.api.VideoService
 import com.topview.purejoy.video.data.bean.toVideo
@@ -34,14 +34,14 @@ class VideoRepository(
 
     suspend fun getVideoPlayUrl(vid: String): String? =
         withContext(Dispatchers.IO) {
-            val json = videoService.getVideoUrl(vid = vid).await()
+            val json = videoService.getVideoUrl(vid = vid).awaitAsync()
             json?.url?.get(0)?.url
         }
 
 
     suspend fun getMVPlayUrl(id: String): String? =
         withContext(Dispatchers.IO) {
-            val json = videoService.getMVUrl(id).await()
+            val json = videoService.getMVUrl(id).awaitAsync()
             json?.data?.url
         }
 
@@ -49,12 +49,12 @@ class VideoRepository(
     suspend fun loadDetailOfVideo(video: Video) {
         withContext(Dispatchers.IO) {
             if (video.isMv) {
-                val detailJson = videoService.getMVDetail(video.id).await()
+                val detailJson = videoService.getMVDetail(video.id).awaitAsync()
                 detailJson?.mappingToVideo(video)
-                val likeJson = videoService.getMVLikeInfo(video.id).await()
+                val likeJson = videoService.getMVLikeInfo(video.id).awaitAsync()
                 video.likedCount = likeJson?.likedCount ?: 0
             } else {
-                val json = videoService.getVideoDetail(video.id).await()
+                val json = videoService.getVideoDetail(video.id).awaitAsync()
                 json?.data?.toVideo()?.let {
                     video.merge(it)
                 }

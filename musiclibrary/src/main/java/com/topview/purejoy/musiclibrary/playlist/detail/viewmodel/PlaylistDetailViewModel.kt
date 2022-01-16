@@ -7,7 +7,7 @@ import com.topview.purejoy.common.music.service.url.entity.URLItemWrapper
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepository
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepositoryImpl
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.common.net.await
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.musiclibrary.playlist.detail.repo.IPlaylistDetailRepository
 import com.topview.purejoy.musiclibrary.playlist.detail.repo.PlaylistDetailRepository
 import com.topview.purejoy.musiclibrary.playlist.entity.PlaylistResponse
@@ -25,7 +25,7 @@ class PlaylistDetailViewModel(
     fun getDetails(id: Long) {
         viewModelScope.rxLaunch<PlaylistResponse> {
             onRequest = {
-                repo.getDetails(id).await()
+                repo.getDetails(id).awaitAsync()
             }
             onError = {
                 response.postValue(null)
@@ -47,7 +47,7 @@ class PlaylistDetailViewModel(
     fun requestSongsDetails(ids: String) {
         viewModelScope.rxLaunch<MusicResponse> {
             onRequest = {
-                repo.requestSongDetails(ids).await()
+                repo.requestSongDetails(ids).awaitAsync()
             }
             onError = {
                 songsResponse.postValue(null)
@@ -61,7 +61,7 @@ class PlaylistDetailViewModel(
     fun requestUrl(id: Long) {
         viewModelScope.rxLaunch<URLItemWrapper> {
             onRequest = {
-                urlRepo.requestMusicURL(id.toString()).await()
+                urlRepo.requestMusicURL(id.toString()).awaitAsync()
             }
             onSuccess = {
                 urlResponse.postValue(it)
