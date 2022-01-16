@@ -6,7 +6,7 @@ import com.topview.purejoy.common.music.service.url.entity.URLItemWrapper
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepository
 import com.topview.purejoy.common.music.service.url.repository.MusicURLRepositoryImpl
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.common.net.await
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.DailySongsWrapper
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
 import com.topview.purejoy.musiclibrary.recommendation.music.repository.DailySongsRepository
@@ -24,7 +24,7 @@ class DailySongsViewModel(
     fun requestDailySongs() {
         viewModelScope.rxLaunch<DailySongsWrapper> {
             onRequest = {
-                repository.requestDailySongsRepository().await()
+                repository.requestDailySongsRepository().awaitAsync()
             }
             onSuccess = {
                 val list = mutableListOf<SongWithReason>()
@@ -56,7 +56,7 @@ class DailySongsViewModel(
     fun requestURL(id: Long) {
         viewModelScope.rxLaunch<URLItemWrapper> {
             onRequest = {
-                urlRepo.requestMusicURL(id.toString()).await()
+                urlRepo.requestMusicURL(id.toString()).awaitAsync()
             }
             onSuccess = {
                 urlResponse.postValue(it)
