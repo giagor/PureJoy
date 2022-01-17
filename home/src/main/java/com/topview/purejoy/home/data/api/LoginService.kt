@@ -1,10 +1,12 @@
 package com.topview.purejoy.home.data.api
 
+import com.topview.purejoy.home.data.bean.LoginStatusJson
 import com.topview.purejoy.home.data.bean.PhoneExistJson
 import com.topview.purejoy.home.data.bean.UserJson
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface LoginService {
@@ -64,4 +66,7 @@ interface LoginService {
         @Field("timestamp")
         timestamp: String
     ): Call<UserJson>
+
+    @GET("/login/status")
+    fun checkLoginStatus(): Call<LoginStatusJson>
 }

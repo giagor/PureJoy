@@ -86,6 +86,7 @@ class VideoActivity: ComposeActivity() {
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             fun onDestroy() {
                 videoConfiguration.onCloseListener?.invoke()
+                videoConfiguration.onCloseListener = null
                 viewModel.exoPlayer.release()
             }
         })

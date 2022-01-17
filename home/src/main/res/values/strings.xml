@@ -48,4 +48,9 @@
     
     <!--"轮播图"相关-->
     <string name="home_banner_invalid_url_tips">不存在有效链接</string>
+
+    <!--"视频"界面相关字符-->
+    <string name="home_video_title_is_null">暂无标题</string>
+    <string name="home_video_route_to_login">登录后查看更多内容</string>
+    <string name="home_video_unknown_error">出现未知错误，点击屏幕以重试</string>
 </resources>

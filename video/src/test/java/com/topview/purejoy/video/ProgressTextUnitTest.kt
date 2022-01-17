@@ -30,6 +30,7 @@ class ProgressTextUnitTest {
         assertEquals("1.25KB", ProgressUtil.toTrafficBytes(5 * 256))
     }
 
+    @Test
     fun mbBytesTextCorrect() {
         assertEquals("1023MB", ProgressUtil.toTrafficBytes(1023 * 1024 * 1024))
         assertEquals("1.25MB", ProgressUtil.toTrafficBytes(5 * 1024 * 256))

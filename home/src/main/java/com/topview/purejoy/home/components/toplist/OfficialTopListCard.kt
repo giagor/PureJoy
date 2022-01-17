@@ -182,7 +182,7 @@ fun PlaceholderImage(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Image(
-                painter = rememberImagePainter(ImageUtil.limitImageSize(url, 100)),
+                painter = rememberImagePainter(ImageUtil.limitImageSize(url, 180)),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 alpha = imageAlpha

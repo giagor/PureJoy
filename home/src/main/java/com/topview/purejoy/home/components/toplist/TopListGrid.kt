@@ -22,6 +22,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
+import com.topview.purejoy.home.theme.Gray235
+import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
 
 @Composable
@@ -77,11 +79,12 @@ internal fun TopListGridChild(
                 centerHorizontallyTo(parent)
                 top.linkTo(parent.top)
                 bottom.linkTo(name.top)
-            }
+            },
+            color = Gray245
         ) {
             Image(
                 painter = rememberImagePainter(ImageUtil.limitImageSize(
-                    topList.coverUrl, 120)
+                    topList.coverUrl, 450)
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(imageSize)

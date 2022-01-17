@@ -3,6 +3,7 @@ package com.topview.purejoy.home.components.status
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,10 @@ fun SimpleStatusScreen(
             successScreen()
         } else {
             Surface(modifier = modifier) {
-                Box(contentAlignment = Alignment.Center) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     when (it) {
                         is PageState.Empty -> {
                             emptyContent?.invoke(this)

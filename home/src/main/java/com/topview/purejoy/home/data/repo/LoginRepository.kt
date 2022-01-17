@@ -93,6 +93,13 @@ internal object LoginRepository {
         }
     }
 
+    suspend fun checkLoginStatus() : User? {
+        return withContext(Dispatchers.IO) {
+            val json = loginRemoteStore.checkLoginStatus()
+            disposeProfile(json?.data?.profile)
+        }
+    }
+
     private fun disposeProfile(profile: UserJson.Profile?): User? {
         return profile?.run {
             User(this.avatarUrl, this.nickname!!, this.userId!!, this.backgroundUrl)

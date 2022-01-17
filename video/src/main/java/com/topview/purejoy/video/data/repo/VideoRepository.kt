@@ -14,17 +14,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class VideoRepository(
-    private val videoList: List<Video>,
-    private val maxPage: Int = Int.MAX_VALUE
+    private val videoList: List<Video>
 ) {
     private val videoService = ServiceCreator.create(VideoService::class.java)
     private val pager: Pager<Int, Video> by lazy {
         Pager(
             config = PagingConfig(
-                pageSize = maxPage,
+                pageSize = 1,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { VideoSource(videoService, videoList, maxPage) }
+            pagingSourceFactory = { VideoSource(videoService, videoList) }
         )
     }
 

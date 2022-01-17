@@ -6,6 +6,7 @@ import com.topview.purejoy.common.entity.Video
 
 class RelevantVideoJson(
     val code: Int,
+    val message: String?,
     val data: List<RelevantData> = emptyList()
 ) {
     class RelevantData(

@@ -3,15 +3,13 @@ package com.topview.purejoy.home.components.toplist
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Surface
-import androidx.compose.material.TabPosition
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,21 +23,35 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.topview.purejoy.home.entity.TabData
+import com.topview.purejoy.home.entity.TopListTab
 
 /**
  * 仿网易云的TabLayout
  * @param backgroundColor 整个TabRow的背景颜色
  * @param contentColor 提供给LocalContentColor的值
+ * @param tabArray 包含每一项Tab信息的数组
  */
 @Composable
 internal fun TabIndicator(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
+    tabArray: Array<out TabData>,
+    indicatorWidth: Dp = 32.dp,
+    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit = @Composable { tabPositions ->
+        TabDefaults.FixedIndicator(
+            modifier = Modifier.simpleTabIndicatorOffset(
+                tabPositions[selectedTabIndex],
+                indicatorWidth,
+                (-2).dp
+            ).zIndex(-1F),
+            color = Color.Red
+        )
+    },
     onTabClick: (Int) -> Unit = {},
     backgroundColor: Color = Color.White,
     contentColor: Color = Color.Black,
 ) {
-    val textWidth = 28.dp
     ScrollableTabRow(
         selectedTabIndex = selectedTabIndex,
         backgroundColor = backgroundColor,
@@ -47,37 +59,19 @@ internal fun TabIndicator(
         edgePadding = 0.dp,
         divider = {},
         modifier = modifier,
-        indicator = {
-            Box(
-                modifier = Modifier
-                    .simpleTabIndicatorOffset(
-                        it[selectedTabIndex],
-                        textWidth,
-                        (-2).dp
-                    )
-                    .height(5.dp)
-                    .background(
-                        color = Color.Red,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .zIndex(-1F)
-            )
-        }
+        indicator = indicator
     ) {
-        // TODO 这个TabLayout的效率不高,因为当selectedTabIndex更新后所有的Tab都会重组,需要寻找重组局部化方案
-        TopListTab.values().forEachIndexed { index, topListTab ->
+        tabArray.forEachIndexed { index, tabData ->
             val selected = index == selectedTabIndex
-            TopListTab(
+            IndicationTab(
                 selected = selected,
                 onClick = { onTabClick(index) },
-                modifier = Modifier
-                    .width(textWidth)
             ) {
                 Text(
-                    topListTab.content,
+                    tabData.content,
                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Light,
                     letterSpacing = 0.sp,
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
                 )
             }
         }
@@ -85,12 +79,13 @@ internal fun TabIndicator(
 }
 
 @Composable
-internal fun TopListTab(
+internal fun IndicationTab(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -101,7 +96,7 @@ internal fun TopListTab(
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
-                indication = null
+                indication = indication
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -120,24 +115,42 @@ internal fun Modifier.simpleTabIndicatorOffset(
         value = currentTabPosition
     }
 ) {
+    val currentIndicatorWidth by animateDpAsState(
+        targetValue = indicatorWidth,
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+    )
     val indicatorOffset by animateDpAsState(
         targetValue = currentTabPosition.left +
-                (currentTabPosition.width - indicatorWidth) / 2,
+                (currentTabPosition.width - currentIndicatorWidth) / 2,
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
     )
     this.fillMaxWidth()
         .wrapContentSize(Alignment.BottomStart)
         .offset(x = indicatorOffset, y = indicatorOffsetY)
-        .width(indicatorWidth)
+        .width(currentIndicatorWidth)
 }
 
-enum class TopListTab(val content: String) {
-    Official("官方"),
-    Handpick("精选"),
-    Genre("曲风"),
-    Global("全球"),
-    Characteristic("特色")
+
+object TabDefaults {
+    val DefaultHeight = 5.dp
+
+    @Composable
+    fun FixedIndicator(
+        modifier: Modifier,
+        height: Dp = DefaultHeight,
+        color: Color = LocalContentColor.current
+    ) {
+        Box(
+            modifier = modifier
+                .height(height)
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(50)
+                )
+        )
+    }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -150,7 +163,8 @@ private fun TabIndicatorPreview() {
             selectedTabIndex = selectedTabIndex,
             onTabClick = {
                 selectedTabIndex = it
-            }
+            },
+            tabArray = TopListTab.values()
         )
     }
 }

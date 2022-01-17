@@ -65,7 +65,7 @@ internal fun PauseIcon(
  * MV特有的Sign
  */
 @Composable
-internal fun MVSign(
+fun MVSign(
     modifier: Modifier = Modifier,
     color: Color = HalfAlphaWhite
 ) {
@@ -99,7 +99,7 @@ internal fun CreatorView(
     ) {
         RoundImageViewCompose(
             painter = rememberImagePainter(video?.creatorAvatarUrl),
-            modifier = Modifier.size(36.dp),
+            imageModifier = Modifier.size(36.dp),
             percent = 50
         )
         Text(

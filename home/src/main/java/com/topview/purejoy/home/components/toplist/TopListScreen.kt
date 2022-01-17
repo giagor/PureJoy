@@ -22,6 +22,7 @@ import com.topview.purejoy.home.components.ScreenTitle
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.status.SimpleStatusScreen
 import com.topview.purejoy.home.entity.TopList
+import com.topview.purejoy.home.entity.TopListTab
 import com.topview.purejoy.home.theme.Gray245
 
 @Composable

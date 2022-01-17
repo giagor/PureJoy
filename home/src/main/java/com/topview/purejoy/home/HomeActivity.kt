@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
+import com.topview.purejoy.common.util.UserManager
+import com.topview.purejoy.common.util.UserManager.userLiveData
+import com.topview.purejoy.home.data.repo.LoginRepository
 import com.topview.purejoy.home.databinding.ActivityHomeHomeBinding
 import com.topview.purejoy.home.discover.HomeDiscoverFragment
 import com.topview.purejoy.home.router.HomeRouter
@@ -30,6 +34,7 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
 
         binding.homeActivity = this
         initView()
+        getUserData()
     }
 
     override fun getLayoutId(): Int {
@@ -80,6 +85,14 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
 
             R.id.menu_bottom_navi_video -> {
                 Log.d(TAG, "initEvent: video")
+                hide(curShowFragment!!)
+                if (videoFragment == null) {
+                    videoFragment = HomeRouter.routeToVideoFragment()
+                    addFragment(R.id.home_fl_fragment_layout, videoFragment!!)
+                } else {
+                    show(videoFragment!!)
+                }
+                curShowFragment = videoFragment
                 true
             }
 
@@ -95,5 +108,18 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
      * */
     fun onNavigationItemReselected(item: MenuItem) {
 
+    }
+
+    // TODO 重构到某个ViewModel内
+    // 调用/login/status确定登录状态，并加载用户信息
+    // 这个方法应当尽早调用而不是等待某个点击事件
+    private fun getUserData() {
+        lifecycleScope.launchWhenResumed {
+            if (userLiveData.value == null) {
+                LoginRepository.checkLoginStatus()?.let {
+                    UserManager.login(it)
+                }
+            }
+        }
     }
 }
