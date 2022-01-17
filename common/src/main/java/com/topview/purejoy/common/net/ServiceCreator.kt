@@ -11,6 +11,7 @@ object ServiceCreator {
     private const val BASE_URL = "https://music.gochiusa.top"
 
     private val httpClient = OkHttpClient.Builder()
+        .cookieJar(DBCookieStore.getCookieJar())
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)
