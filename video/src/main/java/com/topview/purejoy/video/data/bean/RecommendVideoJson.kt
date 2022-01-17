@@ -10,8 +10,13 @@ data class RecommendVideoJson(
     @SerializedName("datas") val outerList: List<OuterData>?
 )
 class OuterData(
+    val type: Int?,
     val data: RecommendData
-)
+) {
+    // 只有type为1的才是正常的歌曲
+    // type为7是直播
+    fun isSong(): Boolean = type == 1
+}
 
 class RecommendData(
     val coverUrl: String,
@@ -49,9 +54,11 @@ fun RecommendVideoJson.toVideos(): List<Video> {
     outerList?.let { videoData ->
         if (videoData.isNotEmpty()) {
             videoData.forEach { outerData ->
-                list.add(
-                    outerData.data.toVideo()
-                )
+                if (outerData.isSong()) {
+                    list.add(
+                        outerData.data.toVideo()
+                    )
+                }
             }
         }
     }
