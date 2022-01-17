@@ -6,3 +6,7 @@ package com.topview.purejoy.home.entity
 interface TabData {
     val content: String
 }
+
+data class SimpleTabData(
+    override val content: String
+): TabData
