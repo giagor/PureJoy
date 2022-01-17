@@ -3,6 +3,7 @@ package com.topview.purejoy.home.data.source
 import com.topview.purejoy.common.net.ServiceCreator
 import com.topview.purejoy.common.net.awaitSync
 import com.topview.purejoy.home.data.api.LoginService
+import com.topview.purejoy.home.data.bean.LoginStatusJson
 import com.topview.purejoy.home.data.bean.PhoneExistJson
 import com.topview.purejoy.home.data.bean.UserJson
 
@@ -41,6 +42,7 @@ class LoginRemoteStore {
         timestamp = getTimestamp()
     ).awaitSync()
 
+    fun checkLoginStatus(): LoginStatusJson? = loginService.checkLoginStatus().awaitSync()
 
     private fun getTimestamp() = System.currentTimeMillis().toString()
 }
