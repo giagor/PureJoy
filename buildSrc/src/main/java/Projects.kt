@@ -69,6 +69,7 @@ object Deps {
         const val version = "0.20.3"
         const val accompanistInsets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
+        const val pagerIndicators = "com.google.accompanist:accompanist-pager-indicators:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
     }
 
@@ -96,7 +97,7 @@ object Deps {
 
     const val material = "com.google.android.material:material:1.4.0"
 
-    const val okhttp = "com.squareup.okhttp3:okhttp:4.9.2"
+    const val okhttp = "com.squareup.okhttp3:okhttp:4.9.3"
 
     const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
 
