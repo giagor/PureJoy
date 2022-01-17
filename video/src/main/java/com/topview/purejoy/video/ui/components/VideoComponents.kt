@@ -65,7 +65,7 @@ internal fun PauseIcon(
  * MV特有的Sign
  */
 @Composable
-internal fun MVSign(
+fun MVSign(
     modifier: Modifier = Modifier,
     color: Color = HalfAlphaWhite
 ) {
