@@ -9,10 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Surface
-import androidx.compose.material.TabPosition
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,10 +37,20 @@ internal fun TabIndicator(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
     tabArray: Array<out TabData>,
+    indicatorWidth: Dp = 32.dp,
+    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit = @Composable { tabPositions ->
+        TabDefaults.FixedIndicator(
+            modifier = Modifier.simpleTabIndicatorOffset(
+                tabPositions[selectedTabIndex],
+                indicatorWidth,
+                (-2).dp
+            ).zIndex(-1F),
+            color = Color.Red
+        )
+    },
     onTabClick: (Int) -> Unit = {},
     backgroundColor: Color = Color.White,
     contentColor: Color = Color.Black,
-    indicatorWidth: Dp = 32.dp
 ) {
     ScrollableTabRow(
         selectedTabIndex = selectedTabIndex,
@@ -52,22 +59,7 @@ internal fun TabIndicator(
         edgePadding = 0.dp,
         divider = {},
         modifier = modifier,
-        indicator = {
-            Box(
-                modifier = Modifier
-                    .simpleTabIndicatorOffset(
-                        it[selectedTabIndex],
-                        indicatorWidth,
-                        (-2).dp
-                    )
-                    .height(5.dp)
-                    .background(
-                        color = Color.Red,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .zIndex(-1F)
-            )
-        }
+        indicator = indicator
     ) {
         tabArray.forEachIndexed { index, tabData ->
             val selected = index == selectedTabIndex
@@ -138,6 +130,26 @@ internal fun Modifier.simpleTabIndicatorOffset(
         .width(currentIndicatorWidth)
 }
 
+
+object TabDefaults {
+    val DefaultHeight = 5.dp
+
+    @Composable
+    fun FixedIndicator(
+        modifier: Modifier,
+        height: Dp = DefaultHeight,
+        color: Color = LocalContentColor.current
+    ) {
+        Box(
+            modifier = modifier
+                .height(height)
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(50)
+                )
+        )
+    }
+}
 
 
 @Preview(showBackground = true)
