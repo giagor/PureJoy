@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.video.R
+import com.topview.purejoy.video.util.ProgressUtil.getFormatString
 
 /**
  * 功能按钮列表
@@ -73,38 +74,5 @@ internal fun VideoFunctionButton(
                 fontSize = 15.sp,
             )
         )
-    }
-}
-
-/**
- * 获取点赞/评论/分享次数的格式化文本。函数将自动把超过4位数的Int转换为万/亿来表示，只保留小数点后一位
- * 例如，36500转换为3.6万，99999999转换为9999万
- */
-private fun getFormatString(count: Int?): String {
-    if (count == Video.UNSPECIFIED) {
-        return "--"
-    }
-    if (count == null || count < 0) {
-        return "0"
-    }
-    if (count < 10000) {
-        return count.toString()
-    } else {
-        val unit: String
-        var f: Float = count / 10000F
-        if (f >= 10000) {
-            unit = "亿"
-            f /= 10000
-        } else {
-            unit = "万"
-        }
-        val i = f.toInt()
-        // 计算小数点后一位的值
-        val bit = (f * 10).toInt() - i * 10
-        return if (bit > 0) {
-            "${f.toInt()}.${bit}$unit"
-        } else {
-            "${f.toInt()}$unit"
-        }
     }
 }

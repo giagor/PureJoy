@@ -5,6 +5,7 @@ import java.text.DecimalFormat
 object ProgressUtil {
 
     private val arrayOfByteUnit = arrayOf('K', 'M', 'G')
+    private val arrayOfNumberUnit = arrayOf("", "万", "亿")
 
     /**
      * 将以毫秒为单位的十进制时间转换为00:00的60进制形式
@@ -45,4 +46,27 @@ object ProgressUtil {
         builder.append('B')
         return builder.toString()
     }
+
+    /**
+     * 获取数量的格式化字符串
+     * 例如36500将被转换为"3.6万"，小数仅保留一位
+     * 如果输入为空，输出的字符为"--"
+     */
+    fun getFormatString(number: Double?): String {
+        if (number == null) {
+            return "--"
+        }
+        var c: Double = number
+        var i = 0
+        val decimalFormat = DecimalFormat("0.#")
+        while (c >= 10000) {
+            c /= 10000
+            i++
+        }
+        return "${decimalFormat.format(c)}${arrayOfNumberUnit[i]}"
+    }
+
+    fun getFormatString(number: Long?): String = getFormatString(number?.toDouble())
+
+    fun getFormatString(number: Int?): String = getFormatString(number?.toDouble())
 }
