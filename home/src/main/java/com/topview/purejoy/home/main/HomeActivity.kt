@@ -1,23 +1,22 @@
-package com.topview.purejoy.home
+package com.topview.purejoy.home.main
 
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.topview.purejoy.common.base.binding.BindingActivity
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
-import com.topview.purejoy.common.util.UserManager
-import com.topview.purejoy.common.util.UserManager.userLiveData
-import com.topview.purejoy.home.data.repo.LoginRepository
+import com.topview.purejoy.common.mvvm.activity.MVVMActivity
+import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeHomeBinding
 import com.topview.purejoy.home.discover.HomeDiscoverFragment
 import com.topview.purejoy.home.router.HomeRouter
+import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeActivity"
 
-class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
+class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
 
     private val bottomMusicBar: MusicBottomView by lazy {
         MusicBottomView(activity = this)
@@ -34,7 +33,7 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
 
         binding.homeActivity = this
         initView()
-        getUserData()
+        initData()
     }
 
     override fun getLayoutId(): Int {
@@ -45,11 +44,15 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
         discoverFragment = HomeDiscoverFragment()
         curShowFragment = discoverFragment
         addFragment(R.id.home_fl_fragment_layout, curShowFragment!!)
-        
+
         bottomNavigationView = binding.homeBnvBottomNavigation
         bottomNavigationView.post {
             bottomMusicBar.addMusicBottomBar(bottomNavigationView.height)
         }
+    }
+    
+    private fun initData(){
+        viewModel.keepLogin()
     }
 
     /**
@@ -110,16 +113,7 @@ class HomeActivity : BindingActivity<ActivityHomeHomeBinding>(){
 
     }
 
-    // TODO 重构到某个ViewModel内
-    // 调用/login/status确定登录状态，并加载用户信息
-    // 这个方法应当尽早调用而不是等待某个点击事件
-    private fun getUserData() {
-        lifecycleScope.launchWhenResumed {
-            if (userLiveData.value == null) {
-                LoginRepository.checkLoginStatus()?.let {
-                    UserManager.login(it)
-                }
-            }
-        }
-    }
+    override fun getViewModelClass(): Class<HomeViewModel> = HomeViewModel::class.java
+
+    override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
 }
