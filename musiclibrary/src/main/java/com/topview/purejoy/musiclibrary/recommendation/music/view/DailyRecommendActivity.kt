@@ -17,11 +17,11 @@ import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.router.CommonRouter
+import com.topview.purejoy.common.util.DownloadUtil
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.NoBindingActivity
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.util.download
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.recommendation.music.adapter.DailyRecommendAdapter
 import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReason
@@ -54,7 +54,8 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
                     musicController.dataController?.add(w)
                     musicController.playerController?.jumpTo(0)
                 } else {
-                    val index = musicController.playItems.value?.indexOf(musicController.currentItem.value)
+                    val index =
+                        musicController.playItems.value?.indexOf(musicController.currentItem.value)
                     if (index != null && index != -1) {
                         musicController.dataController?.addAfter(w, index)
                     }
@@ -66,7 +67,7 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
             // 下载
             it?.let { item ->
                 if (item.url != null) {
-                    download(item.url!!)
+                    downloadMusic(item.name, item.url!!)
                     popWindow.window.dismiss()
                 } else {
                     viewModel.requestURL(item.id)
@@ -79,8 +80,6 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
 
 
     private val TAG = "DailyRecommend"
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,9 +137,10 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
                         showToast(this, "歌曲${music?.name}不能下载", Toast.LENGTH_SHORT)
                     } else {
                         music?.url = item.url
-                        showToast(this, "已加入下载任务队列",
-                            Toast.LENGTH_SHORT)
-                        download(item.url)
+                        music?.let { musicItem ->
+                            downloadMusic(musicItem.name, item.url)
+                        }
+
                         if (item.id == popWindow.data?.id) {
                             popWindow.window.dismiss()
                         }
@@ -158,6 +158,14 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
         }
         viewModel.requestDailySongs()
         bottomView.addMusicBottomBar()
+    }
+
+    private fun downloadMusic(fileName: String, url: String) {
+        DownloadUtil.downloadMusic(this, fileName, url, null, {
+            showToast(this, "已加入下载任务队列", Toast.LENGTH_SHORT)
+        }, {
+            showToast(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT)
+        })
     }
 
     override fun onDestroy() {

@@ -67,6 +67,10 @@ dependencies {
     // ARouter
     api(Deps.ARouter.arouterApi)
 
+    // PermissionX
+    api(Deps.permissionX)
+
     // LeakCanary
     debugApi(Deps.Debug.leakCanary)
+
 }
