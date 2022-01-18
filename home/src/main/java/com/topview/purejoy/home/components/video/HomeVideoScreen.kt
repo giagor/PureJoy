@@ -1,6 +1,7 @@
 package com.topview.purejoy.home.components.video
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.status.SimpleStatusScreen
@@ -49,7 +49,13 @@ internal fun HomeVideoScreen(
         },
         errorContent = {
             Box(
-                modifier = Modifier.clickable { viewModel.loadVideoCategory() }
+                modifier = Modifier.clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = {
+                        viewModel.loadVideoCategory()
+                    }
+                )
             ) {
                 Text(
                     text = stringResource(id = R.string.home_video_unknown_error),
@@ -102,7 +108,6 @@ private fun HomeVideoScreenContent(
             count = tabArray.size,
             state = pagerState
         ) { page ->
-            // TODO 刷新功能
             // TODO 指示器动画
             val items = lazyPagingMap[tabArray[page].id] ?: let {
                 val newItems = viewModel.getVideoByCategory(
@@ -111,19 +116,11 @@ private fun HomeVideoScreenContent(
                 newItems
             }
 
-            val state = rememberSwipeRefreshState(isRefreshing = false)
-
-            /*LaunchedEffect(key1 = items.loadState.refresh) {
-                state.isRefreshing = items.loadState.refresh is LoadState.Loading
-            }*/
-
             Surface(
                color = Gray245
             ) {
                 VideoInfoList(
                     videoItems = items,
-                    state = state,
-                    onRefresh = {},
                     modifier = Modifier.fillMaxSize()
                 )
             }

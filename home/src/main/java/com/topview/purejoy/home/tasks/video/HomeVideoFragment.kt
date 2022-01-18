@@ -11,6 +11,7 @@ import com.topview.purejoy.common.util.UserManager
 import com.topview.purejoy.home.components.video.HomeVideoScreen
 import com.topview.purejoy.home.components.video.LoginRoutePage
 import com.topview.purejoy.home.router.HomeRouter
+import com.topview.purejoy.home.util.ProvideMusicController
 
 @Route(path = HomeRouter.FRAGMENT_HOME_VIDEO)
 class HomeVideoFragment: ComposeFragment() {
@@ -19,9 +20,8 @@ class HomeVideoFragment: ComposeFragment() {
 
     @Composable
     override fun ComposeView.FragmentContent() {
-        setContent {
-            val user by UserManager.userLiveData.observeAsState()
-
+        val user by UserManager.userLiveData.observeAsState()
+        ProvideMusicController {
             if (user == null) {
                 LoginRoutePage()
             } else {

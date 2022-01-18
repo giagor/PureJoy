@@ -4,10 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -27,6 +24,7 @@ import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.common.widget.compose.RoundImageViewCompose
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.ExternVideo
+import com.topview.purejoy.home.theme.Blue219
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
 import com.topview.purejoy.video.ui.components.MVSign
@@ -38,7 +36,7 @@ internal fun VideoInfoCard(
     externVideo: ExternVideo
 ) {
     Surface(
-        shape = RoundedCornerShape(10.dp),
+        shape = CardShape,
         modifier = modifier,
     ) {
         Column {
@@ -158,6 +156,51 @@ internal fun VideoCardBottom(
     }
 }
 
+/**
+ * 加载下一页失败后会显示的卡片
+ */
+@Composable
+internal fun AppendErrorItemCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = CardShape
+    ) {
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Blue219
+            )
+        ) {
+            Text(
+                text = stringResource(id = R.string.home_video_append_reload),
+                color = Color.White
+            )
+        }
+    }
+}
+
+/**
+ * 底部的显示出正在加载的进度条卡片
+ */
+@Composable
+internal fun AppendLoadingItemCard(
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = CardShape
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(
+                color = Blue219
+            )
+        }
+    }
+}
+
 @Composable
 private fun SmallIconWithText(
     modifier: Modifier = Modifier,
@@ -182,4 +225,6 @@ private fun SmallIconWithText(
         )
     }
 }
+
+private val CardShape = RoundedCornerShape(10.dp)
 
