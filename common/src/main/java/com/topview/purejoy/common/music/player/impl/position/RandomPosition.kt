@@ -22,8 +22,10 @@ class RandomPosition(override var max: Int,
                 current = nextMap[current]!!
             } else {
                 val index = random.nextInt(max)
-                nextMap[current] = index
-                lastMap[index] = current
+                if (!nextMap.keys.contains(index)) {
+                    nextMap[current] = index
+                    lastMap[index] = current
+                }
                 current = index
             }
             return current
@@ -36,8 +38,10 @@ class RandomPosition(override var max: Int,
                 current = lastMap[current]!!
             } else {
                 val index = random.nextInt(max)
-                nextMap[index] = current
-                lastMap[current] = index
+                if (!lastMap.keys.contains(index)) {
+                    nextMap[index] = current
+                    lastMap[current] = index
+                }
                 current = index
             }
             return current
