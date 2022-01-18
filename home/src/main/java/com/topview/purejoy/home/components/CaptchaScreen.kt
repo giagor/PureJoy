@@ -129,7 +129,7 @@ fun CaptchaContentTitle(
             )
             Icon(
                 painter = painterResource(
-                    id = R.drawable.ic_home_login_modify_phone
+                    id = R.drawable.home_ic_login_modify_phone
                 ),
                 contentDescription = null,
                 modifier = Modifier

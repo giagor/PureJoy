@@ -87,7 +87,7 @@ fun PhoneNumberInput(
             trailingIcon = {
                 if (phoneUiState.text.isNotEmpty()) {
                     Icon(painter = painterResource(
-                        id =  R.drawable.ic_home_baseline_close_24
+                        id =  R.drawable.home_ic_baseline_close_24
                     ),
                         contentDescription = null,
                         modifier = Modifier.clickable {
@@ -160,7 +160,7 @@ fun LoginScreenTitle(
         title = stringResource(R.string.home_login_phone_title),
         modifier = modifier,
         leadingContent = {
-            Icon(painter = painterResource(id = R.drawable.ic_home_baseline_close_24),
+            Icon(painter = painterResource(id = R.drawable.home_ic_baseline_close_24),
                 contentDescription = null,
                 modifier = iconModifier
             )

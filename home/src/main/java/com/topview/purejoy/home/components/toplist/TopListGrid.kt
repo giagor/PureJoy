@@ -22,7 +22,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
-import com.topview.purejoy.home.theme.Gray235
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
 
@@ -91,7 +90,7 @@ internal fun TopListGridChild(
             )
         }
         Icon(
-            painter = painterResource(id = R.drawable.ic_home_toplist_music_play),
+            painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
             contentDescription = null,
             tint = Color.White,
             modifier = Modifier

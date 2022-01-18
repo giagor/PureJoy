@@ -58,7 +58,7 @@ internal fun OfficialTopListCard(
                     },
                 headerContent = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_home_toplist_music_play),
+                        painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.align(Alignment.Center).size(18.dp)

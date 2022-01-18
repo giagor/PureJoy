@@ -88,7 +88,7 @@ internal fun TopListErrorContent(
                 onClick = onRetryClick
             )
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_home_toplist_error),
+        Image(painter = painterResource(id = R.drawable.home_ic_toplist_error),
             contentDescription = null,
             modifier = Modifier.size(100.dp)
         )
@@ -127,7 +127,7 @@ internal fun TopListScreenTitle(
         title = stringResource(id = R.string.home_toplist_title),
         leadingContent = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_home_arrow_back_24),
+                painter = painterResource(id = R.drawable.home_ic_arrow_back_24),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = 10.dp)
