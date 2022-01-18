@@ -1,15 +1,21 @@
 package com.topview.purejoy.common.util
 
 import android.Manifest
-import android.util.Log
+import android.os.Environment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
+import java.io.File
 
 object DownloadUtil {
-    private const val MUSIC_SAVE_DIR = "/storage/emulated/0/Music"
+    /**
+     * 路径为 /storage/emulated/0/Music
+     * */
+    private val musicSaveDir =
+        Environment.getExternalStorageDirectory().absolutePath.plus(File.separator)
+            .plus(Environment.DIRECTORY_MUSIC)
 
     /**
      * 下载音乐
@@ -34,7 +40,7 @@ object DownloadUtil {
             .request { allGranted, _, _ ->
                 if (allGranted) {
                     permissionAllowed?.invoke()
-                    DownloadManager.download(url, MUSIC_SAVE_DIR, name, downloadListener)
+                    DownloadManager.download(url, musicSaveDir, name, downloadListener)
                 } else {
                     permissionDenied?.invoke()
                 }
@@ -64,14 +70,10 @@ object DownloadUtil {
             .request { allGranted, _, _ ->
                 if (allGranted) {
                     permissionAllowed?.invoke()
-                    DownloadManager.download(url, MUSIC_SAVE_DIR, name, downloadListener)
+                    DownloadManager.download(url, musicSaveDir, name, downloadListener)
                 } else {
                     permissionDenied?.invoke()
                 }
             }
-    }
-
-    private fun showLog(msg: String) {
-        Log.d("abcde", msg)
     }
 }
