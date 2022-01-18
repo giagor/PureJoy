@@ -16,10 +16,7 @@ import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.musiclibrary.BR
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.util.TimerWrapper
-import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
-import com.topview.purejoy.musiclibrary.common.util.loadBlurBackground
-import com.topview.purejoy.musiclibrary.common.util.numToString
+import com.topview.purejoy.musiclibrary.common.util.*
 import com.topview.purejoy.musiclibrary.playing.view.widget.MusicProgressBar
 import com.topview.purejoy.musiclibrary.playing.viewmodel.PlayingViewModel
 
@@ -94,6 +91,7 @@ class PlayingActivity : MVVMActivity<PlayingViewModel, ViewDataBinding>() {
         musicController.client.registerConnectListener(this::onServiceConnected)
         musicController.client.registerDisconnectListener(this::onServiceDisconnected)
         musicController.client.connectService()
+        becomeImmersive(binding.root)
         initView()
         observeData()
         observeViewModel()

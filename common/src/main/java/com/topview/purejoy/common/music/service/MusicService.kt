@@ -25,6 +25,7 @@ import com.topview.purejoy.common.music.player.util.castAs
 import com.topview.purejoy.common.music.service.entity.*
 import com.topview.purejoy.common.music.service.notification.MusicNotification
 import com.topview.purejoy.common.music.service.notification.MusicNotificationReceiver
+import com.topview.purejoy.common.music.service.recover.RecoverTask
 import com.topview.purejoy.common.music.service.recover.db.RecoverDatabase
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverALData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverARData
@@ -64,15 +65,8 @@ class MusicService : MediaService<MusicItem>() {
         MusicURLViewModelImpl()
     }
 
-    private val rmPhoto = CopyOnWriteArrayList<RecoverMusicData>()
-    private val rlPhoto = CopyOnWriteArrayList<RecoverALData>()
-    private val rrPhoto = CopyOnWriteArrayList<RecoverARData>()
 
-    private val recoverDB = "recover"
 
-    private val db: RecoverDatabase by lazy {
-        initDB(RecoverDatabase::class.java, recoverDB)
-    }
 
     private val client: OkHttpClient by lazy {
         OkHttpClient()
@@ -81,12 +75,6 @@ class MusicService : MediaService<MusicItem>() {
     override fun initMediaModeSetting() {
         val position: Int = SP.sp.getInt(POSITION_KEY, MediaModeSetting.INIT_POSITION)
         val max = SP.sp.getInt(MAX_KEY, 0)
-        SP.sp.edit().apply {
-            putInt(POSITION_KEY, MediaModeSetting.INIT_POSITION)
-            putInt(MODE_KEY, MediaModeSetting.ORDER)
-            putInt(MAX_KEY, 0)
-            apply()
-        }
         MediaModeSetting.getInstance().init(max, position)
     }
 
@@ -96,16 +84,21 @@ class MusicService : MediaService<MusicItem>() {
     }
 
 
-    private val storeDuration = 60000L
 
     private val dataController: IPCDataControllerImpl<MusicItem> by lazy {
         pool.queryBinder(BinderPool.DATA_CONTROL_BINDER)
             .castAs<IPCDataControllerImpl<MusicItem>>()!!
     }
 
-    private val listenerController: IPCListenerControllerImpl by lazy {
-        IPCListenerController.Stub.asInterface(pool.queryBinder(
+
+    private val storeDuration = 60000L
+    private val recoverTask: RecoverTask by lazy {
+        val modeController = IPCModeController.Stub.asInterface(pool.queryBinder(
+            BinderPool.MODE_CONTROL_BINDER))?.castAs<IPCModeControllerImpl>()!!
+        val listenerController: IPCListenerControllerImpl = IPCListenerController.Stub.asInterface(pool.queryBinder(
             BinderPool.LISTENER_CONTROL_BINDER)).castAs()!!
+        RecoverTask(dataController, modeController,
+            listenerController, mainHandler, storeDuration)
     }
 
 
@@ -123,32 +116,9 @@ class MusicService : MediaService<MusicItem>() {
             }
         })
 
-        readLocal()
 
-        val storeTask = object : Runnable {
-            override fun run() {
-                if (rmPhoto.size != dataController.mediaSource.size) {
-                    storePlayerState()
-                } else {
-                    var changed = false
-
-                    for(item in dataController.mediaSource) {
-                        if (!rmPhoto.contains(item.toRecoverMusic())) {
-                            changed = true
-                            break
-                        }
-                    }
-
-                    if (changed) {
-                        storePlayerState()
-                    }
-                }
-                mainHandler.postDelayed(this, storeDuration)
-            }
-
-        }
-
-        mainHandler.postDelayed(storeTask, storeDuration)
+        recoverTask.readLocal()
+        mainHandler.postDelayed(recoverTask, storeDuration)
 
         val filter = IntentFilter()
         filter.addAction(MusicNotificationReceiver.CLEAR_ACTION)
@@ -158,103 +128,7 @@ class MusicService : MediaService<MusicItem>() {
         registerReceiver(receiver, filter)
     }
 
-    private fun storePlayerState() {
-        val dao = db.recoverDao()
-        ExecutorInstance.getInstance().execute {
-            val tm = ArrayList(rmPhoto)
-            val tl = ArrayList(rlPhoto)
-            val tr = ArrayList(rrPhoto)
-            dao.deleteRecoverData(tm, tl, tr)
 
-            rmPhoto.clear()
-            rrPhoto.clear()
-            rlPhoto.clear()
-            val list = dataController.mediaSource
-
-            val modeController = IPCModeController.Stub.asInterface(pool.queryBinder(
-                BinderPool.MODE_CONTROL_BINDER))?.castAs<IPCModeControllerImpl>()
-            if (list.isNotEmpty()) {
-                translateList(rmPhoto, rrPhoto, rlPhoto)
-                tm.clear()
-                tm.addAll(rmPhoto)
-                tl.clear()
-                tl.addAll(rlPhoto)
-                tr.clear()
-                tr.addAll(rrPhoto)
-
-                dao.insertRecoverData(tm, tl, tr)
-
-                modeController?.let {
-                    storeState(it.realController.current, dataController.position.current(), list.size)
-                }
-
-            } else {
-                storeState(MediaModeSetting.ORDER, MediaModeSetting.INIT_POSITION, 0)
-            }
-        }
-    }
-
-    private fun translateList(recoverMusicList: MutableList<RecoverMusicData>,
-                              recoverARList: MutableList<RecoverARData>,
-                              recoverALList: MutableList<RecoverALData>) {
-        val list = dataController.mediaSource
-        for (l in list) {
-            recoverMusicList.add(l.toRecoverMusic())
-            for (a in l.ar) {
-                recoverARList.add(a.toRecoverAR(l.id))
-            }
-            recoverALList.add(l.al.toRecoverAL(l.id))
-        }
-    }
-
-    private fun readLocal() {
-        ExecutorInstance.getInstance().execute {
-            val list = mutableListOf<MusicItem>()
-            val dao = db.recoverDao()
-            val data = dao.obtainRecoverData()
-            val recoverMusic = mutableListOf<RecoverMusicData>()
-            val recoverAl = mutableListOf<RecoverALData>()
-            val recoverAr = mutableListOf<RecoverARData>()
-            for (d in data) {
-                list.add(d.toMusicItem())
-                recoverMusic.add(d.musicData)
-                recoverAl.add(d.alData)
-                recoverAr.addAll(d.arDataList)
-            }
-
-//            dao.deleteRecoverData(recoverMusic, recoverAl, recoverAr)
-            if (list.isNotEmpty()) {
-                mainHandler.post {
-                    rmPhoto.addAll(recoverMusic)
-                    rlPhoto.addAll(recoverAl)
-                    rrPhoto.addAll(recoverAr)
-                    val source = mutableListOf<Wrapper>()
-                    list.forEach {
-                        source.add(it.wrap())
-                    }
-                    dataController.addAll(source)
-
-                    mainHandler.post {
-                        val current = dataController.current()
-                        if (current != null) {
-                            listenerController.invokeItemChangeListener(current)
-                        }
-                    }
-                }
-
-            }
-
-        }
-    }
-
-    private fun storeState(mode: Int, position: Int, max: Int) {
-        SP.sp.edit().apply {
-            putInt(MODE_KEY, mode)
-            putInt(POSITION_KEY, position)
-            putInt(MAX_KEY, max)
-            apply()
-        }
-    }
 
     override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
         viewModel.requestMusicURL(item.cast()!!, itemIndex, callback)
@@ -311,7 +185,7 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onDestroy() {
-        storePlayerState()
+        recoverTask.storePlayerState()
         unregisterReceiver(receiver)
         super.onDestroy()
     }
