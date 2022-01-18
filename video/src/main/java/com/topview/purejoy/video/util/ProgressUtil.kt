@@ -52,10 +52,7 @@ object ProgressUtil {
      * 例如36500将被转换为"3.6万"，小数仅保留一位
      * 如果输入为空，输出的字符为"--"
      */
-    fun getFormatString(number: Double?): String {
-        if (number == null) {
-            return "--"
-        }
+    fun getFormatString(number: Double): String {
         var c: Double = number
         var i = 0
         val decimalFormat = DecimalFormat("0.#")
@@ -66,7 +63,7 @@ object ProgressUtil {
         return "${decimalFormat.format(c)}${arrayOfNumberUnit[i]}"
     }
 
-    fun getFormatString(number: Long?): String = getFormatString(number?.toDouble())
+    fun getFormatString(number: Long): String = getFormatString(number.toDouble())
 
-    fun getFormatString(number: Int?): String = getFormatString(number?.toDouble())
+    fun getFormatString(number: Int): String = getFormatString(number.toDouble())
 }
