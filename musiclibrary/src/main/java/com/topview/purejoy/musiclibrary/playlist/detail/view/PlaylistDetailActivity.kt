@@ -18,13 +18,13 @@ import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
 import com.topview.purejoy.common.router.CommonRouter
+import com.topview.purejoy.common.util.DownloadUtil
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.common.widget.compose.RoundedCornerImageView
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.NoBindingActivity
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 import com.topview.purejoy.musiclibrary.common.factory.DefaultFactory
-import com.topview.purejoy.musiclibrary.common.util.download
 import com.topview.purejoy.musiclibrary.common.util.loadBitmapColor
 import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAdapter
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
@@ -40,10 +40,11 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
 
     private val popWindow: RecommendPop by lazy {
         val size = getDisplaySize()
-        val p = RecommendPop(this, width = size.width(),
-            height = size.height() * 2 / 3, window)
-        p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) {
-                item ->
+        val p = RecommendPop(
+            this, width = size.width(),
+            height = size.height() * 2 / 3, window
+        )
+        p.addItemView(R.drawable.next_play_pop_32, R.string.next_play) { item ->
             item?.let {
                 val w = it.wrap()
                 val items = viewModel.songsResponse.value!!.songs
@@ -67,7 +68,7 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
             // 下载
             it?.let { item ->
                 if (item.url != null) {
-                    download(item.url!!)
+                    downloadMusic(item.name, item.url!!)
                     popWindow.window.dismiss()
                 } else {
                     viewModel.requestUrl(item.id)
@@ -79,11 +80,11 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val playlistId: Long? = intent.getBundleExtra(CommonRouter.BUNDLE_EXTRA)?.getLong(
-            MusicLibraryRouter.PLAYLIST_EXTRA, -1L)
+            MusicLibraryRouter.PLAYLIST_EXTRA, -1L
+        )
         if (playlistId == null || playlistId == -1L) {
             errorHandle()
             return
@@ -136,9 +137,10 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
                         showToast(this, "歌曲${music?.name}不能下载", Toast.LENGTH_SHORT)
                     } else {
                         music?.url = item.url
-                        showToast(this, "已加入下载任务队列",
-                            Toast.LENGTH_SHORT)
-                        download(item.url)
+                        music?.let { musicItem ->
+                            downloadMusic(musicItem.name, item.url)
+                        }
+
                         if (item.id == popWindow.data?.id) {
                             popWindow.window.dismiss()
                         }
@@ -176,8 +178,14 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
         viewModel.getDetails(playlistId)
 
 
+    }
 
-
+    private fun downloadMusic(fileName: String, url: String) {
+        DownloadUtil.downloadMusic(this, fileName, url, null, {
+            showToast(this, "已加入下载任务队列", Toast.LENGTH_SHORT)
+        }, {
+            showToast(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT)
+        })
     }
 
     private fun handleClick(position: Int, data: List<MusicItem>) {

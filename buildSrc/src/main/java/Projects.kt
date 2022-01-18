@@ -116,6 +116,9 @@ object Deps {
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
 
     const val kspVersion = "1.5.31-1.0.0"
+
+    // 处理权限
+    const val permissionX = "com.guolindev.permissionx:permissionx:1.6.1"
 }
 
 object TestDeps {
