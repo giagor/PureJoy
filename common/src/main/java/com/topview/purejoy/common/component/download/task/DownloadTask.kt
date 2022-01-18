@@ -10,6 +10,7 @@ import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import kotlin.concurrent.thread
 
@@ -82,6 +83,15 @@ class DownloadTask(
      * */
     @Ignore
     private var resumed = false
+
+    @Ignore
+    private val observers: CopyOnWriteArrayList<UserDownloadListener> = CopyOnWriteArrayList()
+
+    init {
+        downloadListener?.let {
+            observers.add(it)
+        }
+    }
 
     constructor() : this(
         null, "", "", 0, 0,
@@ -180,17 +190,25 @@ class DownloadTask(
         }
 
         status = DownloadStatus.DOWNLOADING
-        downloadListener?.let {
-            DownloadManager.handler.post {
-                // 根据resumed的值，回调用户不同的接口
-                if (resumed) {
-                    resumed = false
-                    it.onResumed()
-                } else {
-                    it.onStarted()
-                }
-            }
+        if (resumed) {
+            resumed = false
+//            it.onResumed()
+            callObserversOnResume()
+        } else {
+//            it.onStarted()
+            callObserversOnStart()
         }
+//        downloadListener?.let {
+//            DownloadManager.handler.post {
+//                // 根据resumed的值，回调用户不同的接口
+//                if (resumed) {
+//                    resumed = false
+//                    it.onResumed()
+//                } else {
+//                    it.onStarted()
+//                }
+//            }
+//        }
         // 执行各个子任务
         for (subDownloadTask in subTasks) {
             if (!subDownloadTask.checkCompleted()) {
@@ -248,9 +266,10 @@ class DownloadTask(
     }
 
     private fun notifySuccess() {
-        DownloadManager.handler.post {
-            downloadListener?.onSuccess()
-        }
+        callObserversOnSuccess()
+//        DownloadManager.handler.post {
+//            downloadListener?.onSuccess()
+//        }
 
         if (breakPointDownload) {
             // 数据库中删除对应的任务
@@ -263,33 +282,37 @@ class DownloadTask(
         transmissionTotalSize += transmission
         val progress = (transmissionTotalSize * 100 / totalSize).toInt()
 
-        DownloadManager.handler.post {
-            downloadListener?.onProgress(progress)
-        }
+        callObserversOnProgress(progress)
+//        DownloadManager.handler.post {
+//            downloadListener?.onProgress(progress)
+//        }
     }
 
     private fun notifyCanceled() {
         clearTaskInfo()
-        DownloadManager.handler.post {
-            downloadListener?.onCancelled()
-        }
+        callObserverOnCancelled()
+//        DownloadManager.handler.post {
+//            downloadListener?.onCancelled()
+//        }
         // 通知调度器
         DownloadManager.downloadDispatcher.finished(this)
     }
 
     private fun notifyPaused() {
-        DownloadManager.handler.post {
-            downloadListener?.onPaused()
-        }
+        callObserversOnPause()
+//        DownloadManager.handler.post {
+//            downloadListener?.onPaused()
+//        }
         // 通知调度器
         DownloadManager.downloadDispatcher.finished(this)
     }
 
     private fun notifyFailure(msg: String) {
         clearTaskInfo()
-        DownloadManager.handler.post {
-            downloadListener?.onFailure()
-        }
+        callObserversOnFailure(msg)
+//        DownloadManager.handler.post {
+//            downloadListener?.onFailure()
+//        }
         // 通知调度器
         DownloadManager.downloadDispatcher.finished(this)
     }
@@ -306,6 +329,84 @@ class DownloadTask(
      * */
     fun addTasks(subDownloadTasks: List<SubDownloadTask>) {
         subTasks.addAll(subDownloadTasks)
+    }
+
+    internal fun callObserversOnStart() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onStarted()
+            }
+        }
+    }
+
+    internal fun callObserversOnProgress(progress: Int) {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onProgress(progress)
+            }
+        }
+    }
+
+    internal fun callObserversOnPause() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onPaused()
+            }
+        }
+    }
+
+    internal fun callObserversOnResume() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onResumed()
+            }
+        }
+    }
+
+    internal fun callObserversOnFailure(msg: String) {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onFailure(msg)
+            }
+        }
+    }
+
+    internal fun callObserverOnCancelled() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onCancelled()
+            }
+        }
+    }
+
+    internal fun callObserversOnSuccess() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onSuccess()
+            }
+        }
+    }
+
+    internal fun callObserverAlreadyDownloaded() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.alreadyDownloaded()
+            }
+        }
+    }
+
+    /**
+     * 注册观察者
+     * */
+    fun registerObserver(observer: UserDownloadListener) {
+        observers.add(observer)
+    }
+
+    /**
+     * 取消观察者的注册
+     * */
+    fun unregisterObserver(observer: UserDownloadListener) {
+        observers.remove(observer)
     }
 
     /**
