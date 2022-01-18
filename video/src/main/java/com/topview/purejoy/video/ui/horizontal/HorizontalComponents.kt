@@ -30,7 +30,6 @@ import com.topview.purejoy.video.ui.state.VideoLoadState
 import com.topview.purejoy.video.ui.theme.HalfAlphaBlack
 import com.topview.purejoy.video.util.ProgressUtil
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 /**

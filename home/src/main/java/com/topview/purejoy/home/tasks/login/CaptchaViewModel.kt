@@ -14,7 +14,6 @@ import com.topview.purejoy.home.components.SnackBarState
 import com.topview.purejoy.home.data.repo.LoginRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch

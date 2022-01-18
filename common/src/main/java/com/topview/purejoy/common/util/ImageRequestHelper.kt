@@ -28,5 +28,6 @@ fun createImageRequestForCoil(
     }
     return builder.data(data)
         .placeholder(placeholder)
+        .error(placeholder)
         .build()
 }
