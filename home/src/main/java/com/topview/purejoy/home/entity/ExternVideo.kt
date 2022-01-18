@@ -22,7 +22,7 @@ internal fun RecommendVideoJson.toExternVideos(
 ): List<ExternVideo> {
     val list = mutableListOf<ExternVideo>()
     this.outerList?.forEach {
-        if (it.isSong()) {
+        if (it.isMlog()) {
             list.add(
                 ExternVideo(
                     video = it.data.toVideo(),

@@ -13,9 +13,10 @@ class OuterData(
     val type: Int?,
     val data: RecommendData
 ) {
-    // 只有type为1的才是正常的歌曲
+    // TODO 添加对type=2的支持
+    // type为1的为mlog视频
     // type为7是直播
-    fun isSong(): Boolean = type == 1
+    fun isMlog(): Boolean = type == 1
 }
 
 class RecommendData(
@@ -28,7 +29,7 @@ class RecommendData(
     val shareCount: Int,
     val creator: RecommendCreator?,
     val urlInfo: UrlInfo?,
-    @SerializedName("durationms") val duration: Long,
+    @SerializedName("durationms") val duration: Long?,
     @SerializedName("relateSong") val songs: List<SongJson>?,
     @SerializedName("playTime") val playCount: Long,
     val previewUrl: String?,
@@ -54,7 +55,7 @@ fun RecommendVideoJson.toVideos(): List<Video> {
     outerList?.let { videoData ->
         if (videoData.isNotEmpty()) {
             videoData.forEach { outerData ->
-                if (outerData.isSong()) {
+                if (outerData.isMlog()) {
                     list.add(
                         outerData.data.toVideo()
                     )
@@ -75,7 +76,7 @@ fun RecommendData.toVideo(): Video =
         likedCount = praisedCount,
         commentCount = commentCount,
         shareCount = shareCount,
-        duration = duration,
+        duration = duration ?: Video.UNSPECIFIED_LONG,
         creatorName = creator?.creatorName,
         creatorAvatarUrl = creator?.creatorAvatarUrl,
         songName = if (songs == null || songs.isEmpty()) {
