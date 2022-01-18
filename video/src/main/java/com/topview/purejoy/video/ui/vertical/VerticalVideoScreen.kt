@@ -20,7 +20,7 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -191,7 +191,7 @@ internal fun VerticalPagerChild(
             // 该页面不是正在显示的页面，而是备选页面，那么仅展示图片
             val imageRef = createRef()
             Image(
-                painter = rememberImagePainter(videoState.value?.coverUrl),
+                painter = rememberAsyncImagePainter(videoState.value?.coverUrl),
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(imageRef) {

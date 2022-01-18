@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.util.ImageUtil
@@ -61,7 +62,9 @@ internal fun OfficialTopListCard(
                         painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.align(Alignment.Center).size(18.dp)
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(18.dp)
                     )
                 }
             )
@@ -182,7 +185,11 @@ fun PlaceholderImage(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Image(
-                painter = rememberImagePainter(ImageUtil.limitImageSize(url, 180)),
+                painter = rememberAsyncImagePainter(
+                    model = createImageRequestForCoil(
+                        data = ImageUtil.limitImageSize(url, 180)
+                    )
+                ),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 alpha = imageAlpha

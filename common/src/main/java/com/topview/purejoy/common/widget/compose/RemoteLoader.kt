@@ -1,7 +1,9 @@
 package com.topview.purejoy.common.widget.compose
 
 import androidx.compose.runtime.Composable
-import coil.compose.rememberImagePainter
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 
 class RemoteLoader {
@@ -10,6 +12,12 @@ class RemoteLoader {
     @Composable
     fun getRemotePainter(
         request: String
-    ) = rememberImagePainter(data = request, builder = requestBuilder)
+    ): AsyncImagePainter {
+        val builder = ImageRequest.Builder(LocalContext.current)
+        builder.requestBuilder()
+        return rememberAsyncImagePainter(
+            model = builder.build()
+        )
+    }
 }
 

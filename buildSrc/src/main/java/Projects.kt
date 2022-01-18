@@ -54,8 +54,9 @@ object Deps {
     }
 
     object Coil {
-        const val coilCore = "io.coil-kt:coil:1.4.0"
-        const val composeExtension = "io.coil-kt:coil-compose:1.4.0"
+        const val version = "2.0.0-alpha06"
+        const val coilCore = "io.coil-kt:coil:$version"
+        const val composeExtension = "io.coil-kt:coil-compose:$version"
     }
 
     object ExoPlayer {

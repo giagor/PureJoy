@@ -22,7 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.common.widget.compose.RoundImageViewCompose
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.ExternVideo
@@ -72,19 +73,22 @@ internal fun CoverImage(
     ) {
         // TODO 根据网络情况，自动加载previewUrl
         Image(
-            painter = rememberImagePainter(
-                data = ImageUtil.limitImageSize(externVideo.video.coverUrl, 600),
-                builder = {
-                    placeholder( remember { ImageUtil.getRandomColorDrawable() })
-                }
+            painter = rememberAsyncImagePainter(
+                model = createImageRequestForCoil(
+                    data = ImageUtil.limitImageSize(externVideo.video.coverUrl, 600),
+                    placeholder = remember { ImageUtil.getRandomColorDrawable() },
+                    preferExactIntrinsicSize = true
+                )
             ),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
         RoundImageViewCompose(
-            painter = rememberImagePainter(
-                ImageUtil.limitImageSize(externVideo.video.creatorAvatarUrl, 90)
+            painter = rememberAsyncImagePainter(
+                model = createImageRequestForCoil(
+                    data = ImageUtil.limitImageSize(externVideo.video.creatorAvatarUrl, 90)
+                )
             ),
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -108,7 +112,9 @@ internal fun CoverImage(
         )
         if (externVideo.video.isMv) {
             MVSign(
-                modifier = Modifier.align(Alignment.TopCenter).padding(top = 20.dp)
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 20.dp)
             )
         }
     }
