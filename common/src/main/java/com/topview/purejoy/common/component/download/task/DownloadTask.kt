@@ -10,7 +10,6 @@ import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
-import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import kotlin.concurrent.thread
 
