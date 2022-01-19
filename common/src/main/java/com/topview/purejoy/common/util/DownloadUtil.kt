@@ -10,6 +10,7 @@ import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
+import com.topview.purejoy.common.component.download.task.DownloadTask
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,15 +39,15 @@ object DownloadUtil {
         name: String,
         url: String,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: (() -> Unit)? = null,
+        permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
         PermissionX.init(activity)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
                 if (allGranted) {
-                    permissionAllowed?.invoke()
                     val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    permissionAllowed?.invoke(task)
                     DownloadingSongManager.put(task.tag, task)
                     AppDatabaseManager.appDatabase?.let {
                         val downloadSongInfo = DownloadSongInfo(
@@ -83,15 +84,15 @@ object DownloadUtil {
         name: String,
         url: String,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: (() -> Unit)? = null,
+        permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
         PermissionX.init(fragment)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
                 if (allGranted) {
-                    permissionAllowed?.invoke()
                     val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    permissionAllowed?.invoke(task)
                     DownloadingSongManager.put(task.tag, task)
                     AppDatabaseManager.appDatabase?.let {
                         val downloadSongInfo = DownloadSongInfo(
