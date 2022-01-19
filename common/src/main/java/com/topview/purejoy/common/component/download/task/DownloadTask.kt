@@ -340,7 +340,7 @@ class DownloadTask(
     internal fun callObserversOnStart() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onStarted()
+                observer.onStarted(this)
             }
         }
     }
@@ -348,7 +348,7 @@ class DownloadTask(
     internal fun callObserversOnProgress(progress: Int) {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onProgress(progress)
+                observer.onProgress(this, progress)
             }
         }
     }
@@ -356,7 +356,7 @@ class DownloadTask(
     internal fun callObserversOnPause() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onPaused()
+                observer.onPaused(this)
             }
         }
     }
@@ -364,7 +364,7 @@ class DownloadTask(
     internal fun callObserversOnResume() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onResumed()
+                observer.onResumed(this)
             }
         }
     }
@@ -372,7 +372,7 @@ class DownloadTask(
     internal fun callObserversOnFailure(msg: String) {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onFailure(msg)
+                observer.onFailure(this, msg)
             }
         }
     }
@@ -380,7 +380,7 @@ class DownloadTask(
     internal fun callObserverOnCancelled() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onCancelled()
+                observer.onCancelled(this)
             }
         }
     }
@@ -388,7 +388,7 @@ class DownloadTask(
     internal fun callObserversOnSuccess() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onSuccess()
+                observer.onSuccess(this)
             }
         }
     }
@@ -396,7 +396,7 @@ class DownloadTask(
     internal fun callObserverAlreadyDownloaded() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.alreadyDownloaded()
+                observer.alreadyDownloaded(this)
             }
         }
     }
