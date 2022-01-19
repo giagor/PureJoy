@@ -80,13 +80,15 @@ object TaskHandler {
                         handleNewTask(downloadTask)
                     }
 
-                    DownloadManager.downloadDispatcher.enqueue(downloadTask)
+//                    DownloadManager.downloadDispatcher.enqueue(downloadTask)
+                    downloadTask.download()
                 }
 
                 override fun unSupportRange(contentLength: Long) {
                     configureDownloadInfo(downloadTask, contentLength, false)
                     handleNewTask(downloadTask)
-                    DownloadManager.downloadDispatcher.enqueue(downloadTask)
+//                    DownloadManager.downloadDispatcher.enqueue(downloadTask)
+                    downloadTask.download()
                 }
             })
     }
