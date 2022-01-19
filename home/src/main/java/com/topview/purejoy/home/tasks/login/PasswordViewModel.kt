@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.common.util.UserManager
-import com.topview.purejoy.home.components.PasswordLoginScreenState
-import com.topview.purejoy.home.components.SnackBarState
+import com.topview.purejoy.home.components.login.PasswordLoginScreenState
+import com.topview.purejoy.home.components.status.SnackBarState
 import com.topview.purejoy.home.data.repo.LoginRepository
 
 class PasswordViewModel: MVVMViewModel() {

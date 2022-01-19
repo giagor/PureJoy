@@ -44,7 +44,7 @@ class HomeVideoRepository {
      */
     fun getVideoFlowByCategory(
         categoryId: Long,
-        pageSize: Int = 6
+        pageSize: Int = 8
     ): Flow<PagingData<ExternVideo>> {
         return Pager(
             config = PagingConfig(

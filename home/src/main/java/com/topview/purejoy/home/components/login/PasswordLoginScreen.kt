@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.components.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -20,12 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
+import com.topview.purejoy.home.components.status.SnackBarState
 import com.topview.purejoy.home.theme.Red243
 import com.topview.purejoy.home.theme.Visibility
 import com.topview.purejoy.home.theme.VisibilityOff
 
 @Composable
-fun PasswordLoginScreen(
+internal fun PasswordLoginScreen(
     onLoginClick: () -> Unit,
     state: PasswordLoginScreenState = remember {
         PasswordLoginScreenState()
@@ -43,14 +44,17 @@ fun PasswordLoginScreen(
                     start = 10.dp,
                     end = 10.dp,
                     top = 8.dp,
-                    bottom = 25.dp),
+                    bottom = 25.dp
+                ),
                 onClose = onClose
             )
         }
     ) {
-        Column(modifier = Modifier
-            .padding(it)
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .padding(16.dp)
+        ) {
             PasswordField(
                 value = state.password,
                 onValueChange = { newValue ->
@@ -68,7 +72,7 @@ fun PasswordLoginScreen(
                     backgroundColor = Red243,
                     disabledBackgroundColor = Red243.copy(alpha = 0.6F)
                 ),
-                enabled = buttonEnable && ! state.loading,
+                enabled = buttonEnable && !state.loading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp)
@@ -76,8 +80,11 @@ fun PasswordLoginScreen(
                 Text(text = "登录", color = Color.White)
             }
             if (state.loading) {
-                LoadingBox(modifier = Modifier.padding(top = 20.dp)
-                    .align(Alignment.CenterHorizontally))
+                LoadingBox(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
             }
             SnackbarHost(
                 hostState = snackBarHostState,
@@ -90,14 +97,15 @@ fun PasswordLoginScreen(
     if (state.snackBarState is SnackBarState.Show) {
         LaunchedEffect(state.snackBarState) {
             snackBarHostState.showSnackbar(
-                (state.snackBarState as SnackBarState.Show).message)
+                (state.snackBarState as SnackBarState.Show).message
+            )
             state.snackBarState = SnackBarState.None
         }
     }
 }
 
 @Composable
-fun PasswordField(
+internal fun PasswordField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
@@ -124,7 +132,8 @@ fun PasswordField(
             Text(
                 stringResource(R.string.home_login_password_input_hint),
                 fontWeight = FontWeight.Thin,
-                style = LocalTextStyle.current.copy(color = Color.Black.copy(alpha = 0.45F)))
+                style = LocalTextStyle.current.copy(color = Color.Black.copy(alpha = 0.45F))
+            )
         },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password

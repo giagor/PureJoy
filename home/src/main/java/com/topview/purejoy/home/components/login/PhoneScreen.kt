@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.components.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,10 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
+import com.topview.purejoy.home.components.status.SnackBarState
 import com.topview.purejoy.home.theme.Red243
 
 @Composable
-fun PhoneScreen(
+internal fun PhoneScreen(
     phoneUiState: PhoneUiState = remember { PhoneUiState() },
     onNextStepClick: () -> Unit = {},
     onClose: (() -> Unit)? = null,
@@ -31,11 +32,13 @@ fun PhoneScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-        LoginScreenTitle(modifier = Modifier.padding(
-            start = 10.dp, end = 10.dp, top = 8.dp, bottom = 25.dp),
-            onClose = onClose
-        )
-    },
+            LoginScreenTitle(
+                modifier = Modifier.padding(
+                    start = 10.dp, end = 10.dp, top = 8.dp, bottom = 25.dp
+                ),
+                onClose = onClose
+            )
+        },
         snackbarHost = {
             SnackbarHost(
                 hostState = it,
@@ -43,10 +46,15 @@ fun PhoneScreen(
         }
     ) {
         Column(modifier = Modifier.padding(it)) {
-            PhoneContentTitle(modifier = Modifier.padding(
-                horizontal = 15.dp, vertical = 8.dp))
-            PhoneNumberInput(modifier = Modifier.padding(
-                horizontal = 15.dp, vertical = 8.dp),
+            PhoneContentTitle(
+                modifier = Modifier.padding(
+                    horizontal = 15.dp, vertical = 8.dp
+                )
+            )
+            PhoneNumberInput(
+                modifier = Modifier.padding(
+                    horizontal = 15.dp, vertical = 8.dp
+                ),
                 phoneUiState = phoneUiState,
                 onButtonClick = onNextStepClick,
                 onTextChanged = onTextChanged
@@ -64,14 +72,15 @@ fun PhoneScreen(
     if (phoneUiState.snackBarState is SnackBarState.Show) {
         LaunchedEffect(phoneUiState.snackBarState) {
             scaffoldState.snackbarHostState.showSnackbar(
-                (phoneUiState.snackBarState as SnackBarState.Show).message)
+                (phoneUiState.snackBarState as SnackBarState.Show).message
+            )
             phoneUiState.snackBarState = SnackBarState.None
         }
     }
 }
 
 @Composable
-fun PhoneNumberInput(
+internal fun PhoneNumberInput(
     modifier: Modifier = Modifier,
     phoneUiState: PhoneUiState,
     onButtonClick: () -> Unit,
@@ -87,7 +96,7 @@ fun PhoneNumberInput(
             trailingIcon = {
                 if (phoneUiState.text.isNotEmpty()) {
                     Icon(painter = painterResource(
-                        id =  R.drawable.ic_home_baseline_close_24
+                        id = R.drawable.home_ic_baseline_close_24
                     ),
                         contentDescription = null,
                         modifier = Modifier.clickable {
@@ -101,7 +110,8 @@ fun PhoneNumberInput(
                 Text(
                     stringResource(R.string.home_login_phone_input_hint),
                     fontWeight = FontWeight.Thin,
-                    style = LocalTextStyle.current.copy(color = Color.Black.copy(alpha = 0.45F)))
+                    style = LocalTextStyle.current.copy(color = Color.Black.copy(alpha = 0.45F))
+                )
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Phone,
@@ -111,7 +121,8 @@ fun PhoneNumberInput(
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 focusedIndicatorColor = Color.Black,
-                cursorColor = Color.Black)
+                cursorColor = Color.Black
+            )
         )
         Button(
             onClick = onButtonClick,
@@ -131,14 +142,16 @@ fun PhoneNumberInput(
 }
 
 @Composable
-fun PhoneContentTitle(
+internal fun PhoneContentTitle(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Text(text = stringResource(R.string.home_login_main_title),
+        Text(
+            text = stringResource(R.string.home_login_main_title),
             fontSize = 17.sp
         )
-        Text(text = stringResource(R.string.home_login_subtitle),
+        Text(
+            text = stringResource(R.string.home_login_subtitle),
             modifier = Modifier.padding(top = 7.dp),
             fontSize = 13.sp,
             color = Color.Black.copy(alpha = 0.5F)
@@ -147,7 +160,7 @@ fun PhoneContentTitle(
 }
 
 @Composable
-fun LoginScreenTitle(
+internal fun LoginScreenTitle(
     modifier: Modifier = Modifier,
     onClose: (() -> Unit)? = null,
     trailingContent: @Composable RowScope.() -> Unit = {}
@@ -160,7 +173,8 @@ fun LoginScreenTitle(
         title = stringResource(R.string.home_login_phone_title),
         modifier = modifier,
         leadingContent = {
-            Icon(painter = painterResource(id = R.drawable.ic_home_baseline_close_24),
+            Icon(
+                painter = painterResource(id = R.drawable.home_ic_baseline_close_24),
                 contentDescription = null,
                 modifier = iconModifier
             )
@@ -170,12 +184,15 @@ fun LoginScreenTitle(
 }
 
 @Composable
-fun LoadingBox(modifier: Modifier = Modifier) {
-    Box(modifier = modifier
-        .wrapContentSize()
+internal fun LoadingBox(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .wrapContentSize()
     ) {
-        CircularProgressIndicator(color = Color.Gray,
-            modifier = Modifier.align(Alignment.Center))
+        CircularProgressIndicator(
+            color = Color.Gray,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }
 

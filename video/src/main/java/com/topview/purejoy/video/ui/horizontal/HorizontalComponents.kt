@@ -2,6 +2,7 @@ package com.topview.purejoy.video.ui.horizontal
 
 import android.net.TrafficStats
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,7 +30,6 @@ import com.topview.purejoy.video.ui.state.VideoLoadState
 import com.topview.purejoy.video.ui.theme.HalfAlphaBlack
 import com.topview.purejoy.video.util.ProgressUtil
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 /**
@@ -54,17 +54,22 @@ internal fun HorizontalVideoStateComponents(
         }
         is VideoLoadState.Pause-> {
             PlayIcon(
-                modifier = modifier.clickable {
-                    onPlayIconClick()
-                },
+                modifier = modifier.clickable(
+                    interactionSource = remember{ MutableInteractionSource() },
+                    indication = null,
+                    onClick = onPlayIconClick
+
+                ),
                 iconSize = 80.dp
             )
         }
         is VideoLoadState.Playing-> {
             PauseIcon(
-                modifier = modifier.clickable {
-                    onPauseIconClick()
-                },
+                modifier = modifier.clickable(
+                    interactionSource = remember{ MutableInteractionSource() },
+                    indication = null,
+                    onClick = onPauseIconClick
+                ),
                 iconSize = 65.dp
             )
         }

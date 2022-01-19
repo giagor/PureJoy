@@ -17,7 +17,7 @@ import android.os.Parcelable
  * @param shareCount 分享数
  * @param creatorName 视频作者昵称（在MV里，视频作者名称为歌手本人）
  * @param creatorAvatarUrl 视频作者头像（在MV里，视频作者是歌手本人）
- * @param songName Mlog专属的字段，表示该视频的背景BGM的名称。此名称尽量保持格式为"歌手 - 歌曲名"
+ * @param songName 表示该视频的背景BGM的名称。此名称尽量保持格式为"歌手 - 歌曲名"
  */
 data class Video(
     val id: String,

@@ -19,10 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
-import com.topview.purejoy.home.theme.Gray235
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
 
@@ -38,7 +38,9 @@ internal inline fun TopListGrid(
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier.fillMaxWidth().wrapContentHeight()
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             for (i in 0 until column) {
                 val topList = topLists.getOrNull(topLists.size - surplus + i)
@@ -83,15 +85,17 @@ internal fun TopListGridChild(
             color = Gray245
         ) {
             Image(
-                painter = rememberImagePainter(ImageUtil.limitImageSize(
-                    topList.coverUrl, 450)
+                painter = rememberAsyncImagePainter(
+                    model = createImageRequestForCoil(
+                        data = ImageUtil.limitImageSize(topList.coverUrl, 450)
+                    )
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(imageSize)
             )
         }
         Icon(
-            painter = painterResource(id = R.drawable.ic_home_toplist_music_play),
+            painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
             contentDescription = null,
             tint = Color.White,
             modifier = Modifier

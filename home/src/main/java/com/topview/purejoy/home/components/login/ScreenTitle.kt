@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.components.login
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
  * @param trailingContent 标题文字后的内容
  */
 @Composable
-fun ScreenTitle(
+internal fun ScreenTitle(
     modifier: Modifier = Modifier,
     title: String,
     textStyle: TextStyle = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium),
@@ -28,7 +28,8 @@ fun ScreenTitle(
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         leadingContent()
-        Text(text = title,
+        Text(
+            text = title,
             modifier = Modifier.padding(start = 10.dp),
             style = textStyle
         )

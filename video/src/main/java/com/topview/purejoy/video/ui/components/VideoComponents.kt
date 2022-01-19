@@ -24,8 +24,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.topview.purejoy.common.entity.Video
+import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.common.widget.compose.RoundImageViewCompose
 import com.topview.purejoy.video.R
 import com.topview.purejoy.video.ui.theme.FollowRed
@@ -98,7 +99,11 @@ internal fun CreatorView(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         RoundImageViewCompose(
-            painter = rememberImagePainter(video?.creatorAvatarUrl),
+            painter = rememberAsyncImagePainter(
+                model = createImageRequestForCoil(
+                    data = video?.creatorAvatarUrl
+                )
+            ),
             imageModifier = Modifier.size(36.dp),
             percent = 50
         )
@@ -185,7 +190,7 @@ internal fun OrientationChangeIcon(
                 .padding(10.dp)
                 .size(16.dp)
                 .clickable {
-                   onRotateScreenClick()
+                    onRotateScreenClick()
                 },
             tint = Color.White
         )

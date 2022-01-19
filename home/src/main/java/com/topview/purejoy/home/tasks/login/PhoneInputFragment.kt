@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.topview.purejoy.common.base.ComposeFragment
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.components.PhoneScreen
+import com.topview.purejoy.home.components.login.PhoneScreen
 
 class PhoneInputFragment: ComposeFragment() {
 

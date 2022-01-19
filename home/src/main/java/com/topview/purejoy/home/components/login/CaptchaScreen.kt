@@ -1,10 +1,11 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.components.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,25 +23,24 @@ import com.topview.purejoy.home.theme.Blue219
  * @param time 重新发送的倒计时
  */
 @Composable
-fun CaptchaScreen(
+internal fun CaptchaScreen(
     modifier: Modifier = Modifier,
     time: Int,
-    state: CaptchaScreenState = remember {
-        CaptchaScreenState(CaptchaFieldState(), "") },
+    state: CaptchaScreenState,
     onResendClick: () -> Unit = {},
     onChangePhoneClick: () -> Unit = {},
     onPasswordClick: () -> Unit = {},
     onClose: (() -> Unit)? = null,
-    onCaptchaFull: (() ->Unit)? = null
+    onCaptchaFull: (() -> Unit)? = null
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
         modifier = modifier,
         topBar = {
             LoginScreenTitle(
                 modifier = Modifier.padding(
                     start = 10.dp, end = 10.dp,
-                    top = 8.dp, bottom = 25.dp),
+                    top = 8.dp, bottom = 25.dp
+                ),
                 onClose = onClose
             ) {
                 Spacer(modifier = Modifier.weight(1f))
@@ -49,7 +49,8 @@ fun CaptchaScreen(
                     shape = RoundedCornerShape(50),
                     contentPadding = PaddingValues(
                         vertical = 0.dp,
-                        horizontal = 10.dp),
+                        horizontal = 10.dp
+                    ),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .height(27.dp)
@@ -85,27 +86,23 @@ fun CaptchaScreen(
             CaptchaField(
                 parts = 4,
                 state = state.captchaFieldState,
-                modifier = Modifier.padding(horizontal = 15.dp,
-                    vertical = 15.dp)
+                modifier = Modifier
+                    .padding(
+                        horizontal = 15.dp,
+                        vertical = 15.dp
+                    )
                     .width(240.dp),
                 onFull = onCaptchaFull
             )
             SnackbarHost(
-                hostState = snackBarHostState
+                hostState = state.snackBarHostState
             )
-        }
-    }
-    if (state.snackBarState is SnackBarState.Show) {
-        LaunchedEffect(state.snackBarState) {
-            snackBarHostState.showSnackbar(
-                (state.snackBarState as SnackBarState.Show).message)
-            state.snackBarState = SnackBarState.None
         }
     }
 }
 
 @Composable
-fun CaptchaContentTitle(
+internal fun CaptchaContentTitle(
     phone: String,
     modifier: Modifier = Modifier,
     onChangePhoneClick: () -> Unit = {}
@@ -116,20 +113,22 @@ fun CaptchaContentTitle(
         "${phone.substring(0, 3)}****${phone.substring(7)}"
 
     Column(modifier = modifier) {
-        Text(text = stringResource(R.string.home_login_input_captcha_title),
+        Text(
+            text = stringResource(R.string.home_login_input_captcha_title),
             fontSize = 19.sp
         )
         Row {
             Text(
                 text = stringResource(
-                    R.string.home_login_input_captcha_subtitle) + phoneText,
+                    R.string.home_login_input_captcha_subtitle
+                ) + phoneText,
                 modifier = Modifier.padding(top = topPadding),
                 fontSize = 15.sp,
                 color = Color.Black.copy(alpha = 0.5F),
             )
             Icon(
                 painter = painterResource(
-                    id = R.drawable.ic_home_login_modify_phone
+                    id = R.drawable.home_ic_login_modify_phone
                 ),
                 contentDescription = null,
                 modifier = Modifier
@@ -144,7 +143,7 @@ fun CaptchaContentTitle(
 }
 
 @Composable
-fun CountDownButton(
+internal fun CountDownButton(
     modifier: Modifier = Modifier,
     time: Int,
     onClick: () -> Unit = {},
@@ -154,8 +153,9 @@ fun CountDownButton(
     }
     Surface(modifier = modifier) {
         Text(
-            text = if(time > 0) "${time}s" else stringResource(
-                id = R.string.home_login_send_captcha_again),
+            text = if (time > 0) "${time}s" else stringResource(
+                id = R.string.home_login_send_captcha_again
+            ),
             modifier = if (time > 0) Modifier else clickableModifier,
             color = if (time > 0) Color.Gray else Blue219,
             fontSize = 16.sp
@@ -165,21 +165,26 @@ fun CountDownButton(
 
 class CaptchaScreenState(
     val captchaFieldState: CaptchaFieldState,
-    val phone: String
-) {
-    var snackBarState: SnackBarState by mutableStateOf(SnackBarState.None)
-    var loginSuccess by mutableStateOf(false)
+    val phone: String,
+    val snackBarHostState: SnackbarHostState
+)
+
+@Composable
+internal fun rememberCaptchaScreenState(
+    phone: String
+): CaptchaScreenState = remember {
+    CaptchaScreenState(
+        captchaFieldState = CaptchaFieldState(),
+        phone = phone,
+        snackBarHostState = SnackbarHostState(),
+    )
 }
+
 
 @Preview(showBackground = true)
 @Composable
 private fun CaptchaScreenPreview() {
-    val state = remember {
-        CaptchaScreenState(
-            CaptchaFieldState(),
-            "12345678910"
-        )
-    }
+    val state = rememberCaptchaScreenState("12345678910")
     Surface(modifier = Modifier.fillMaxSize()) {
         CaptchaScreen(time = 59, state = state)
     }

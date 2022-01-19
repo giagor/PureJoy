@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.components.ScreenTitle
+import com.topview.purejoy.home.components.login.ScreenTitle
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.status.SimpleStatusScreen
 import com.topview.purejoy.home.entity.TopList
@@ -39,12 +39,14 @@ internal fun TopListScreen(
                     .padding()
                     .fillMaxWidth()
                     .background(Gray245)
-                    .padding(rememberInsetsPaddingValues(
-                        insets = LocalWindowInsets.current.systemGestures,
-                        additionalStart = 15.dp,
-                        additionalTop = 5.dp,
-                        additionalBottom = 10.dp
-                    )),
+                    .padding(
+                        rememberInsetsPaddingValues(
+                            insets = LocalWindowInsets.current.systemGestures,
+                            additionalStart = 15.dp,
+                            additionalTop = 5.dp,
+                            additionalBottom = 10.dp
+                        )
+                    ),
                 onBackClick = onBackClick
             )
         },
@@ -88,7 +90,7 @@ internal fun TopListErrorContent(
                 onClick = onRetryClick
             )
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_home_toplist_error),
+        Image(painter = painterResource(id = R.drawable.home_ic_toplist_error),
             contentDescription = null,
             modifier = Modifier.size(100.dp)
         )
@@ -127,7 +129,7 @@ internal fun TopListScreenTitle(
         title = stringResource(id = R.string.home_toplist_title),
         leadingContent = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_home_arrow_back_24),
+                painter = painterResource(id = R.drawable.home_ic_arrow_back_24),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = 10.dp)

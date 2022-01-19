@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.common.entity.Video
+import com.topview.purejoy.common.entity.Video.CREATOR.UNSPECIFIED
 import com.topview.purejoy.video.R
 import com.topview.purejoy.video.util.ProgressUtil.getFormatString
 
@@ -33,15 +34,18 @@ internal fun VerticalFunctionBar(
     ) {
         VideoFunctionButton(
             drawableId = R.drawable.video_ic_likes,
-            text = getFormatString(video?.likedCount)
+            text = if (video != null && video.likedCount != UNSPECIFIED)
+                getFormatString(video.likedCount) else DefaultUnspecifiedString
         )
         VideoFunctionButton(
             drawableId = R.drawable.video_ic_comment,
-            text = getFormatString(video?.commentCount)
+            text = if (video != null && video.likedCount != UNSPECIFIED)
+                getFormatString(video.commentCount) else DefaultUnspecifiedString
         )
         VideoFunctionButton(
             drawableId = R.drawable.video_ic_video_share,
-            text = getFormatString(video?.shareCount)
+            text = if (video != null && video.likedCount != UNSPECIFIED)
+                getFormatString(video.shareCount) else DefaultUnspecifiedString
         )
     }
 }
@@ -76,3 +80,5 @@ internal fun VideoFunctionButton(
         )
     }
 }
+
+private const val DefaultUnspecifiedString = "--"
