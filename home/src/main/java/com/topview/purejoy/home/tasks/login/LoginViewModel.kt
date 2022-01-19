@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
-import com.topview.purejoy.home.components.PhoneUiState
-import com.topview.purejoy.home.components.SnackBarState
+import com.topview.purejoy.home.components.login.PhoneUiState
+import com.topview.purejoy.home.components.status.SnackBarState
 import com.topview.purejoy.home.data.repo.LoginRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

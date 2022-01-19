@@ -2,18 +2,16 @@ package com.topview.purejoy.home.tasks.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.common.util.UserManager
-import com.topview.purejoy.home.components.CaptchaFieldState
-import com.topview.purejoy.home.components.CaptchaScreenState
-import com.topview.purejoy.home.components.SnackBarState
+import com.topview.purejoy.home.components.login.LoginLoadState
 import com.topview.purejoy.home.data.repo.LoginRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -22,11 +20,10 @@ class CaptchaViewModel: MVVMViewModel() {
 
     private val loginRepository = LoginRepository
 
-    /**
-     * 界面状态
-     */
-    private val _captchaUiState: MutableLiveData<CaptchaScreenState> = MutableLiveData()
-    val captchaUiState: LiveData<CaptchaScreenState> = _captchaUiState
+    private val _captchaLoginState: MutableStateFlow<LoginLoadState> = MutableStateFlow(
+        LoginLoadState.None
+    )
+    var captchaLoginState: StateFlow<LoginLoadState> = _captchaLoginState
 
     /**
      * 生成秒数序列的Flow
@@ -51,13 +48,6 @@ class CaptchaViewModel: MVVMViewModel() {
        restartFlow()
     }
 
-    fun setPhone(phone: String?) {
-        _captchaUiState.value = CaptchaScreenState(
-            CaptchaFieldState(),
-            phone ?: ""
-        )
-    }
-
     fun restartCountDown() {
         if (flowJob.isActive) {
             flowJob.cancel()
@@ -68,25 +58,23 @@ class CaptchaViewModel: MVVMViewModel() {
     /**
      * 发起登录或创建用户请求
      */
-    fun loginOrRegister() {
-        captchaUiState.value?.let { state ->
+    fun loginOrRegister(phone: String, captcha: String) {
+        if (_captchaLoginState.value !is LoginLoadState.Loading) {
             viewModelScope.rxLaunch<User> {
                 onRequest = {
-                    val captcha = state.captchaFieldState.text
-                    // 清空验证码
-                    state.captchaFieldState.text = ""
-                    if (loginRepository.checkExist(state.phone)) {
-                        loginRepository.loginWithCaptcha(state.phone, captcha)
+                    _captchaLoginState.value = LoginLoadState.Loading
+                    if (loginRepository.checkExist(phone)) {
+                        loginRepository.loginWithCaptcha(phone, captcha)
                     } else {
-                        loginRepository.register(state.phone, captcha)
+                        loginRepository.register(phone, captcha)
                     }
                 }
                 onSuccess = {
                     UserManager.login(it)
-                    state.loginSuccess = true
+                    _captchaLoginState.value = LoginLoadState.Success
                 }
                 onEmpty = {
-                    state.snackBarState = SnackBarState.Show("登录失败，请重试")
+                    _captchaLoginState.value = LoginLoadState.Error("登录失败，请重试")
                 }
                 onError = {
                     onEmpty?.invoke(Unit)

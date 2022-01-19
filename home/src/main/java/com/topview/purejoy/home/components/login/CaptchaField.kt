@@ -1,4 +1,4 @@
-package com.topview.purejoy.home.components
+package com.topview.purejoy.home.components.login
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.sp
  * @param onFull 当控件满输入后触发
  */
 @Composable
-fun CaptchaField(
+internal fun CaptchaField(
+    modifier: Modifier = Modifier,
     parts: Int,
     state: CaptchaFieldState = remember { CaptchaFieldState() },
-    modifier: Modifier = Modifier,
     onFull: (() -> Unit)? = null
 ) {
     Box(modifier = modifier) {
@@ -47,8 +47,11 @@ fun CaptchaField(
                     modifier = singleCaptchaModifier,
                     lineModifier = lineModifier
                 )
-                Spacer(modifier = Modifier.weight(1F)
-                    .align(Alignment.CenterVertically))
+                Spacer(
+                    modifier = Modifier
+                        .weight(1F)
+                        .align(Alignment.CenterVertically)
+                )
             }
             SingleCaptchaText(
                 text = getStringOrEmpty(state.text, parts - 1),
@@ -86,7 +89,7 @@ fun CaptchaField(
 }
 
 @Composable
-fun SingleCaptchaText(
+internal fun SingleCaptchaText(
     text: String,
     modifier: Modifier = Modifier,
     lineModifier: Modifier = Modifier
@@ -99,7 +102,8 @@ fun SingleCaptchaText(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = text,
+        Text(
+            text = text,
             modifier = Modifier.padding(bottom = 6.dp),
             fontWeight = FontWeight.Light,
             fontSize = 24.sp
@@ -107,6 +111,7 @@ fun SingleCaptchaText(
         Box(modifier = lineModifier.background(lineColor))
     }
 }
+
 class CaptchaFieldState {
     var text by mutableStateOf("")
 }
@@ -121,7 +126,9 @@ private fun CaptchaFieldPreview() {
     Surface {
         CaptchaField(
             parts = 6,
-            modifier = Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .fillMaxWidth(),
         )
     }
 }

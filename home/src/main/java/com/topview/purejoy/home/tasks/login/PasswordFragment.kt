@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.topview.purejoy.common.base.ComposeFragment
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.components.PasswordLoginScreen
+import com.topview.purejoy.home.components.login.PasswordLoginScreen
 
 class PasswordFragment: ComposeFragment() {
 
