@@ -5,7 +5,7 @@ import androidx.room.Insert
 import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 
 @Dao
-interface DownloadSongDao {
+interface DownloadSongInfoDao {
     /**
      * 插入DownloadSong
      * */
