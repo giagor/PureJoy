@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -22,7 +24,9 @@ import com.google.accompanist.pager.rememberPagerState
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.status.SimpleStatusScreen
+import com.topview.purejoy.home.components.toplist.TabDefaults
 import com.topview.purejoy.home.components.toplist.TabIndicator
+import com.topview.purejoy.home.components.toplist.simplePagerTabIndicatorOffset
 import com.topview.purejoy.home.entity.ExternVideo
 import com.topview.purejoy.home.entity.VideoCategoryTab
 import com.topview.purejoy.home.tasks.video.HomeVideoViewModel
@@ -101,6 +105,19 @@ private fun HomeVideoScreenContent(
                     }
                 },
                 modifier = Modifier.padding(vertical = 10.dp),
+                indicator = {
+                    TabDefaults.FixedIndicator(
+                        modifier = Modifier
+                            .simplePagerTabIndicatorOffset(
+                                pagerState = pagerState,
+                                tabPositions = it,
+                                indicatorOffsetY = (-2).dp
+                            )
+                            .height(TabDefaults.DefaultHeight)
+                            .zIndex(-1F),
+                        color = Color.Red
+                    )
+                }
             )
         }
     ) {
@@ -108,16 +125,16 @@ private fun HomeVideoScreenContent(
             count = tabArray.size,
             state = pagerState
         ) { page ->
-            // TODO 指示器动画
             val items = lazyPagingMap[tabArray[page].id] ?: let {
                 val newItems = viewModel.getVideoByCategory(
-                    tabArray[page].id).collectAsLazyPagingItems()
+                    tabArray[page].id
+                ).collectAsLazyPagingItems()
                 lazyPagingMap[tabArray[page].id] = newItems
                 newItems
             }
 
             Surface(
-               color = Gray245
+                color = Gray245
             ) {
                 VideoInfoList(
                     videoItems = items,
