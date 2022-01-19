@@ -115,6 +115,25 @@ object DownloadManager {
     }
 
     /**
+     * 创建一个任务（不加入下载队列）
+     * */
+    fun createTask(
+        url: String,
+        path: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        return DownloadTask(
+            id = null,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+    }
+
+    /**
      * 用户调用该方法，进行任务的下载
      *
      * @param url 要下载的文件的url

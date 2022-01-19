@@ -5,9 +5,14 @@ import android.os.Environment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
+import com.topview.purejoy.common.business.db.AppDatabaseManager
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 object DownloadUtil {
@@ -43,6 +48,20 @@ object DownloadUtil {
                     permissionAllowed?.invoke()
                     val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
                     DownloadingSongManager.put(task.tag, task)
+                    AppDatabaseManager.appDatabase?.let {
+                        val downloadSongInfo = DownloadSongInfo(
+                            id = null,
+                            url = task.url,
+                            path = task.path,
+                            downloadedSize = 0,
+                            totalSize = 0,
+                            tag = task.tag
+                        )
+                        val downloadSongInfoDao = it.downloadSongInfoDao()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            downloadSongInfoDao.insertDownloadSong(downloadSongInfo)
+                        }
+                    }
                 } else {
                     permissionDenied?.invoke()
                 }
@@ -74,6 +93,20 @@ object DownloadUtil {
                     permissionAllowed?.invoke()
                     val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
                     DownloadingSongManager.put(task.tag, task)
+                    AppDatabaseManager.appDatabase?.let {
+                        val downloadSongInfo = DownloadSongInfo(
+                            id = null,
+                            url = task.url,
+                            path = task.path,
+                            downloadedSize = 0,
+                            totalSize = 0,
+                            tag = task.tag
+                        )
+                        val downloadSongInfoDao = it.downloadSongInfoDao()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            downloadSongInfoDao.insertDownloadSong(downloadSongInfo)
+                        }
+                    }
                 } else {
                     permissionDenied?.invoke()
                 }
