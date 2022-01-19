@@ -8,6 +8,7 @@ import com.topview.purejoy.common.component.download.listener.subtask.SubDownloa
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.controller.TaskController
+import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -421,7 +422,7 @@ class DownloadTask(
     fun download() {
         if (!triggerDownload) {
             triggerDownload = true
-            DownloadManager.downloadDispatcher.enqueue(this)
+            TaskHandler.handleTask(this)
         }
     }
 

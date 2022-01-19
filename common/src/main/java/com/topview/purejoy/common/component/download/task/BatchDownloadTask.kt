@@ -4,7 +4,6 @@ import android.util.SparseArray
 import androidx.core.util.valueIterator
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.task.controller.TaskController
-import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -52,7 +51,7 @@ class BatchDownloadTask {
         val iterator = tasks.valueIterator()
         while (iterator.hasNext()) {
             val task = iterator.next()
-            TaskHandler.handleTask(task)
+            task.download()
         }
     }
 

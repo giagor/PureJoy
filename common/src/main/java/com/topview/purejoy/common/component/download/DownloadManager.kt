@@ -17,7 +17,6 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.component.download.task.controller.TaskController
-import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -94,7 +93,7 @@ object DownloadManager {
             DownloadDataBase::class.java, "DownloadDataBase"
         ).build()
     }
-
+    
     /**
      * 用户调用该方法，进行任务的下载
      *
@@ -121,7 +120,7 @@ object DownloadManager {
             downloadListener = listener
         )
         // 处理任务
-        TaskHandler.handleTask(downloadTask)
+        downloadTask.download()
         return downloadTask
     }
 
