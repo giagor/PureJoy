@@ -86,6 +86,13 @@ class DownloadTask(
     @Ignore
     private val observers: MutableList<UserDownloadListener> = ArrayList()
 
+    /**
+     * 表示是否已经触发了下载
+     * */
+    @Volatile
+    @Ignore
+    private var triggerDownload = false
+
     init {
         downloadListener?.let {
             observers.add(it)
@@ -406,6 +413,16 @@ class DownloadTask(
      * */
     fun unregisterObserver(observer: UserDownloadListener) {
         observers.remove(observer)
+    }
+
+    /**
+     * 触发任务的下载
+     * */
+    fun download() {
+        if (!triggerDownload) {
+            triggerDownload = true
+            DownloadManager.downloadDispatcher.enqueue(this)
+        }
     }
 
     /**
