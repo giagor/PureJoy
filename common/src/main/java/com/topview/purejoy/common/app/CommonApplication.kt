@@ -8,7 +8,10 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.os.Process
+import androidx.room.Room
 import com.alibaba.android.arouter.launcher.ARouter
+import com.topview.purejoy.common.business.db.AppDatabase
+import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.component.download.DownloadManager
 import java.io.File
 
@@ -30,6 +33,7 @@ class CommonApplication : Application() {
 
         if (isAppMainProcess()) {
             initDownloadLibrary()
+            initAppDatabase()
         }
         initARouter()
     }
@@ -50,6 +54,15 @@ class CommonApplication : Application() {
             ARouter.openDebug()
         }
         ARouter.init(this)
+    }
+
+    /**
+     * 初始化应用程序的数据库
+     * */
+    private fun initAppDatabase() {
+        AppDatabaseManager.appDatabase = Room.databaseBuilder(
+            this, AppDatabase::class.java, "AppDataBase"
+        ).build()
     }
 
     /**
