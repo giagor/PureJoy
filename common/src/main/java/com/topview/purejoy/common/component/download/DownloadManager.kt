@@ -28,13 +28,13 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *
  * 2.下载单个任务
  * 调用方式：
- * val taskController : TaskController = DownloadManager.download(url,saveDir,name,listener)
+ * val task : DownloadTask = DownloadManager.download(url,saveDir,name,listener)
  * 暂停下载：
- * taskController.pauseDownload()
+ * task.pauseDownload()
  * 从暂停中恢复下载：
- * taskController.resumeDownload()
+ * task.resumeDownload()
  * 取消下载：
- * taskController.cancelDownload()
+ * task.cancelDownload()
  *
  * 3.批量下载(下载多个任务)
  * 调用方式：
@@ -48,13 +48,13 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *      .addTask(7, url7, saveDir7, name7, listener7)
  *      .downloadAll()
  * 获取某个具体下载任务的控制类(通过标识符获取)：
- * val taskController : TaskController? = batchDownloadTask.getTask(1)
+ * val task : DownloadTask? = batchDownloadTask.getTask(1)
  * 暂停下载某个具体任务：
- * taskController?.pauseDownload()
+ * task?.pauseDownload()
  * 从暂停中恢复下载某个具体任务：
- * taskController?.resumeDownload()
+ * task?.resumeDownload()
  * 取消下载某个具体任务：
- * taskController?.cancelDownload()
+ * task?.cancelDownload()
  * */
 object DownloadManager {
 
