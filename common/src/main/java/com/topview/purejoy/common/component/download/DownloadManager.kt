@@ -92,7 +92,28 @@ object DownloadManager {
             DownloadDataBase::class.java, "DownloadDataBase"
         ).build()
     }
-    
+
+    /**
+     * 创建一个任务（不加入下载队列）
+     * */
+    fun createTask(
+        url: String,
+        saveDir: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        val path = getDownloadPath(saveDir, name)
+        return DownloadTask(
+            id = null,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+    }
+
     /**
      * 用户调用该方法，进行任务的下载
      *
