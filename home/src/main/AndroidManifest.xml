@@ -3,22 +3,23 @@
     package="com.topview.purejoy.home">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    
     <application
         android:theme="@style/Theme.PureJoy"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".download.DownloadManageActivity"
+            android:exported="false" />
+        <activity
             android:name=".search.SearchActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".tasks.login.LoginActivity"
-            android:exported="false" >
-        </activity>
-        <activity android:name=".tasks.toplist.TopListActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"></activity>
+        <activity
+            android:name=".tasks.toplist.TopListActivity"
+            android:exported="false"></activity>
         <activity
             android:name=".main.HomeActivity"
             android:exported="true"
@@ -30,5 +31,5 @@
             </intent-filter>
         </activity>
     </application>
-    
+
 </manifest>
