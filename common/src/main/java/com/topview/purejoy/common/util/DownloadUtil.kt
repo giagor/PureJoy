@@ -59,9 +59,7 @@ object DownloadUtil {
                             tag = task.tag
                         )
                         val downloadSongInfoDao = it.downloadSongInfoDao()
-                        CoroutineScope(Dispatchers.IO).launch {
-                            downloadSongInfoDao.insertDownloadSong(downloadSongInfo)
-                        }
+                        ThreadUtil.runOnIO { downloadSongInfoDao.insertDownloadSong(downloadSongInfo) }
                     }
                 } else {
                     permissionDenied?.invoke()
@@ -104,9 +102,7 @@ object DownloadUtil {
                             tag = task.tag
                         )
                         val downloadSongInfoDao = it.downloadSongInfoDao()
-                        CoroutineScope(Dispatchers.IO).launch {
-                            downloadSongInfoDao.insertDownloadSong(downloadSongInfo)
-                        }
+                        ThreadUtil.runOnIO { downloadSongInfoDao.insertDownloadSong(downloadSongInfo) }
                     }
                 } else {
                     permissionDenied?.invoke()
