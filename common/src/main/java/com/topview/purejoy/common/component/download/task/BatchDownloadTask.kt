@@ -3,7 +3,6 @@ package com.topview.purejoy.common.component.download.task
 import android.util.SparseArray
 import androidx.core.util.valueIterator
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
-import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -58,5 +57,5 @@ class BatchDownloadTask {
     /**
      * 通过标识符获取任务，如果没有对应的任务，则返回null
      * */
-    fun getTask(identifier: Int): TaskController? = tasks.get(identifier)
+    fun getTask(identifier: Int): DownloadTask? = tasks.get(identifier)
 }

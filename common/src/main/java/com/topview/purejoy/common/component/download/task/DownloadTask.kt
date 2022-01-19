@@ -7,7 +7,6 @@ import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
-import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
@@ -35,7 +34,7 @@ class DownloadTask(
     @Ignore var breakPointDownload: Boolean,
     /** 用户的监听器 */
     @Ignore var downloadListener: UserDownloadListener? = null,
-) : SubDownloadListener, TaskController {
+) : SubDownloadListener {
     /**
      * 通过url、path，唯一标识一个下载任务
      * */
@@ -106,7 +105,7 @@ class DownloadTask(
     )
 
     @Synchronized
-    override fun pauseDownload() {
+    fun pauseDownload() {
         if (!canPause()) {
             return
         }
@@ -118,7 +117,7 @@ class DownloadTask(
     }
 
     @Synchronized
-    override fun resumeDownload() {
+    fun resumeDownload() {
         if (!canResume()) {
             return
         }
@@ -129,7 +128,7 @@ class DownloadTask(
     }
 
     @Synchronized
-    override fun cancelDownload() {
+    fun cancelDownload() {
         // 判断是否可以取消下载
         if (!canCancel()) {
             return

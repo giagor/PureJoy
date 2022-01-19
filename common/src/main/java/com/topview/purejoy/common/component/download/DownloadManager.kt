@@ -16,7 +16,6 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
-import com.topview.purejoy.common.component.download.task.controller.TaskController
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -107,7 +106,7 @@ object DownloadManager {
         saveDir: String,
         name: String,
         listener: UserDownloadListener?
-    ): TaskController {
+    ): DownloadTask {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
         val downloadTask = DownloadTask(
