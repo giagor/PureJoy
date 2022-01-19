@@ -5,6 +5,7 @@ import android.os.Environment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
+import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import java.io.File
@@ -40,7 +41,8 @@ object DownloadUtil {
             .request { allGranted, _, _ ->
                 if (allGranted) {
                     permissionAllowed?.invoke()
-                    DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    DownloadingSongManager.put(task.tag, task)
                 } else {
                     permissionDenied?.invoke()
                 }
@@ -70,7 +72,8 @@ object DownloadUtil {
             .request { allGranted, _, _ ->
                 if (allGranted) {
                     permissionAllowed?.invoke()
-                    DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    DownloadingSongManager.put(task.tag, task)
                 } else {
                     permissionDenied?.invoke()
                 }
