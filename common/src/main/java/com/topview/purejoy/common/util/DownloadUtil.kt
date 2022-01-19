@@ -7,13 +7,10 @@ import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
 import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.download.listener.DownloadSongListenerWrapper
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.task.DownloadTask
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 
 object DownloadUtil {
@@ -38,7 +35,7 @@ object DownloadUtil {
         activity: FragmentActivity,
         name: String,
         url: String,
-        downloadListener: UserDownloadListener? = null,
+        downloadListener: DownloadSongListenerWrapper = DownloadSongListenerWrapper(),
         permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
@@ -59,7 +56,11 @@ object DownloadUtil {
                             tag = task.tag
                         )
                         val downloadSongInfoDao = it.downloadSongInfoDao()
-                        ThreadUtil.runOnIO { downloadSongInfoDao.insertDownloadSong(downloadSongInfo) }
+                        ThreadUtil.runOnIO {
+                            downloadSongInfoDao.insertDownloadSongInfo(
+                                downloadSongInfo
+                            )
+                        }
                     }
                 } else {
                     permissionDenied?.invoke()
@@ -81,7 +82,7 @@ object DownloadUtil {
         fragment: Fragment,
         name: String,
         url: String,
-        downloadListener: UserDownloadListener? = null,
+        downloadListener: DownloadSongListenerWrapper = DownloadSongListenerWrapper(),
         permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
@@ -102,7 +103,11 @@ object DownloadUtil {
                             tag = task.tag
                         )
                         val downloadSongInfoDao = it.downloadSongInfoDao()
-                        ThreadUtil.runOnIO { downloadSongInfoDao.insertDownloadSong(downloadSongInfo) }
+                        ThreadUtil.runOnIO {
+                            downloadSongInfoDao.insertDownloadSongInfo(
+                                downloadSongInfo
+                            )
+                        }
                     }
                 } else {
                     permissionDenied?.invoke()
