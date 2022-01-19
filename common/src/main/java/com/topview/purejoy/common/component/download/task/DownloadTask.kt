@@ -85,7 +85,7 @@ class DownloadTask(
     private var resumed = false
 
     @Ignore
-    private val observers: CopyOnWriteArrayList<UserDownloadListener> = CopyOnWriteArrayList()
+    private val observers: MutableList<UserDownloadListener> = ArrayList()
 
     init {
         downloadListener?.let {
