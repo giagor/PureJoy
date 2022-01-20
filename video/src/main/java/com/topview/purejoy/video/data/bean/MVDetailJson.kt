@@ -29,14 +29,23 @@ class MVDetailJson(
      */
     fun mappingToVideo(video: Video) {
         data?.run {
-            video.title = name
-            video.coverUrl = cover
-            video.creatorName = artistName
-            video.creatorAvatarUrl = artists?.get(0)?.avatar
+            if (cover != null) {
+                video.coverUrl = cover
+            }
+            if (artistName != null) {
+                video.creatorName = artistName
+            }
+            val avatar = artists?.get(0)?.avatar
+            if (avatar != null) {
+                video.creatorAvatarUrl = avatar
+            }
+            if (description != null) {
+                video.description = description
+            }
             if (video.duration > 0) {
                 video.duration = duration
             }
-            video.description = description
+            video.title = name
             video.shareCount = shareCount
             video.commentCount = commentCount
         }

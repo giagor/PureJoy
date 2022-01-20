@@ -74,7 +74,7 @@ fun RecommendData.toVideo(): Video =
         likedCount = praisedCount,
         commentCount = commentCount,
         shareCount = shareCount,
-        duration = duration ?: Video.UNSPECIFIED_LONG,
+        duration = duration ?: Video.DURATION_UNSPECIFIED,
         creatorName = creator?.creatorName,
         creatorAvatarUrl = creator?.creatorAvatarUrl,
         songName = if (songs == null || songs.isEmpty()) {
@@ -102,7 +102,7 @@ fun MVData.toVideo(): Video =
         likedCount = likeCount,
         commentCount = commentCount,
         shareCount = shareCount,
-        duration = duration ?: Video.UNSPECIFIED_LONG,
+        duration = duration ?: Video.DURATION_UNSPECIFIED,
         creatorName = artists?.get(0)?.name,
         creatorAvatarUrl = artists?.get(0)?.avatar,
         songName = if (songs == null || songs.isEmpty()) {

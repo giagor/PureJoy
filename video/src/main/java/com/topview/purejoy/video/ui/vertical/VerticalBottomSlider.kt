@@ -45,7 +45,7 @@ internal fun VerticalBottomSlider(
     alphaAnimateDuration: Int = 1500,
 ) {
     val videoLoadState by videoViewModel.videoLoadState.collectAsState()
-    val sliderRange = if (video == null || video.duration == Video.UNSPECIFIED_LONG) 0F..0F else
+    val sliderRange = if (video == null || video.duration < 0) 0F..0F else
         0F..video.duration.toFloat()
 
     // 透明度变化的Animate

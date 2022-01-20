@@ -22,7 +22,7 @@ import android.os.Parcelable
 data class Video(
     val id: String,
     val isMv: Boolean,
-    var duration: Long = UNSPECIFIED_LONG,
+    var duration: Long = DURATION_UNSPECIFIED,
     var title: String? = null,
     var videoUrl: String? = null,
     var description: String? = null,
@@ -73,7 +73,7 @@ data class Video(
 
     companion object CREATOR : Parcelable.Creator<Video> {
         const val UNSPECIFIED = -1
-        const val UNSPECIFIED_LONG = UNSPECIFIED.toLong()
+        const val DURATION_UNSPECIFIED = 0L
         override fun createFromParcel(parcel: Parcel): Video {
             return Video(parcel)
         }
@@ -87,17 +87,32 @@ data class Video(
      * 将可变部分的数据替换为另一个Video内的数据
      */
     fun merge(otherVideo: Video) {
-        duration = otherVideo.duration
-        title = otherVideo.title
-        videoUrl = otherVideo.videoUrl
-        description = otherVideo.description
-        coverUrl = otherVideo.coverUrl
+        if (otherVideo.duration > 0) {
+            duration = otherVideo.duration
+        }
+        if (otherVideo.title != null) {
+            title = otherVideo.title
+        }
+        if (otherVideo.videoUrl != null) {
+            videoUrl = otherVideo.videoUrl
+        }
+        if (otherVideo.description != null) {
+            description = otherVideo.description
+        }
+        if (otherVideo.coverUrl != null) {
+            coverUrl = otherVideo.coverUrl
+        }
+        if (otherVideo.creatorName != null) {
+            creatorName = otherVideo.creatorName
+        }
+        if (otherVideo.creatorAvatarUrl != null) {
+            creatorAvatarUrl = otherVideo.creatorAvatarUrl
+        }
+        if (otherVideo.songName != null) {
+            songName = otherVideo.songName
+        }
         likedCount = otherVideo.likedCount
         commentCount = otherVideo.commentCount
         shareCount = otherVideo.shareCount
-
-        creatorName = otherVideo.creatorName
-        creatorAvatarUrl = otherVideo.creatorAvatarUrl
-        songName = otherVideo.songName
     }
 }

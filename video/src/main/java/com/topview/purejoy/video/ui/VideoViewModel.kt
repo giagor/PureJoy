@@ -161,7 +161,7 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
      * 检测是否存在尚未加载数据的域
      */
     private fun Video.hasEmptyField(): Boolean {
-        return duration == Video.UNSPECIFIED_LONG ||
+        return duration <= 0 ||
                 likedCount == Video.UNSPECIFIED ||
                 shareCount == Video.UNSPECIFIED ||
                 commentCount == Video.UNSPECIFIED
