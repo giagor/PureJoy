@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity(primaryKeys = ["id"])
-data class RecoverMusicData(val id: Long, val name: String, val url: String? = null)
+data class RecoverMusicData(val id: Long, val name: String, val url: String? = null, val mv: Long)
 
 @Entity
 data class RecoverARData(@PrimaryKey(autoGenerate = true)var rid: Int? = null,
