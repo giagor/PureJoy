@@ -7,9 +7,9 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.util.ThreadUtil
 
 /**
- * !!：业务层下载歌曲应该使用这个监听器或这个监听器的子类
+ * DownloadUtil中使用这个监听器，完成业务层的下载数据的同步
  * */
-open class DownloadSongListenerWrapper : SimpleUserDownloadListener() {
+internal class DownloadSongListenerWrapper : SimpleUserDownloadListener() {
     override fun onFailure(downloadTask: DownloadTask, msg: String) {
         super.onFailure(downloadTask, msg)
         deleteDownloadSongInfoRecord(downloadTask.tag)

@@ -10,6 +10,7 @@ import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.listener.DownloadSongListenerWrapper
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
+import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import java.io.File
 
@@ -35,7 +36,7 @@ object DownloadUtil {
         activity: FragmentActivity,
         name: String,
         url: String,
-        downloadListener: DownloadSongListenerWrapper = DownloadSongListenerWrapper(),
+        downloadListener: UserDownloadListener? = null,
         permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
@@ -43,7 +44,15 @@ object DownloadUtil {
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
                 if (allGranted) {
-                    val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    val task = DownloadManager.download(
+                        url,
+                        musicSaveDir,
+                        name,
+                        DownloadSongListenerWrapper()
+                    )
+                    downloadListener?.let {
+                        task.registerObserver(it)
+                    }
                     permissionAllowed?.invoke(task)
                     DownloadingSongManager.put(task.tag, task)
                     AppDatabaseManager.appDatabase?.let {
@@ -82,7 +91,7 @@ object DownloadUtil {
         fragment: Fragment,
         name: String,
         url: String,
-        downloadListener: DownloadSongListenerWrapper = DownloadSongListenerWrapper(),
+        downloadListener: UserDownloadListener? = null,
         permissionAllowed: ((DownloadTask) -> Unit)? = null,
         permissionDenied: (() -> Unit)? = null
     ) {
@@ -90,7 +99,15 @@ object DownloadUtil {
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
                 if (allGranted) {
-                    val task = DownloadManager.download(url, musicSaveDir, name, downloadListener)
+                    val task = DownloadManager.download(
+                        url,
+                        musicSaveDir,
+                        name,
+                        DownloadSongListenerWrapper()
+                    )
+                    downloadListener?.let {
+                        task.registerObserver(it)
+                    }
                     permissionAllowed?.invoke(task)
                     DownloadingSongManager.put(task.tag, task)
                     AppDatabaseManager.appDatabase?.let {
