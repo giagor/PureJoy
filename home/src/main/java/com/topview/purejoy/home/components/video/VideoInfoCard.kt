@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.topview.purejoy.common.entity.Video
 import com.topview.purejoy.common.util.createImageRequestForCoil
 import com.topview.purejoy.common.widget.compose.RoundImageViewCompose
 import com.topview.purejoy.home.R
@@ -27,7 +28,6 @@ import com.topview.purejoy.home.entity.ExternVideo
 import com.topview.purejoy.home.theme.Blue219
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
-import com.topview.purejoy.video.ui.components.MVSign
 import com.topview.purejoy.video.util.ProgressUtil
 
 @Composable
@@ -99,20 +99,15 @@ internal fun CoverImage(
             ),
             percent = 50
         )
-        Text(
-            text = ProgressUtil.toTimeText(externVideo.video.duration),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 8.dp, bottom = 8.dp),
-            color = Color.White.copy(alpha = 0.8F),
-            maxLines = 1,
-            fontSize = 10.sp
-        )
-        if (externVideo.video.isMv) {
-            MVSign(
+        if (externVideo.video.duration != Video.DURATION_UNSPECIFIED) {
+            Text(
+                text = ProgressUtil.toTimeText(externVideo.video.duration),
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 20.dp)
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 8.dp, bottom = 8.dp),
+                color = Color.White.copy(alpha = 0.8F),
+                maxLines = 1,
+                fontSize = 10.sp
             )
         }
     }

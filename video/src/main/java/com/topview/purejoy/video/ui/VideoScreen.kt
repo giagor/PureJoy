@@ -3,6 +3,7 @@ package com.topview.purejoy.video.ui
 import android.content.res.Configuration
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -39,6 +40,8 @@ internal fun VideoScreen(
         }
     }.collectAsState(initial = 0)
 
+    val view = LocalView.current
+
     // 初始状态下为exoPlayer提供数据的Effect
     LaunchedEffect(items.itemCount > 0) {
         if (items.itemCount > 0) {
@@ -53,12 +56,21 @@ internal fun VideoScreen(
     // 监听Video的加载状态
     LaunchedEffect(loadState) {
         loadState.apply {
-            if (this is VideoLoadState.Error) {
-                // 当StatusCode或者是ContentType出现异常，抛弃掉原先的播放地址，这允许重新加载播放地址
-                if (errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
-                    errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE) {
-                    items[currentPage]?.videoUrl = null
+            when (this) {
+                is VideoLoadState.Error -> {
+                    // 当StatusCode或者是ContentType出现异常，抛弃掉原先的播放地址，这允许重新加载播放地址
+                    if (errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
+                        errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE) {
+                        items[currentPage]?.videoUrl = null
+                    }
                 }
+                is VideoLoadState.Playing -> {
+                    view.keepScreenOn = true
+                }
+                is VideoLoadState.Pause -> {
+                    view.keepScreenOn = false
+                }
+                else -> {}
             }
         }
     }

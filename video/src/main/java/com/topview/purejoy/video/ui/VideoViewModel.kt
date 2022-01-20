@@ -30,7 +30,7 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
     val videoLoadState: StateFlow<VideoLoadState> = _videoLoadState
 
     /**
-     * 每个1000ms便发送video当前的进度的flow
+     * 发送video当前的进度的flow
      */
     val progressFlow = flow {
         while (true) {
@@ -43,6 +43,8 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
             delay(1000L)
         }
     }.conflate()
+
+    private var stateReadyCallback: ((ExoPlayer) -> Unit)? = null
 
 
     init {
@@ -63,6 +65,9 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
             }
             Player.STATE_READY -> {
                 // Loading -> Playing
+                val callback = stateReadyCallback
+                stateReadyCallback = null
+                callback?.invoke(exoPlayer)
                 _videoLoadState.value = VideoLoadState.Playing
                 exoPlayer.play()
             }
@@ -156,7 +161,7 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
      * 检测是否存在尚未加载数据的域
      */
     private fun Video.hasEmptyField(): Boolean {
-        return duration == Video.UNSPECIFIED_LONG ||
+        return duration <= 0 ||
                 likedCount == Video.UNSPECIFIED ||
                 shareCount == Video.UNSPECIFIED ||
                 commentCount == Video.UNSPECIFIED
@@ -166,6 +171,18 @@ class VideoViewModel: MVVMViewModel(), Player.Listener {
         viewModelScope.rxLaunch<Unit> {
             onRequest = {
                 repository.loadDetailOfVideo(video = video)
+                // MV的接口可能无法获取到真正的持续时间，我们尝试从ExoPlayer处获取
+                if (video.duration <= 0) {
+                    exoPlayer.run {
+                        if (duration > 0) {
+                            video.duration = duration
+                        } else {
+                            stateReadyCallback = {
+                                video.duration = it.duration
+                            }
+                        }
+                    }
+                }
             }
             onError = {
                 print(it)

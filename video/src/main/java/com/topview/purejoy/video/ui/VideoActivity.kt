@@ -8,9 +8,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -43,14 +42,12 @@ class VideoActivity: ComposeActivity() {
                 val videoLoadState by viewModel.videoLoadState.collectAsState()
 
                 // 注册生命周期回调
-                LocalLifecycleOwner.current.lifecycle.addObserver(object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-                    fun resumeVideo() {
+                LocalLifecycleOwner.current.lifecycle.addObserver(object :
+                    DefaultLifecycleObserver {
+                    override fun onResume(owner: LifecycleOwner) {
                         viewModel.play()
                     }
-
-                    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-                    fun pauseVideo() {
+                    override fun onPause(owner: LifecycleOwner) {
                         viewModel.pause()
                     }
                 })
@@ -82,9 +79,9 @@ class VideoActivity: ComposeActivity() {
     }
 
     private fun registerLifecycleObserver() {
-        this.lifecycle.addObserver(object : LifecycleObserver{
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
+        this.lifecycle.addObserver(object : DefaultLifecycleObserver {
+
+            override fun onDestroy(owner: LifecycleOwner) {
                 videoConfiguration.onCloseListener?.invoke()
                 videoConfiguration.onCloseListener = null
                 viewModel.exoPlayer.release()

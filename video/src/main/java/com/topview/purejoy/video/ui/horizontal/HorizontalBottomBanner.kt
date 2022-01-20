@@ -31,7 +31,7 @@ internal fun HorizontalBottomBanner(
     sliderState: BottomSliderState = remember { BottomSliderState() },
     videoViewModel: VideoViewModel = viewModel(),
 ) {
-    val sliderRange = if (video == null || video.duration == Video.UNSPECIFIED_LONG) 0F..0F else
+    val sliderRange = if (video == null || video.duration < 0) 0F..0F else
         0F..video.duration.toFloat()
     val textColor = Color.White
 

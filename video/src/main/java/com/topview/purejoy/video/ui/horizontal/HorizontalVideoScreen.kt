@@ -1,5 +1,7 @@
 package com.topview.purejoy.video.ui.horizontal
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
@@ -21,6 +23,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.exoplayer2.ui.PlayerView
 import com.topview.purejoy.common.entity.Video
+import com.topview.purejoy.common.util.InsetsController
 import com.topview.purejoy.common.util.rememberInsetsController
 import com.topview.purejoy.video.ui.LocalExoPlayer
 import com.topview.purejoy.video.ui.VideoViewModel
@@ -47,12 +50,18 @@ internal fun HorizontalVideoScreen(
         mutableStateOf(video)
     }
 
+    // 锁屏后状态栏会被重置，监听锁屏事件并及时恢复状态栏的状态
+    val keyguardManager = LocalContext.current.getSystemService(
+        Context.KEYGUARD_SERVICE) as KeyguardManager
+    LaunchedEffect(keyguardManager.isKeyguardLocked) {
+        if (!keyguardManager.isKeyguardLocked) {
+            dismissSystemInsets(insetsController)
+        }
+    }
+
     // 进入横屏时隐藏状态栏和导航栏，离开时重置
     DisposableEffect(Unit) {
-        insetsController.isSystemBarsVisible = false
-        insetsController.setSystemBarBehavior(
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        )
+        dismissSystemInsets(insetsController)
         onDispose {
             insetsController.isSystemBarsVisible = true
             insetsController.setSystemBarBehavior(
@@ -237,6 +246,14 @@ internal fun HorizontalVideoScreen(
         }
     }
 
+}
+
+
+private fun dismissSystemInsets(insetsController: InsetsController) {
+    insetsController.isSystemBarsVisible = false
+    insetsController.setSystemBarBehavior(
+        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    )
 }
 
 /**

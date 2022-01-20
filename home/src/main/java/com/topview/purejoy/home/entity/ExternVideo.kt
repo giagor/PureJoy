@@ -1,6 +1,8 @@
 package com.topview.purejoy.home.entity
 
 import com.topview.purejoy.common.entity.Video
+import com.topview.purejoy.video.data.bean.MVData
+import com.topview.purejoy.video.data.bean.RecommendData
 import com.topview.purejoy.video.data.bean.RecommendVideoJson
 import com.topview.purejoy.video.data.bean.toVideo
 
@@ -22,13 +24,24 @@ internal fun RecommendVideoJson.toExternVideos(
 ): List<ExternVideo> {
     val list = mutableListOf<ExternVideo>()
     this.outerList?.forEach {
-        if (it.isMlog()) {
+        if (it.type == 1) {
+            val data = it.data as RecommendData
             list.add(
                 ExternVideo(
-                    video = it.data.toVideo(),
-                    playCount = it.data.playCount,
-                    previewUrl = it.data.previewUrl,
-                    tag = if (needTag) it.data.videoGroup?.getOrNull(0)?.name else null
+                    video = data.toVideo(),
+                    playCount = data.playCount,
+                    previewUrl = data.previewUrl,
+                    tag = if (needTag) data.videoGroup?.getOrNull(0)?.name else null
+                )
+            )
+        } else if (it.type == 2) {
+            val data = it.data as MVData
+            list.add(
+                ExternVideo(
+                    video = data.toVideo(),
+                    playCount = data.playCount,
+                    previewUrl = null,
+                    tag = if (needTag) data.videoGroup?.getOrNull(0)?.name else null
                 )
             )
         }

@@ -29,14 +29,36 @@ class MVDetailJson(
      */
     fun mappingToVideo(video: Video) {
         data?.run {
+            if (cover != null) {
+                video.coverUrl = cover
+            }
+            if (artistName != null) {
+                video.creatorName = artistName
+            }
+            val avatar = artists?.get(0)?.avatar
+            if (avatar != null) {
+                video.creatorAvatarUrl = avatar
+            }
+            if (description != null) {
+                video.description = description
+            }
+            if (video.duration > 0) {
+                video.duration = duration
+            }
             video.title = name
-            video.coverUrl = cover
-            video.creatorName = artistName
-            video.creatorAvatarUrl = artists?.get(0)?.avatar
-            video.duration = duration
-            video.description = description
             video.shareCount = shareCount
             video.commentCount = commentCount
         }
     }
+}
+
+internal fun getArtistName(artists: List<MVDetailJson.MVDetailArtist>?): String {
+    val builder = StringBuilder()
+    artists?.forEachIndexed { index, artist ->
+        builder.append(artist.name)
+        if (index < artists.size - 1) {
+            builder.append("、")
+        }
+    }
+    return builder.toString()
 }
