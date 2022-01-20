@@ -10,6 +10,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class DownloadSongInfo(
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    /** 文件名 */
+    var name: String,
     /** 下载的url */
     var url: String,
     /** 下载的路径 */
@@ -21,5 +23,5 @@ data class DownloadSongInfo(
     /** 任务的标识符（与下载库的tag相对应） */
     var tag: String
 ) {
-    constructor() : this(null, "", "", 0, 0, "")
+    constructor() : this(null, "", "", "", 0, 0, "")
 }

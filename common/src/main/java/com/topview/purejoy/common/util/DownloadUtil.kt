@@ -43,37 +43,14 @@ object DownloadUtil {
         PermissionX.init(activity)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
-                if (allGranted) {
-                    val task = DownloadManager.download(
-                        url,
-                        musicSaveDir,
-                        name,
-                        DownloadSongListenerWrapper()
-                    )
-                    downloadListener?.let {
-                        task.registerObserver(it)
-                    }
-                    permissionAllowed?.invoke(task)
-                    DownloadingSongManager.put(task.tag, task)
-                    AppDatabaseManager.appDatabase?.let {
-                        val downloadSongInfo = DownloadSongInfo(
-                            id = null,
-                            url = task.url,
-                            path = task.path,
-                            downloadedSize = 0,
-                            totalSize = 0,
-                            tag = task.tag
-                        )
-                        val downloadSongInfoDao = it.downloadSongInfoDao()
-                        ThreadUtil.runOnIO {
-                            downloadSongInfoDao.insertDownloadSongInfo(
-                                downloadSongInfo
-                            )
-                        }
-                    }
-                } else {
-                    permissionDenied?.invoke()
-                }
+                handleUserPermission(
+                    allGranted,
+                    name,
+                    url,
+                    downloadListener,
+                    permissionAllowed,
+                    permissionDenied
+                )
             }
     }
 
@@ -98,37 +75,56 @@ object DownloadUtil {
         PermissionX.init(fragment)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .request { allGranted, _, _ ->
-                if (allGranted) {
-                    val task = DownloadManager.download(
-                        url,
-                        musicSaveDir,
-                        name,
-                        DownloadSongListenerWrapper()
+                handleUserPermission(
+                    allGranted,
+                    name,
+                    url,
+                    downloadListener,
+                    permissionAllowed,
+                    permissionDenied
+                )
+            }
+    }
+
+    private fun handleUserPermission(
+        allGranted: Boolean,
+        name: String,
+        url: String,
+        downloadListener: UserDownloadListener? = null,
+        permissionAllowed: ((DownloadTask) -> Unit)? = null,
+        permissionDenied: (() -> Unit)? = null
+    ) {
+        if (allGranted) {
+            val task = DownloadManager.download(
+                url,
+                musicSaveDir,
+                name,
+                DownloadSongListenerWrapper()
+            )
+            downloadListener?.let {
+                task.registerObserver(it)
+            }
+            permissionAllowed?.invoke(task)
+            DownloadingSongManager.put(task.tag, task)
+            AppDatabaseManager.appDatabase?.let {
+                val downloadSongInfo = DownloadSongInfo(
+                    id = null,
+                    name = name,
+                    url = task.url,
+                    path = task.path,
+                    downloadedSize = 0,
+                    totalSize = 0,
+                    tag = task.tag
+                )
+                val downloadSongInfoDao = it.downloadSongInfoDao()
+                ThreadUtil.runOnIO {
+                    downloadSongInfoDao.insertDownloadSongInfo(
+                        downloadSongInfo
                     )
-                    downloadListener?.let {
-                        task.registerObserver(it)
-                    }
-                    permissionAllowed?.invoke(task)
-                    DownloadingSongManager.put(task.tag, task)
-                    AppDatabaseManager.appDatabase?.let {
-                        val downloadSongInfo = DownloadSongInfo(
-                            id = null,
-                            url = task.url,
-                            path = task.path,
-                            downloadedSize = 0,
-                            totalSize = 0,
-                            tag = task.tag
-                        )
-                        val downloadSongInfoDao = it.downloadSongInfoDao()
-                        ThreadUtil.runOnIO {
-                            downloadSongInfoDao.insertDownloadSongInfo(
-                                downloadSongInfo
-                            )
-                        }
-                    }
-                } else {
-                    permissionDenied?.invoke()
                 }
             }
+        } else {
+            permissionDenied?.invoke()
+        }
     }
 }

@@ -22,6 +22,8 @@ import kotlin.concurrent.thread
 class DownloadTask(
     /** 父任务id */
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    /** 文件的名字 */
+    var name : String,
     /** 文件的保存路径 */
     var path: String,
     /** 下载资源的url */
@@ -100,7 +102,7 @@ class DownloadTask(
     }
 
     constructor() : this(
-        null, "", "", 0, 0,
+        null, "","", "", 0, 0,
         false, null
     )
 
@@ -434,7 +436,7 @@ class DownloadTask(
     /**
      * 移除所有的观察者
      * */
-    fun removeAllObservers() {
+    private fun removeAllObservers() {
         observers.clear()
     }
 

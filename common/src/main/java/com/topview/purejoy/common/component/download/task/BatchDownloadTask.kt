@@ -36,6 +36,7 @@ class BatchDownloadTask {
         // 创建任务
         val downloadTask = DownloadTask(
             id = null,
+            name = name,
             path = path,
             url = url,
             totalSize = 0,
