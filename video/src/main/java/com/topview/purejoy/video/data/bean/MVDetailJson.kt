@@ -33,10 +33,23 @@ class MVDetailJson(
             video.coverUrl = cover
             video.creatorName = artistName
             video.creatorAvatarUrl = artists?.get(0)?.avatar
-            video.duration = duration
+            if (video.duration > 0) {
+                video.duration = duration
+            }
             video.description = description
             video.shareCount = shareCount
             video.commentCount = commentCount
         }
     }
+}
+
+internal fun getArtistName(artists: List<MVDetailJson.MVDetailArtist>?): String {
+    val builder = StringBuilder()
+    artists?.forEachIndexed { index, artist ->
+        builder.append(artist.name)
+        if (index < artists.size - 1) {
+            builder.append("、")
+        }
+    }
+    return builder.toString()
 }
