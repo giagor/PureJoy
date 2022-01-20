@@ -86,7 +86,8 @@
             android:id="@+id/music_item_mv_bt"
             android:src="@drawable/mv_32"
             android:visibility="gone"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="8dp"/>
 
 
         <ImageView
