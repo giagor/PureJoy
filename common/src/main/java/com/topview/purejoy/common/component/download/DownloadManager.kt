@@ -105,25 +105,7 @@ object DownloadManager {
         val path = getDownloadPath(saveDir, name)
         return DownloadTask(
             id = null,
-            path = path,
-            url = url,
-            totalSize = 0,
-            threadNum = 0,
-            breakPointDownload = false,
-            downloadListener = listener
-        )
-    }
-
-    /**
-     * 创建一个任务（不加入下载队列）
-     * */
-    fun createTask(
-        url: String,
-        path: String,
-        listener: UserDownloadListener?
-    ): DownloadTask {
-        return DownloadTask(
-            id = null,
+            name = name,
             path = path,
             url = url,
             totalSize = 0,
@@ -151,6 +133,7 @@ object DownloadManager {
         // 创建任务
         val downloadTask = DownloadTask(
             id = null,
+            name = name,
             path = path,
             url = url,
             totalSize = 0,

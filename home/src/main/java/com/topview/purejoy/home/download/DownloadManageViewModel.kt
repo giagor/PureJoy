@@ -2,25 +2,25 @@ package com.topview.purejoy.home.download
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.data.repo.HomeRepository
 
 class DownloadManageViewModel : MVVMViewModel() {
     private val repository = HomeRepository
 
-    val downloadSongInfoListLiveData: MutableLiveData<List<DownloadSongInfo>> by lazy {
-        MutableLiveData()
+    val downloadTasksLiveData: MutableLiveData<List<DownloadTask>> by lazy {
+        MutableLiveData<List<DownloadTask>>()
     }
 
     fun getDownloadSongInfoList() {
-        viewModelScope.rxLaunch<List<DownloadSongInfo>> {
+        viewModelScope.rxLaunch<List<DownloadTask>> {
             onRequest = {
-                repository.getDownloadSongInfoList()
+                repository.getDownloadTaskList()
             }
 
             onSuccess = {
-                downloadSongInfoListLiveData.value = it
+                downloadTasksLiveData.value = it
             }
         }
     }

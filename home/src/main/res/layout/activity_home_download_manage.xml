@@ -4,13 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <import type="com.topview.purejoy.home.download.adapter.DownloadManageAdapter"/>
+        <import type="com.topview.purejoy.home.download.DownloadManageViewModel"/>
+        <variable
+            name="downloadTaskLayoutManager"
+            type="LinearLayoutManager" />
+        <variable
+            name="downloadTaskAdapter"
+            type="DownloadManageAdapter" />
+        <variable
+            name="downloadManageViewModel"
+            type="DownloadManageViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".download.DownloadManageActivity">
+        tools:context=".download.DownloadManageActivity"
+        android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="@{downloadTaskLayoutManager}"
+            app:adapter="@{downloadTaskAdapter}"
+            app:downloadTasks="@{downloadManageViewModel.downloadTasksLiveData}"/>
+        
+    </LinearLayout>
 </layout>

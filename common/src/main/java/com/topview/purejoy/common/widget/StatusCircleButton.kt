@@ -92,4 +92,12 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
             progressPaint
         )
     }
+
+    /**
+     * 更新进度条
+     * */
+    fun updateProgress(progress: Float) {
+        this.progress = progress
+        invalidate()
+    }
 }
