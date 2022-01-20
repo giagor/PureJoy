@@ -36,7 +36,7 @@ class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
             buttonClickListener?.onClick(item, position)
         }
         val iv = holder.getView<ImageView>(R.id.music_item_mv_bt)
-        if (item.mv != -1L) {
+        if (item.hasMV()) {
             iv.visibility = View.VISIBLE
             iv.setOnClickListener {
                 mvClickListener?.onClick(item, position)

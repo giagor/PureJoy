@@ -46,7 +46,7 @@ class DailyRecommendAdapter(
             itemClickListener?.onClick(item)
         }
         val iv = holder.getView<ImageView>(R.id.music_item_mv_bt)
-        if (item.item.mv != -1L) {
+        if (item.item.hasMV()) {
             iv.visibility = View.VISIBLE
             iv.setOnClickListener {
                 mvClickListener?.onClick(item)
