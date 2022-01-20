@@ -7,6 +7,7 @@ import com.topview.purejoy.home.data.api.HomeVideoService
 import com.topview.purejoy.home.entity.ExternVideo
 import com.topview.purejoy.home.entity.RecommendTabId
 import com.topview.purejoy.home.entity.toExternVideos
+import com.topview.purejoy.home.util.JsonUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,21 +31,22 @@ class CategorySource(
                 val page = params.key ?: 0
                 val prevPage = if (page == 0) null else page - 1
 
-                val json = if (isRecommend) {
+                val jsonData = if (isRecommend) {
                     service.getRecommendVideo(page).awaitSync()
                 } else {
                     service.getVideoByCategory(categoryId, page).awaitSync()
                 }
-                if (json == null) {
-                    error("Cannot get json object")
+                if (jsonData == null) {
+                    error("Cannot get json Data")
                 }
-                if (json.code != 200) {
-                    error("Response code is ${json.code}! message: " + json.message)
+                val jsonObject = JsonUtil.parseRecommendVideoJson(jsonData.string())
+                if (jsonObject.code != 200) {
+                    error("Response code is ${jsonObject.code}! message: " + jsonObject.message)
                 }
                 // 确定是否有下一页
-                val nextPage = if (json.hasMore == true) page + 1 else null
+                val nextPage = if (jsonObject.hasMore == true) page + 1 else null
 
-                LoadResult.Page(json.toExternVideos(isRecommend), prevPage, nextPage)
+                LoadResult.Page(jsonObject.toExternVideos(isRecommend), prevPage, nextPage)
             }.getOrElse {
                 LoadResult.Error(it)
             }

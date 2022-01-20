@@ -3,20 +3,18 @@ package com.topview.purejoy.video.data.bean
 import com.google.gson.annotations.SerializedName
 import com.topview.purejoy.common.entity.Video
 
-data class RecommendVideoJson(
-    val code: Int,
-    @SerializedName("msg") val message: String?,
-    @SerializedName("hasmore") val hasMore: Boolean?,
-    @SerializedName("datas") val outerList: List<OuterData>?
-)
-class OuterData(
-    val type: Int?,
-    val data: RecommendData
-) {
-    // TODO 添加对type=2的支持
-    // type为1的为mlog视频
-    // type为7是直播
-    fun isMlog(): Boolean = type == 1
+class RecommendVideoJson{
+    var code: Int? = null
+    @SerializedName("msg") var message: String? = null
+    @SerializedName("hasmore") var hasMore: Boolean? = null
+    @SerializedName("datas") var outerList: List<OuterData<*>>? = null
+    class OuterData<T>(
+        /**
+         * type=2为MV，type为1的为mlog视频，type为7是直播
+         */
+        val type: Int?,
+        val data: T
+    )
 }
 
 class RecommendData(
@@ -36,6 +34,21 @@ class RecommendData(
     val videoGroup: List<VideoGroupJson>?
 )
 
+class MVData(
+    val coverUrl: String?,
+    val id: Long,
+    val likeCount: Int,
+    val commentCount: Int,
+    val shareCount: Int,
+    val duration: Long?,
+    val playCount: Long,
+    val urlInfo: UrlInfo?,
+    val name: String,
+    val artists: List<MVDetailJson.MVDetailArtist>?,
+    @SerializedName("relateSong") val songs: List<SongJson>?,
+    val videoGroup: List<VideoGroupJson>?
+)
+
 class UrlInfo(
     val url: String?
 )
@@ -50,21 +63,6 @@ class RecommendArtist(val name: String)
 
 class VideoGroupJson(val name: String?)
 
-fun RecommendVideoJson.toVideos(): List<Video> {
-    val list: MutableList<Video> = mutableListOf()
-    outerList?.let { videoData ->
-        if (videoData.isNotEmpty()) {
-            videoData.forEach { outerData ->
-                if (outerData.isMlog()) {
-                    list.add(
-                        outerData.data.toVideo()
-                    )
-                }
-            }
-        }
-    }
-    return list
-}
 fun RecommendData.toVideo(): Video =
     Video(
         id = vid,
@@ -87,6 +85,34 @@ fun RecommendData.toVideo(): Video =
                     this.name
                 } else {
                     "$name - ${artists[0].name}"
+                }
+            }
+            null
+        }
+    )
+
+fun MVData.toVideo(): Video =
+    Video(
+        id = id.toString(),
+        isMv = true,
+        coverUrl = coverUrl,
+        videoUrl = urlInfo?.url,
+        title = name,
+        description = null,
+        likedCount = likeCount,
+        commentCount = commentCount,
+        shareCount = shareCount,
+        duration = duration ?: Video.UNSPECIFIED_LONG,
+        creatorName = artists?.get(0)?.name,
+        creatorAvatarUrl = artists?.get(0)?.avatar,
+        songName = if (songs == null || songs.isEmpty()) {
+            null
+        } else {
+            songs[0].run {
+                if (this@toVideo.artists == null || this@toVideo.artists.isEmpty()) {
+                    this.name
+                } else {
+                    "$name - ${getArtistName(this@toVideo.artists)}"
                 }
             }
             null
