@@ -112,7 +112,7 @@ class MusicItem(
     var url: String? = null,
     val ar: List<AR> = listOf(),
     val al: AL,
-    val mv: Long = -1) : ParcelableItem {
+    val mv: Long = 0) : ParcelableItem {
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -128,6 +128,7 @@ class MusicItem(
         return url
     }
 
+    fun hasMV() = mv != 0L
 
     fun getAuthors(): String {
         val builder = StringBuilder()
