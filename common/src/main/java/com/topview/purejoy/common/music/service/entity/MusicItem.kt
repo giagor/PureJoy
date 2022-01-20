@@ -111,14 +111,16 @@ class MusicItem(
     val id: Long,
     var url: String? = null,
     val ar: List<AR> = listOf(),
-    val al: AL, ) : ParcelableItem {
+    val al: AL,
+    val mv: Long = -1) : ParcelableItem {
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readLong(),
         parcel.readString(),
         parcel.createTypedArrayList(AR) ?: listOf(),
-        parcel.readParcelable(MusicItem::class.java.classLoader)!!
+        parcel.readParcelable(MusicItem::class.java.classLoader)!!,
+        parcel.readLong()
     ) {
     }
 
@@ -159,6 +161,7 @@ class MusicItem(
         parcel.writeString(url)
         parcel.writeTypedList(ar)
         parcel.writeParcelable(al, flags)
+        parcel.writeLong(mv)
     }
 
     override fun describeContents(): Int {
@@ -177,7 +180,7 @@ class MusicItem(
 }
 
 fun MusicItem.toRecoverMusic(): RecoverMusicData {
-    return RecoverMusicData(id = id, name = name, url = url)
+    return RecoverMusicData(id = id, name = name, url = url, mv = mv)
 }
 
 fun AR.toRecoverAR(mid: Long): RecoverARData {
@@ -194,7 +197,8 @@ fun RecoverData.toMusicItem(): MusicItem {
     for (d in arDataList) {
         ar.add(d.toAR())
     }
-    return MusicItem(name = musicData.name, id = musicData.id, url = musicData.url, ar = ar, al = al)
+    return MusicItem(name = musicData.name, id = musicData.id,
+        url = musicData.url, ar = ar, al = al, mv = musicData.mv)
 }
 
 fun RecoverARData.toAR(): AR {

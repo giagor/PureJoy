@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation(project(":common"))
     implementation(project(":dependencies"))
+    implementation(project(":video"))
 
     implementation(Deps.Compose.composeUiToolingPreview)
 

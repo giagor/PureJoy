@@ -29,6 +29,7 @@ import com.topview.purejoy.musiclibrary.recommendation.music.entity.toWrapperLis
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.recommendation.music.viemmodel.DailySongsViewModel
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
+import com.topview.purejoy.video.VideoPlayerLauncher
 
 @Route(path = MusicLibraryRouter.ACTIVITY_MUSIC_LIBRARY_DAILY_RECOMMEND)
 class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
@@ -107,6 +108,14 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
                 popWindow.data = item.item
                 popWindow.showDownAt(root)
             }
+        }, mvClickListener = object : DailyRecommendAdapter.DailyRecommendItemClickListener {
+            override fun onClick(item: SongWithReason) {
+                if (musicController.playerController?.isPlaying == true) {
+                    musicController.playerController?.playOrPause()
+                }
+                VideoPlayerLauncher.launch(true, item.item.mv.toString())
+            }
+
         })
         recyclerView.adapter = adapter
         viewModel.data.observe(this, {

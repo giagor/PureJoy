@@ -30,6 +30,7 @@ import com.topview.purejoy.musiclibrary.playlist.detail.adapter.PlaylistDetailAd
 import com.topview.purejoy.musiclibrary.playlist.detail.viewmodel.PlaylistDetailViewModel
 import com.topview.purejoy.musiclibrary.recommendation.music.pop.RecommendPop
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
+import com.topview.purejoy.video.VideoPlayerLauncher
 
 @Route(path = MusicLibraryRouter.ACTIVITY_PLAYLIST_DETAIL)
 class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
@@ -164,6 +165,16 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
                 popWindow.data = value
                 popWindow.showDownAt(root)
             }
+        }
+
+        adapter.mvClickListener = object : DataClickListener<MusicItem> {
+            override fun onClick(value: MusicItem, position: Int) {
+                if (musicController.playerController?.isPlaying == true) {
+                    musicController.playerController?.playOrPause()
+                }
+                VideoPlayerLauncher.launch(true, value.mv.toString())
+            }
+
         }
 
         viewModel.songsResponse.observe(this) {

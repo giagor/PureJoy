@@ -1,6 +1,7 @@
 package com.topview.purejoy.musiclibrary.playlist.detail.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
@@ -12,10 +13,11 @@ import com.topview.purejoy.musiclibrary.common.adapter.CommonBindingAdapter
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
 
 class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
-        PlaylistDetailAdapter.PlaylistDetailHolder>(layoutId = R.layout.layout_music_recommend_item) {
+        PlaylistDetailAdapter.PlaylistDetailHolder>(layoutId = R.layout.music_item) {
 
     var itemClickListener: DataClickListener<MusicItem>? = null
     var buttonClickListener: DataClickListener<MusicItem>? = null
+    var mvClickListener: DataClickListener<MusicItem>? = null
 
     class PlaylistDetailHolder(viewDataBinding: ViewDataBinding)
         : CommonBindingAdapter.BindingHolder(viewDataBinding) {
@@ -30,8 +32,17 @@ class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
         holder.itemView.setOnClickListener {
             itemClickListener?.onClick(item, position)
         }
-        holder.getView<ImageView>(R.id.music_daily_recommend_item_more_bt).setOnClickListener {
+        holder.getView<ImageView>(R.id.music_item_more_bt).setOnClickListener {
             buttonClickListener?.onClick(item, position)
+        }
+        val iv = holder.getView<ImageView>(R.id.music_item_mv_bt)
+        if (item.mv != -1L) {
+            iv.visibility = View.VISIBLE
+            iv.setOnClickListener {
+                mvClickListener?.onClick(item, position)
+            }
+        } else {
+            iv.visibility = View.GONE
         }
         super.convert(holder, item)
     }

@@ -13,16 +13,17 @@ import com.topview.purejoy.musiclibrary.recommendation.music.entity.SongWithReas
 
 class DailyRecommendAdapter(
     var itemClickListener: DailyRecommendItemClickListener? = null,
-    var buttonClickListener: DailyRecommendItemClickListener? = null) :
+    var buttonClickListener: DailyRecommendItemClickListener? = null,
+    var mvClickListener: DailyRecommendItemClickListener? = null) :
     CommonBindingAdapter<SongWithReason,
-            DailyRecommendAdapter.DailyHolder>(layoutId = R.layout.layout_music_recommend_item) {
+            DailyRecommendAdapter.DailyHolder>(layoutId = R.layout.music_item) {
 
 
 
     class DailyHolder(viewDataBinding: ViewDataBinding) :
         CommonBindingAdapter.BindingHolder(viewDataBinding) {
-        val button = itemView.findViewById<ImageView>(R.id.music_daily_recommend_item_more_bt)
-        val reasonTx = itemView.findViewById<TextView>(R.id.music_daily_recommend_item_reason_tx)
+        val button = itemView.findViewById<ImageView>(R.id.music_item_more_bt)
+        val reasonTx = itemView.findViewById<TextView>(R.id.music_item_reason_tx)
 
 
         override fun variableId(): Int {
@@ -43,6 +44,15 @@ class DailyRecommendAdapter(
         }
         holder.itemView.setOnClickListener {
             itemClickListener?.onClick(item)
+        }
+        val iv = holder.getView<ImageView>(R.id.music_item_mv_bt)
+        if (item.item.mv != -1L) {
+            iv.visibility = View.VISIBLE
+            iv.setOnClickListener {
+                mvClickListener?.onClick(item)
+            }
+        } else {
+            iv.visibility = View.GONE
         }
         holder.bind(item.item)
     }
