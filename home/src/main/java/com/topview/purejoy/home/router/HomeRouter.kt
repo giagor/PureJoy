@@ -7,6 +7,7 @@ object HomeRouter {
     const val ACTIVITY_HOME_SEARCH = "/home/search"
     const val ACTIVITY_HOME_TOPLIST = "/home/tasks/toplist"
     const val ACTIVITY_HOME_LOGIN = "/home/tasks/login"
+    const val ACTIVITY_HOME_DOWNLOAD_MANAGE = "/home/download"
     const val FRAGMENT_HOME_DISCOVER = "/home/discover"
     const val FRAGMENT_HOME_MINE = "/home/mine"
     const val FRAGMENT_HOME_VIDEO = "/home/video"
@@ -33,6 +34,10 @@ object HomeRouter {
 
     fun routeToVideoFragment(): Fragment? {
         return routeWithoutParams(FRAGMENT_HOME_VIDEO) as? Fragment
+    }
+
+    fun routeToDownloadManageActivity() {
+        routeWithoutParams(ACTIVITY_HOME_DOWNLOAD_MANAGE)
     }
 
     /**

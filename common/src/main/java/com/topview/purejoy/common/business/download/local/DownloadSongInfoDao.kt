@@ -18,4 +18,7 @@ interface DownloadSongInfoDao {
      * */
     @Query("DELETE FROM DownloadSongInfo WHERE tag = :tag")
     fun deleteDownloadSongInfo(tag: String): Int
+
+    @Query("SELECT * FROM DownloadSongInfo")
+    fun queryDownloadSongInfo(): List<DownloadSongInfo>
 }
