@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 import com.topview.purejoy.common.util.dpToPx
@@ -22,7 +23,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private var progressUndoneColor: Int = Color.GRAY
     private var progressCircleRadius = dpToPx(15F)
     private val statusButtonSize = dpToPx(15F)
-    private var status = START
+    private var status = PAUSE
 
     // TODO 假设的进度条，记得移除
     private var progress = 40F
@@ -37,6 +38,16 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
         strokeWidth = dpToPx(3F)
     }
 
+    private var trianglePath = Path()
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        val halfStatusSize = statusButtonSize / 2
+        trianglePath.moveTo(width / 2 - halfStatusSize, height / 2 - halfStatusSize)
+        trianglePath.lineTo(width / 2 - halfStatusSize, height / 2 + halfStatusSize)
+        trianglePath.lineTo(width / 2 + halfStatusSize, (height / 2).toFloat())
+        trianglePath.close()
+    }
+
     override fun onDraw(canvas: Canvas) {
         drawStatus(canvas)
         drawProgress(canvas)
@@ -48,7 +59,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private fun drawStatus(canvas: Canvas) {
         val halfStatusSize = statusButtonSize / 2
         if (status == PAUSE) {
-
+            canvas.drawPath(trianglePath, statusPaint)
         } else if (status == START) {
             canvas.drawRect(
                 width / 2 - halfStatusSize,
