@@ -191,7 +191,8 @@ class DownloadTask(
     internal fun executeSubTasks(executorService: ExecutorService) {
         // 仅执行处于PrepareDownload状态的任务
         if (!checkPrepare()) {
-            DownloadManager.downloadDispatcher.finished(this)
+//            DownloadManager.downloadDispatcher.finished(this)
+            taskComplete()
             return
         }
 
@@ -281,7 +282,8 @@ class DownloadTask(
             // 数据库中删除对应的任务
             DownloadManager.downDbHelper.deleteDownloadTask(this)
         }
-        DownloadManager.downloadDispatcher.finished(this)
+        taskComplete()
+//        DownloadManager.downloadDispatcher.finished(this)
     }
 
     private fun notifyProgress(transmission: Long) {
@@ -301,7 +303,8 @@ class DownloadTask(
 //            downloadListener?.onCancelled()
 //        }
         // 通知调度器
-        DownloadManager.downloadDispatcher.finished(this)
+//        DownloadManager.downloadDispatcher.finished(this)
+        taskComplete()
     }
 
     private fun notifyPaused() {
@@ -310,7 +313,8 @@ class DownloadTask(
 //            downloadListener?.onPaused()
 //        }
         // 通知调度器
-        DownloadManager.downloadDispatcher.finished(this)
+//        DownloadManager.downloadDispatcher.finished(this)
+        taskComplete()
     }
 
     private fun notifyFailure(msg: String) {
@@ -320,7 +324,8 @@ class DownloadTask(
 //            downloadListener?.onFailure()
 //        }
         // 通知调度器
-        DownloadManager.downloadDispatcher.finished(this)
+//        DownloadManager.downloadDispatcher.finished(this)
+        taskComplete()
     }
 
     /**
@@ -424,6 +429,23 @@ class DownloadTask(
             status = DownloadStatus.PREPARE_DOWNLOAD
             TaskHandler.handleTask(this)
         }
+    }
+
+    /**
+     * 移除所有的观察者
+     * */
+    fun removeAllObservers() {
+        observers.clear()
+    }
+
+    /**
+     * 任务完成
+     * */
+    private fun taskComplete() {
+        // 移除所有观察者
+        removeAllObservers()
+        // 通知调度器
+        DownloadManager.downloadDispatcher.finished(this)
     }
 
     /**
