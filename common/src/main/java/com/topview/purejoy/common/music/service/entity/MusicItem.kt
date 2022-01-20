@@ -112,7 +112,7 @@ class MusicItem(
     var url: String? = null,
     val ar: List<AR> = listOf(),
     val al: AL,
-    val mv: Long) : ParcelableItem {
+    val mv: Long = -1) : ParcelableItem {
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
