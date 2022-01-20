@@ -189,8 +189,8 @@ class DownloadTask(
     }
 
     internal fun executeSubTasks(executorService: ExecutorService) {
-        // 仅执行处于INITIAL状态的任务
-        if (!checkInitial()) {
+        // 仅执行处于PrepareDownload状态的任务
+        if (!checkPrepare()) {
             DownloadManager.downloadDispatcher.finished(this)
             return
         }
@@ -227,7 +227,7 @@ class DownloadTask(
      * 从"暂停"状态中恢复后，要做的一些处理
      * */
     private fun restoreFromPause() {
-        status = DownloadStatus.INITIAL
+        status = DownloadStatus.PREPARE_DOWNLOAD
         pauseTaskCounts = 0
     }
 
@@ -421,6 +421,7 @@ class DownloadTask(
     fun download() {
         if (!triggerDownload) {
             triggerDownload = true
+            status = DownloadStatus.PREPARE_DOWNLOAD
             TaskHandler.handleTask(this)
         }
     }
@@ -436,6 +437,8 @@ class DownloadTask(
         successTaskCounts + cancelTaskCounts + pauseTaskCounts + failTaskCounts
 
     private fun checkInitial() = status == DownloadStatus.INITIAL
+
+    private fun checkPrepare() = status == DownloadStatus.PREPARE_DOWNLOAD
 
     private fun checkPaused() = status == DownloadStatus.PAUSED
 

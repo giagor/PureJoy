@@ -35,4 +35,10 @@ object DownloadStatus {
      * 表示"下载成功"
      * */
     const val SUCCESS: Int = 126
+
+    /**
+     * 表示"准备下载"，它的意思是当前已经触发下载，但是还在等待「下载信息的获取」或者「等待调度器调度」。
+     * 设置该状态的原因是与「初始状态INITIAL」区分开来。
+     * */
+    const val PREPARE_DOWNLOAD: Int = 127
 }
