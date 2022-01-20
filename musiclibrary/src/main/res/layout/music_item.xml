@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="4dp"
         android:orientation="horizontal"
-        android:id="@+id/music_daily_recommend_item_layout"
+        android:id="@+id/music_item_layout"
         android:layout_marginHorizontal="8dp">
 
 
@@ -28,7 +28,7 @@
             app:error="@{@drawable/white_holder}"
             app:round_rect_radius="16"
 
-            android:id="@+id/music_daily_recommend_item_iv"/>
+            android:id="@+id/music_item_iv"/>
 
 
 
@@ -43,7 +43,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/music_daily_recommend_item_name_tx"
+                android:id="@+id/music_item_name_tx"
                 android:text="@{musicItem.name ?? @string/unknown}"
                 android:textColor="@color/black"
                 android:maxLines="1"
@@ -61,13 +61,13 @@
                     android:textColor="@color/orange"
                     android:text="@string/unknown"
                     android:layout_marginEnd="4dp"
-                    android:id="@+id/music_daily_recommend_item_reason_tx"
+                    android:id="@+id/music_item_reason_tx"
                     android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/music_daily_recommend_item_author_tx"
+                    android:id="@+id/music_item_author_tx"
                     android:text="@{musicItem.authors}"/>
 
 
@@ -83,7 +83,16 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/music_daily_recommend_item_more_bt"
+            android:id="@+id/music_item_mv_bt"
+            android:src="@drawable/mv_32"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/music_item_more_bt"
             android:src="@drawable/music_recommend_more_24"
             android:layout_gravity="center_vertical"/>
 
