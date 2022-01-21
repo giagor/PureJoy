@@ -22,15 +22,8 @@ open class MutableListWrapper<T>(private val list: MutableList<T>,
 
     override fun add(element: T): Boolean {
         beforeAdding(element)
-        val b = if (isIntercepted(element)) {
-            intercept(element)
-            false
-        } else {
-            list.add(element)
-        }
-        if (b) {
-            afterAdding(element)
-        }
+        val b = list.add(element)
+        afterAdding(element)
         return b
     }
 
@@ -38,10 +31,7 @@ open class MutableListWrapper<T>(private val list: MutableList<T>,
         beforeAddAll(elements)
         val collect = mutableListOf<T>()
         elements.forEach {
-            if (isIntercepted(it)) {
-                intercept(it)
-            } else {
-                list.add(it)
+            if (list.add(it)) {
                 collect.add(it)
             }
         }
@@ -101,9 +91,7 @@ open class MutableListWrapper<T>(private val list: MutableList<T>,
 
     }
 
-    open fun isIntercepted(item: T) : Boolean {
-        return contains(item)
-    }
+
 
     open fun beforeAddAll(elements: Collection<T>) {
 
@@ -113,9 +101,6 @@ open class MutableListWrapper<T>(private val list: MutableList<T>,
 
     }
 
-    open fun intercept(item: T) {
-
-    }
 
     open fun beforeAdding(item: T) {
 
@@ -151,22 +136,12 @@ open class MutableListWrapper<T>(private val list: MutableList<T>,
 
     override fun add(index: Int, element: T) {
         beforeAdding(index, element)
-        if (isIntercepted(element)) {
-            intercept(element)
-        } else {
-            list.add(index, element)
-        }
+        list.add(index, element)
         afterAdding(element)
     }
 
     override fun addAll(index: Int, elements: Collection<T>): Boolean {
-        elements.forEach {
-            if (isIntercepted(it)) {
-                intercept(it)
-            } else {
-                list.add(index, it)
-            }
-        }
+        list.addAll(index, elements)
         return true
     }
 

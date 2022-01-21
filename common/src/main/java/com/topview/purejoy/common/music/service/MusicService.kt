@@ -14,6 +14,8 @@ import com.topview.purejoy.common.music.player.abs.cache.CacheLoader
 import com.topview.purejoy.common.music.player.abs.cache.CacheStrategy
 import com.topview.purejoy.common.music.player.abs.transformation.IWrapperTransformation
 import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.common.music.player.impl.Operator
+import com.topview.purejoy.common.music.player.impl.OperatorCallback
 import com.topview.purejoy.common.music.player.impl.ipc.BinderPool
 import com.topview.purejoy.common.music.player.impl.ipc.IPCDataControllerImpl
 import com.topview.purejoy.common.music.player.impl.ipc.IPCListenerControllerImpl
@@ -184,17 +186,33 @@ class MusicService : MediaService<MusicItem>() {
         return cs
     }
 
-    override fun reportOperator(code: Int, value: MusicItem?) {
-        if (code == IPCDataControllerImpl.SUCCESS_CODE) {
-            Toast.makeText(this.applicationContext,
-                "${value?.name}成功添加到播放列表中", Toast.LENGTH_SHORT).show()
-        } else {
-            value?.let {
-                Toast.makeText(this.applicationContext,
-                    "添加歌曲失败", Toast.LENGTH_SHORT).show()
+    override fun operatorCallback(): OperatorCallback {
+        return object : OperatorCallback {
+            override fun callback(operator: Operator, code: Int, success: Any?, fail: Any?) {
+                when(operator) {
+                    Operator.ADD -> {
+                        if (code == OperatorCallback.SUCCESS_CODE) {
+                            itemTransformation.transform(success!!.castAs()!!)?.let {
+                                Toast.makeText(applicationContext,
+                                    "${it.name}成功添加到播放列表中", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            itemTransformation.transform(fail!!.castAs()!!)?.let {
+                                Toast.makeText(applicationContext,
+                                    "添加歌曲失败", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    else -> {
+
+                    }
+                }
             }
+
         }
     }
+
+
 
     override fun onDestroy() {
         unregisterReceiver(receiver)

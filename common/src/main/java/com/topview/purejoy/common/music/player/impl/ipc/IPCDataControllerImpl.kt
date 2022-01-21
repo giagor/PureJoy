@@ -7,36 +7,41 @@ import com.topview.purejoy.common.music.data.Item
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.player.abs.core.Position
 import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.common.music.player.impl.DataInterceptor
+import com.topview.purejoy.common.music.player.impl.Operator
+import com.topview.purejoy.common.music.player.impl.OperatorCallback
+import com.topview.purejoy.common.music.player.impl.OperatorCallback.Companion.FAIL_CODE
+import com.topview.purejoy.common.music.player.impl.OperatorCallback.Companion.SUCCESS_CODE
 import com.topview.purejoy.common.music.player.util.DataSource
 import com.topview.purejoy.common.music.player.util.checkWrapper
 import com.topview.purejoy.common.music.player.util.ensureSecurity
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class IPCDataControllerImpl<T : Item>(
     val handler: Handler = Handler(Looper.getMainLooper()),
     val source: DataSource<Wrapper>,
     val mediaSource: DataSource<T>,
-    var addCallback: ((Int, Wrapper?) -> Unit)? = null,
     var position: Position,
-    var transformation: ItemTransformation<T>
+    var transformation: ItemTransformation<T>,
+    var operatorCallback: OperatorCallback? = null,
+    val interceptor: DataInterceptor<T>? = DefaultInterceptor()
 ) : IPCDataController.Stub() {
     override fun add(wrapper: Wrapper?) {
         handler.post {
             checkWrapper(wrapper) { w ->
                 val v = transformation.transform(w)
                 v?.let {
-                    if (mediaSource.add(it)) {
-                        if (source.add(w)) {
-                            addCallback?.invoke(SUCCESS_CODE, wrapper)
-                        } else {
-                            mediaSource.removeAt(mediaSource.size - 1)
-                            addCallback?.invoke(FAIL_CODE, wrapper)
-                        }
-                    } else {
-                        addCallback?.invoke(FAIL_CODE, wrapper)
-                    }
+                    checkItem(w, v, {
+                        mediaSource.add(v)
+                        source.add(w)
+                        operatorCallback?.callback(Operator.ADD, SUCCESS_CODE, w, null)
+                    }, {
+                        operatorCallback?.callback(Operator.ADD, FAIL_CODE, null, w)
+                    })
                 }
                 if (v == null) {
-                    addCallback?.invoke(FAIL_CODE, wrapper)
+                    operatorCallback?.callback(Operator.ADD, FAIL_CODE, null, w)
                 }
             }
         }
@@ -48,16 +53,16 @@ open class IPCDataControllerImpl<T : Item>(
                 checkWrapper(wrapper) { w ->
                     val v = transformation.transform(w)
                     v?.let {
-                        if (mediaSource.contains(it) || source.contains(wrapper)) {
-                            addCallback?.invoke(FAIL_CODE, wrapper)
-                        } else {
+                        checkItem(w, v, {
                             mediaSource.add(index + 1, it)
                             source.add(index + 1, w)
-                            addCallback?.invoke(SUCCESS_CODE, wrapper)
-                        }
+                            operatorCallback?.callback(Operator.ADD, SUCCESS_CODE, w, null)
+                        }, {
+                            operatorCallback?.callback(Operator.ADD, FAIL_CODE, null, w)
+                        })
                     }
                     if (v == null) {
-                        addCallback?.invoke(FAIL_CODE, wrapper)
+                        operatorCallback?.callback(Operator.ADD, FAIL_CODE, null, w)
                     }
                 }
 
@@ -70,8 +75,10 @@ open class IPCDataControllerImpl<T : Item>(
         handler.post {
             checkWrapper(wrapper) { w ->
                 val v = transformation.transform(w)
-                if (mediaSource.remove(v)) {
-                    source.remove(w)
+                if (mediaSource.remove(v) && source.remove(w)) {
+                    operatorCallback?.callback(Operator.REMOVE, SUCCESS_CODE, w, null)
+                } else {
+                    operatorCallback?.callback(Operator.REMOVE, FAIL_CODE, null, w)
                 }
             }
         }
@@ -81,28 +88,42 @@ open class IPCDataControllerImpl<T : Item>(
         handler.post {
             wrapper?.let {
                 val wl = mutableListOf<Wrapper>()
+                val fl = mutableListOf<Wrapper>()
                 val il = mutableListOf<T>()
                 it.forEach { w ->
                     checkWrapper(w) { ww ->
                         val v = transformation.transform(ww)
                         v?.let { value ->
-                            if (!mediaSource.isIntercepted(value) && !source.isIntercepted(ww)) {
+                            checkItem(ww, v, {
                                 wl.add(ww)
                                 il.add(value)
-                            }
+                            }, {
+                                fl.add(ww)
+                            })
                         }
                     }
                 }
                 mediaSource.addAll(il)
                 source.addAll(wl)
+                val code = if (wl.size == it.size) {
+                    SUCCESS_CODE
+                } else {
+                    FAIL_CODE
+                }
+                operatorCallback?.callback(Operator.ADD_ALL, code, wl, fl)
+            }
+            if (wrapper == null) {
+                operatorCallback?.callback(Operator.ADD_ALL, FAIL_CODE, null, null)
             }
         }
     }
 
     override fun clear() {
         handler.post {
+            val cl = ArrayList(source)
             mediaSource.clear()
             source.clear()
+            operatorCallback?.callback(Operator.CLEAR, SUCCESS_CODE, cl, null)
         }
     }
 
@@ -119,10 +140,36 @@ open class IPCDataControllerImpl<T : Item>(
         }
     }
 
-
-
-    companion object {
-        const val FAIL_CODE = 0
-        const val SUCCESS_CODE = 1
+    private fun checkItem(wrapper: Wrapper, item: T, success: () -> Unit, fail: () -> Unit) {
+        val p = Collections.unmodifiableList(mediaSource)
+        val pw = Collections.unmodifiableList(source)
+        if (interceptor?.isIntercepted(wrapper, pw, p, item) == true) {
+            interceptor.intercept(wrapper, item)
+            fail.invoke()
+        } else {
+            success.invoke()
+        }
     }
+
+
+    private class DefaultInterceptor<T : Item> : DataInterceptor<T> {
+
+
+        override fun intercept(wrapper: Wrapper, item: T) {
+
+        }
+
+        override fun isIntercepted(
+            wrapper: Wrapper,
+            wrappers: List<Wrapper>,
+            source: List<T>,
+            item: T
+        ): Boolean {
+            return wrappers.contains(wrapper) || source.contains(item)
+        }
+
+    }
+
+
+
 }
