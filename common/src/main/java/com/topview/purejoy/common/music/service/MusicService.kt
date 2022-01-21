@@ -25,7 +25,7 @@ import com.topview.purejoy.common.music.player.util.castAs
 import com.topview.purejoy.common.music.service.entity.*
 import com.topview.purejoy.common.music.service.notification.MusicNotification
 import com.topview.purejoy.common.music.service.notification.MusicNotificationReceiver
-import com.topview.purejoy.common.music.service.recover.RecoverTask
+import com.topview.purejoy.common.music.service.recover.MusicPhoto
 import com.topview.purejoy.common.music.service.recover.db.RecoverDatabase
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverALData
 import com.topview.purejoy.common.music.service.recover.db.entity.RecoverARData
@@ -91,14 +91,10 @@ class MusicService : MediaService<MusicItem>() {
     }
 
 
-    private val storeDuration = 60000L
-    private val recoverTask: RecoverTask by lazy {
-        val modeController = IPCModeController.Stub.asInterface(pool.queryBinder(
-            BinderPool.MODE_CONTROL_BINDER))?.castAs<IPCModeControllerImpl>()!!
+    private val photo: MusicPhoto by lazy {
         val listenerController: IPCListenerControllerImpl = IPCListenerController.Stub.asInterface(pool.queryBinder(
             BinderPool.LISTENER_CONTROL_BINDER)).castAs()!!
-        RecoverTask(dataController, modeController,
-            listenerController, mainHandler, storeDuration)
+        MusicPhoto(dataController, mainHandler, listenerController)
     }
 
 
@@ -106,6 +102,7 @@ class MusicService : MediaService<MusicItem>() {
         super.onCreate()
         dataController.source.changeListeners.add(object : DataSource.DataSetChangeListener<Wrapper> {
             override fun onChange(changes: MutableList<Wrapper>) {
+                photo.updatePhoto()
                 if (changes.isEmpty()) {
                     // 清除通知
                     if (musicNotification.showForeground) {
@@ -116,9 +113,7 @@ class MusicService : MediaService<MusicItem>() {
             }
         })
 
-
-        recoverTask.readLocal()
-        mainHandler.postDelayed(recoverTask, storeDuration)
+        photo.readLocal()
 
         val filter = IntentFilter()
         filter.addAction(MusicNotificationReceiver.CLEAR_ACTION)
@@ -185,7 +180,7 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onDestroy() {
-        recoverTask.storePlayerState()
+//        recoverTask.storePlayerState()
         unregisterReceiver(receiver)
         super.onDestroy()
     }
