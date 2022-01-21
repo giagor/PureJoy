@@ -265,9 +265,6 @@ abstract class MediaService<T : Item> : Service(), Loader {
                     }
                 } else {
                     realController.position.max = source.size
-//                    if (realController.position.current() == MediaModeSetting.INIT_POSITION) {
-//                        realController.next()
-//                    }
                     changes.forEach {
                         itemTransformation.transform(it)?.let { item ->
                             errorSetting.remove(item)
