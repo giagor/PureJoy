@@ -2,8 +2,9 @@ package com.topview.purejoy.common.music.service
 
 import android.content.IntentFilter
 import android.widget.Toast
+import com.topview.purejoy.common.IPCItemChangeListener
 import com.topview.purejoy.common.IPCListenerController
-import com.topview.purejoy.common.IPCModeController
+import com.topview.purejoy.common.IPCModeChangeListener
 import com.topview.purejoy.common.IPCPlayerController
 import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.music.data.Item
@@ -16,32 +17,24 @@ import com.topview.purejoy.common.music.player.abs.transformation.ItemTransforma
 import com.topview.purejoy.common.music.player.impl.ipc.BinderPool
 import com.topview.purejoy.common.music.player.impl.ipc.IPCDataControllerImpl
 import com.topview.purejoy.common.music.player.impl.ipc.IPCListenerControllerImpl
-import com.topview.purejoy.common.music.player.impl.ipc.IPCModeControllerImpl
 import com.topview.purejoy.common.music.player.service.MediaService
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
 import com.topview.purejoy.common.music.player.util.DataSource
 import com.topview.purejoy.common.music.player.util.cast
 import com.topview.purejoy.common.music.player.util.castAs
-import com.topview.purejoy.common.music.service.entity.*
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.notification.MusicNotification
 import com.topview.purejoy.common.music.service.notification.MusicNotificationReceiver
 import com.topview.purejoy.common.music.service.recover.MusicPhoto
-import com.topview.purejoy.common.music.service.recover.db.RecoverDatabase
-import com.topview.purejoy.common.music.service.recover.db.entity.RecoverALData
-import com.topview.purejoy.common.music.service.recover.db.entity.RecoverARData
-import com.topview.purejoy.common.music.service.recover.db.entity.RecoverMusicData
-import com.topview.purejoy.common.music.service.recover.db.initDB
 import com.topview.purejoy.common.music.service.transformation.MusicItemTransformation
 import com.topview.purejoy.common.music.service.transformation.WrapperTransformation
 import com.topview.purejoy.common.music.service.url.cache.MusicCacheStrategy
 import com.topview.purejoy.common.music.service.url.viewmodel.MusicURLViewModel
 import com.topview.purejoy.common.music.service.url.viewmodel.MusicURLViewModelImpl
-import com.topview.purejoy.common.music.util.ExecutorInstance
 import com.topview.purejoy.common.music.util.SP
 import okhttp3.*
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.CopyOnWriteArrayList
 
 class MusicService : MediaService<MusicItem>() {
     private val musicNotification: MusicNotification by lazy {
@@ -110,10 +103,34 @@ class MusicService : MediaService<MusicItem>() {
                         musicNotification.showForeground = false
                     }
                 }
+                SP.sp.edit().apply {
+                    putInt(MAX_KEY, dataController.position.max)
+                    putInt(POSITION_KEY, dataController.position.current())
+                    apply()
+                }
             }
         })
 
         photo.readLocal()
+
+        val listenerController: IPCListenerControllerImpl = IPCListenerController.Stub.asInterface(pool.queryBinder(
+            BinderPool.LISTENER_CONTROL_BINDER)).castAs()!!
+        listenerController.addModeChangeListener(object : IPCModeChangeListener.Stub() {
+            override fun onModeChange(mode: Int) {
+                SP.sp.edit().apply {
+                    putInt(MODE_KEY, mode)
+                    apply()
+                }
+            }
+        })
+        listenerController.addItemChangeListener(object : IPCItemChangeListener.Stub() {
+            override fun onItemChange(wrapper: Wrapper?) {
+                SP.sp.edit().apply {
+                    putInt(POSITION_KEY, dataController.position.current())
+                    apply()
+                }
+            }
+        })
 
         val filter = IntentFilter()
         filter.addAction(MusicNotificationReceiver.CLEAR_ACTION)
@@ -180,7 +197,6 @@ class MusicService : MediaService<MusicItem>() {
     }
 
     override fun onDestroy() {
-//        recoverTask.storePlayerState()
         unregisterReceiver(receiver)
         super.onDestroy()
     }
