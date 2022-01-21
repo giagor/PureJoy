@@ -15,8 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -31,6 +29,7 @@ import com.topview.purejoy.home.entity.ExternVideo
 import com.topview.purejoy.home.entity.VideoCategoryTab
 import com.topview.purejoy.home.tasks.video.HomeVideoViewModel
 import com.topview.purejoy.home.theme.Gray245
+import com.topview.purejoy.home.util.LazyPagingItems
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -101,7 +100,7 @@ private fun HomeVideoScreenContent(
                 tabArray = tabArray,
                 onTabClick = {
                     scope.launch {
-                        pagerState.animateScrollToPage(it)
+                        pagerState.scrollToPage(it)
                     }
                 },
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -126,9 +125,17 @@ private fun HomeVideoScreenContent(
             state = pagerState
         ) { page ->
             val items = lazyPagingMap[tabArray[page].id] ?: let {
-                val newItems = viewModel.getVideoByCategory(
-                    tabArray[page].id
-                ).collectAsLazyPagingItems()
+                val newItems = LazyPagingItems(
+                    viewModel.getVideoByCategory(
+                        tabArray[page].id
+                    )
+                )
+                scope.launch {
+                    newItems.collectPagingData()
+                }
+                scope.launch {
+                    newItems.collectLoadState()
+                }
                 lazyPagingMap[tabArray[page].id] = newItems
                 newItems
             }
