@@ -2,8 +2,9 @@ package com.topview.purejoy.common.music.player.impl.ipc
 
 import android.os.IBinder
 import com.topview.purejoy.common.IBinderPool
+import java.util.concurrent.ConcurrentHashMap
 
-class BinderPool(val map: MutableMap<Int, IBinder> = mutableMapOf()) : IBinderPool.Stub() {
+class BinderPool(val map: MutableMap<Int, IBinder> = ConcurrentHashMap()) : IBinderPool.Stub() {
     override fun queryBinder(code: Int): IBinder {
         return map[code]!!
     }
