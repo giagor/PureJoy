@@ -19,33 +19,35 @@ class DownloadManageActivity :
 
     private val downloadListener = object : SimpleUserDownloadListener() {
         override fun onProgress(downloadTask: DownloadTask, progress: Int) {
-            super.onProgress(downloadTask, progress)
+            adapter.notifyItemChanged(adapter.getItemPosition(downloadTask))
         }
 
         override fun onPaused(downloadTask: DownloadTask) {
-            super.onPaused(downloadTask)
+
         }
 
         override fun onResumed(downloadTask: DownloadTask) {
-            super.onResumed(downloadTask)
+
         }
 
         override fun onFailure(downloadTask: DownloadTask, msg: String) {
-            super.onFailure(downloadTask, msg)
+
         }
 
         override fun onCancelled(downloadTask: DownloadTask) {
-            super.onCancelled(downloadTask)
+
         }
 
         override fun onSuccess(downloadTask: DownloadTask) {
-            super.onSuccess(downloadTask)
+
         }
 
         override fun alreadyDownloaded(downloadTask: DownloadTask) {
             super.alreadyDownloaded(downloadTask)
         }
     }
+
+    private val adapter: DownloadManageAdapter = DownloadManageAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +61,9 @@ class DownloadManageActivity :
     private fun observe() {
         // TODO 如果列表过大，就在子线程中添加监听器
         viewModel.downloadTasksLiveData.observe(this) {
-
+            for (task in it) {
+                task.registerObserver(downloadListener)
+            }
         }
     }
 
@@ -73,7 +77,6 @@ class DownloadManageActivity :
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
-        val adapter = DownloadManageAdapter()
         binding.downloadTaskLayoutManager = layoutManager
         binding.downloadTaskAdapter = adapter
     }

@@ -23,7 +23,7 @@ class DownloadTask(
     /** 父任务id */
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
     /** 文件的名字 */
-    var name : String,
+    var name: String,
     /** 文件的保存路径 */
     var path: String,
     /** 下载资源的url */
@@ -80,6 +80,12 @@ class DownloadTask(
     private var failTaskCounts = 0
 
     /**
+     * 下载进度。范围：0-100
+     * */
+    @Ignore
+    private var progress: Int = 0
+
+    /**
      * 表示是否从"暂停"的状态中恢复过来，方便回调用户的接口
      * */
     @Ignore
@@ -102,7 +108,7 @@ class DownloadTask(
     }
 
     constructor() : this(
-        null, "","", "", 0, 0,
+        null, "", "", "", 0, 0,
         false, null
     )
 
@@ -290,7 +296,7 @@ class DownloadTask(
 
     private fun notifyProgress(transmission: Long) {
         transmissionTotalSize += transmission
-        val progress = (transmissionTotalSize * 100 / totalSize).toInt()
+        progress = (transmissionTotalSize * 100 / totalSize).toInt()
 
         callObserversOnProgress(progress)
 //        DownloadManager.handler.post {
@@ -459,6 +465,8 @@ class DownloadTask(
 
     private fun getFinishedCount() =
         successTaskCounts + cancelTaskCounts + pauseTaskCounts + failTaskCounts
+
+    fun getProgress(): Int = progress
 
     private fun checkInitial() = status == DownloadStatus.INITIAL
 

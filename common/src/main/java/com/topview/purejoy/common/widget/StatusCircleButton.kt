@@ -26,7 +26,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private var status = PAUSE
 
     // TODO 假设的进度条，记得移除
-    private var progress = 40F
+    private var progress = 0F
 
     private val statusPaint = Paint().apply {
         color = statusColor
@@ -107,7 +107,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     /**
      * 更新进度条
      * */
-    fun updateProgress(progress: Float) {
+    fun setProgress(progress: Float) {
         this.progress = progress
         invalidate()
     }
