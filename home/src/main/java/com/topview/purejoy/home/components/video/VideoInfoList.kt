@@ -18,12 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.ExternVideo
+import com.topview.purejoy.home.util.LazyPagingItems
 import com.topview.purejoy.home.util.LocalMusicController
 import com.topview.purejoy.video.VideoPlayerLauncher
 

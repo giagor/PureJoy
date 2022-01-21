@@ -31,7 +31,6 @@ object VideoPlayerLauncher {
                 Video(
                     id = it,
                     isMv = isMv,
-                    duration = -1L,
                 )
             )
         }
