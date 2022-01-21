@@ -16,7 +16,9 @@ import com.topview.purejoy.common.music.player.abs.core.Position
 import com.topview.purejoy.common.music.player.abs.listener.ErrorListener
 import com.topview.purejoy.common.music.player.abs.transformation.IWrapperTransformation
 import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
+import com.topview.purejoy.common.music.player.impl.DataInterceptor
 import com.topview.purejoy.common.music.player.impl.MediaListenerMangerImpl
+import com.topview.purejoy.common.music.player.impl.OperatorCallback
 import com.topview.purejoy.common.music.player.impl.controller.MediaControllerImpl
 import com.topview.purejoy.common.music.player.impl.controller.ModeControllerImpl
 import com.topview.purejoy.common.music.player.impl.core.MusicPlayerImpl
@@ -76,22 +78,35 @@ abstract class MediaService<T : Item> : Service(), Loader {
      * 初始化IPCDataController
      */
     private fun initDataController(position: Position): IPCDataControllerImpl<T> {
+        val local = loadLocalRecord()
+        val list = CopyOnWriteArrayList<T>()
+        local?.let {
+            list.addAll(local)
+        }
         val dataSource = DataSource<T>(list = CopyOnWriteArrayList())
 
         val wrappers = DataSource<Wrapper>(list = CopyOnWriteArrayList())
-        
+
         position.max = dataSource.size
-        val dataController = IPCDataControllerImpl(
-            handler = mainHandler,
-            source = wrappers,
-            mediaSource = dataSource, addCallback = { code, wrapper ->
-                if (wrapper == null) {
-                    reportOperator(code, null)
-                } else {
-                    reportOperator(code, itemTransformation.transform(wrapper))
-                }
-            }, position = position, transformation = itemTransformation)
-        return dataController
+        val interceptor = dataInterceptor()
+        return if (interceptor == null) {
+            IPCDataControllerImpl(
+                handler = mainHandler,
+                source = wrappers,
+                mediaSource = dataSource,
+                position = position,
+                transformation = itemTransformation,
+                operatorCallback = operatorCallback())
+        } else {
+            IPCDataControllerImpl(
+                handler = mainHandler,
+                source = wrappers,
+                mediaSource = dataSource,
+                position = position,
+                transformation = itemTransformation,
+                operatorCallback = operatorCallback(),
+                interceptor = interceptor)
+        }
     }
 
     /**
@@ -132,7 +147,6 @@ abstract class MediaService<T : Item> : Service(), Loader {
             override fun prepared() {
                 mainHandler.post {
                     ensureSecurity(source, mediaController.position) {
-//                        mediaController.listenerManger.invokeChangeListener(source[position.current()], ItemFilter)
                         mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
                         mediaController.preparedListener?.onPrepared(
                             source[mediaController.position.current()])
@@ -194,12 +208,14 @@ abstract class MediaService<T : Item> : Service(), Loader {
 
 
     /**
-     * 初始化IPC服务(包括IPCModeController, IPCDataController, IPCPlayerController, IPCListenerController)
-     * 并将这些服务放入BinderPool中
+     * 初始化IPC服务(包括[IPCModeControllerImpl], [IPCDataControllerImpl],
+     * [IPCPlayerControllerImpl], [IPCListenerControllerImpl])
+     * 并将这些服务放入[BinderPool]中
      */
     open fun initIPC() {
         val modeController = IPCModeControllerImpl(handler = mainHandler,
-            realController = ModeControllerImpl(current = loadInitMode()))
+            realController = ModeControllerImpl(current = loadInitMode())
+        )
 
         val dataController = initDataController(
             MediaModeSetting.getInstance().getPosition(modeController.realController.current)!!)
@@ -322,21 +338,14 @@ abstract class MediaService<T : Item> : Service(), Loader {
     }
 
 
-    /**
-     * @param code 状态码
-     * @param value 音乐实体
-     * 添加单个音乐实体的回调，当code为0时，添加失败，code为1时，添加成功
-     */
-    open fun reportOperator(code: Int, value: T?) {
-
-    }
+    protected open fun operatorCallback(): OperatorCallback? = null
 
 
     /**
      * @param value 播放失败的音乐实体
      * 播放失败时的回调
      */
-    open fun reportPlayError(value: T) {
+    protected open fun reportPlayError(value: T) {
 
     }
 
@@ -345,21 +354,25 @@ abstract class MediaService<T : Item> : Service(), Loader {
      * @param state 播放状态
      * 应在这个方法中生成通知等
      */
-    abstract fun showForeground(value: T, state: Boolean)
+    protected abstract fun showForeground(value: T, state: Boolean)
+
+    protected open fun loadLocalRecord(): MutableList<T>? {
+        return null
+    }
 
 
 
     /**
      * 初始化缓存策略，默认为null
      */
-    open fun cacheStrategy(): CacheStrategy? {
+    protected open fun cacheStrategy(): CacheStrategy? {
         return null
     }
 
     /**
      * 初始化错误处理设置
      */
-    open fun errorSetting(): ErrorSetting<T> {
+    protected open fun errorSetting(): ErrorSetting<T> {
         return ErrorSetting(handler = object : ErrorHandler<T> {
             override fun onError(value: T) {
                 reportPlayError(value)
@@ -367,9 +380,9 @@ abstract class MediaService<T : Item> : Service(), Loader {
         })
     }
 
-    protected open fun transformation(): ItemTransformation<T> {
-        return DefaultTransformation()
-    }
+    protected open fun dataInterceptor(): DataInterceptor<T>? = null
+
+    protected abstract fun transformation(): ItemTransformation<T>
 
     protected abstract fun wrapperTransformation(): IWrapperTransformation<T>
 
@@ -381,11 +394,7 @@ abstract class MediaService<T : Item> : Service(), Loader {
         super.onDestroy()
     }
 
-    class DefaultTransformation<T : Item> : ItemTransformation<T> {
-        override fun transform(source: Wrapper): T? {
-            return source.value?.cast()
-        }
-    }
+
 
 
 }
