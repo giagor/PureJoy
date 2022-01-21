@@ -88,6 +88,7 @@ class DownloadTask(
     /**
      * 表示是否从"暂停"的状态中恢复过来，方便回调用户的接口
      * */
+    @Volatile
     @Ignore
     private var resumed = false
 
@@ -129,7 +130,6 @@ class DownloadTask(
         if (!canResume()) {
             return
         }
-
         restoreFromPause()
         resumed = true
         DownloadManager.downloadDispatcher.enqueue(this)
@@ -199,8 +199,8 @@ class DownloadTask(
     internal fun executeSubTasks(executorService: ExecutorService) {
         // 仅执行处于PrepareDownload状态的任务
         if (!checkPrepare()) {
-//            DownloadManager.downloadDispatcher.finished(this)
-            taskComplete()
+            DownloadManager.downloadDispatcher.finished(this)
+//            taskComplete()
             return
         }
 
@@ -321,8 +321,8 @@ class DownloadTask(
 //            downloadListener?.onPaused()
 //        }
         // 通知调度器
-//        DownloadManager.downloadDispatcher.finished(this)
-        taskComplete()
+        DownloadManager.downloadDispatcher.finished(this)
+//        taskComplete()
     }
 
     private fun notifyFailure(msg: String) {
@@ -350,6 +350,7 @@ class DownloadTask(
         subTasks.addAll(subDownloadTasks)
     }
 
+    // TODO 考虑handler放在for外面
     internal fun callObserversOnStart() {
         for (observer in observers) {
             DownloadManager.handler.post {
@@ -449,6 +450,7 @@ class DownloadTask(
     /**
      * 任务完成
      * */
+    // TODO 做的两件事情可以分离吗
     private fun taskComplete() {
         // 移除所有观察者
         removeAllObservers()
@@ -459,22 +461,29 @@ class DownloadTask(
     /**
      * 设置状态
      * */
-    fun setStatus(status: Int) {
+    internal fun setStatus(status: Int) {
         this.status = status
     }
+
+    /**
+     * 获取状态
+     * */
+    fun getStatus() = status
 
     private fun getFinishedCount() =
         successTaskCounts + cancelTaskCounts + pauseTaskCounts + failTaskCounts
 
     fun getProgress(): Int = progress
 
-    private fun checkInitial() = status == DownloadStatus.INITIAL
+    fun checkInitial() = status == DownloadStatus.INITIAL
 
-    private fun checkPrepare() = status == DownloadStatus.PREPARE_DOWNLOAD
+    fun checkDownloading() = status == DownloadStatus.DOWNLOADING
 
-    private fun checkPaused() = status == DownloadStatus.PAUSED
+    fun checkPrepare() = status == DownloadStatus.PREPARE_DOWNLOAD
 
-    private fun checkFinished() = getFinishedCount() == subTasks.size
+    fun checkPaused() = status == DownloadStatus.PAUSED
+
+    fun checkFinished() = getFinishedCount() == subTasks.size
 
     /**
      * 判断是否可以取消下载

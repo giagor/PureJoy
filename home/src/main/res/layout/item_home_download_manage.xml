@@ -4,9 +4,13 @@
 
     <data>
         <import type="com.topview.purejoy.common.component.download.task.DownloadTask"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="downloadTask"
             type="DownloadTask" />
+        <variable
+            name="statusButtonClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -23,7 +27,9 @@
         <com.topview.purejoy.common.widget.StatusCircleButton
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:progress="@{downloadTask.progress}"/>
+            app:progress="@{downloadTask.progress}"
+            app:circleButtonStatus="@{downloadTask}"
+            app:onClickListener="@{statusButtonClickListener}"/>
         
     </LinearLayout>
 </layout>

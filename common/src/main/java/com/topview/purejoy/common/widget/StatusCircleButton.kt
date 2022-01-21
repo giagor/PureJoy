@@ -9,11 +9,13 @@ import android.util.AttributeSet
 import android.view.View
 import com.topview.purejoy.common.util.dpToPx
 
-private const val PAUSE = 1
-private const val START = 2
-
 class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     View(context, attrs, defStyleAttr) {
+
+    companion object {
+        const val PAUSE = 1
+        const val START = 2
+    }
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -39,6 +41,14 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private var trianglePath = Path()
+
+    /**
+     * 状态集合
+     * */
+    private var statusSet: Set<Int> = HashSet<Int>().apply {
+        add(PAUSE)
+        add(START)
+    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         val halfStatusSize = statusButtonSize / 2
@@ -110,5 +120,17 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     fun setProgress(progress: Float) {
         this.progress = progress
         invalidate()
+    }
+
+    /**
+     * 更新按钮的状态值
+     *
+     * @param status 取值为PAUSE或者START
+     * */
+    fun setStatus(status: Int) {
+        if (this.status != status && (status in statusSet)) {
+            this.status = status
+            invalidate()
+        }
     }
 }
