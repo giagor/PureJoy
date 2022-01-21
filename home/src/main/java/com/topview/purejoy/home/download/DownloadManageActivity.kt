@@ -33,15 +33,15 @@ class DownloadManageActivity :
         }
 
         override fun onFailure(downloadTask: DownloadTask, msg: String) {
-
+            removeItem(downloadTask)
         }
 
         override fun onCancelled(downloadTask: DownloadTask) {
-
+            removeItem(downloadTask)
         }
 
         override fun onSuccess(downloadTask: DownloadTask) {
-
+            removeItem(downloadTask)
         }
 
         override fun alreadyDownloaded(downloadTask: DownloadTask) {
@@ -87,6 +87,10 @@ class DownloadManageActivity :
 
     private fun updateItem(downloadTask: DownloadTask) {
         adapter.notifyItemChanged(adapter.getItemPosition(downloadTask))
+    }
+
+    private fun removeItem(downloadTask: DownloadTask) {
+        adapter.remove(downloadTask)
     }
 
     /**
