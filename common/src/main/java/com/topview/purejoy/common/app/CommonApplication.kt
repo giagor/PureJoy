@@ -13,6 +13,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.topview.purejoy.common.business.db.AppDatabase
 import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.component.download.DownloadManager
+import com.topview.purejoy.common.util.NotificationHelper
 import java.io.File
 
 class CommonApplication : Application() {
@@ -34,6 +35,7 @@ class CommonApplication : Application() {
         if (isAppMainProcess()) {
             initDownloadLibrary()
             initAppDatabase()
+            initNotificationHelper()
         }
         initARouter()
     }
@@ -63,6 +65,10 @@ class CommonApplication : Application() {
         AppDatabaseManager.appDatabase = Room.databaseBuilder(
             this, AppDatabase::class.java, "AppDataBase"
         ).build()
+    }
+
+    private fun initNotificationHelper() {
+        NotificationHelper.init(this)
     }
 
     /**
