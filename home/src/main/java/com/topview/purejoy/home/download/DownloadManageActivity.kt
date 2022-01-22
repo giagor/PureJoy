@@ -21,6 +21,14 @@ class DownloadManageActivity :
     DownloadManageAdapter.StatusButtonClickListener {
 
     private val downloadListener = object : SimpleUserDownloadListener() {
+        override fun onPrepareDownload(downloadTask: DownloadTask) {
+            updateItem(downloadTask)
+        }
+
+        override fun onStarted(downloadTask: DownloadTask) {
+            updateItem(downloadTask)
+        }
+        
         override fun onProgress(downloadTask: DownloadTask, progress: Int) {
             updateItem(downloadTask)
         }
