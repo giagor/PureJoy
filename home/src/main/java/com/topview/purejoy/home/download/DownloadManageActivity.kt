@@ -8,6 +8,7 @@ import com.topview.purejoy.common.component.download.listener.user.SimpleUserDow
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.mvvm.activity.MVVMActivity
+import com.topview.purejoy.common.util.DownloadUtil
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeDownloadManageBinding
 import com.topview.purejoy.home.download.adapter.DownloadManageAdapter
@@ -60,11 +61,13 @@ class DownloadManageActivity :
         initView()
         observe()
         initData()
+        initEvent()
     }
 
     private fun observe() {
         // TODO 如果列表过大，就在子线程中添加监听器
         viewModel.downloadTasksLiveData.observe(this) {
+            // TODO 对于未开始下载的任务，考虑开始下载时才加监听
             for (task in it) {
                 task.registerObserver(downloadListener)
             }
@@ -83,6 +86,16 @@ class DownloadManageActivity :
         val layoutManager = LinearLayoutManager(this)
         binding.downloadTaskLayoutManager = layoutManager
         binding.downloadTaskAdapter = adapter
+    }
+
+    private fun initEvent() {
+        // 点击监听
+        adapter.setOnItemClickListener { adapter, _, position ->
+            val task: DownloadTask = adapter.getItem(position) as DownloadTask
+            if (task.getStatus() == DownloadStatus.INITIAL) {
+                DownloadUtil.downloadMusic(this@DownloadManageActivity, task)
+            }
+        }
     }
 
     private fun updateItem(downloadTask: DownloadTask) {

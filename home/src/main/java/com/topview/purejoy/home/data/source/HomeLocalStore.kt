@@ -21,7 +21,7 @@ class HomeLocalStore {
             // 若该歌曲没有正在下载，则为其创建一个对应的下载任务
             if (downloadingTask == null) {
                 downloadTasks.addLast(
-                    DownloadManager.createTask(
+                    DownloadManager.createTaskWithPath(
                         downloadSongInfo.url,
                         downloadSongInfo.path,
                         downloadSongInfo.name,

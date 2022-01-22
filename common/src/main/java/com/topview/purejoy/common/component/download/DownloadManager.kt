@@ -116,6 +116,27 @@ object DownloadManager {
     }
 
     /**
+     * 创建一个任务（不加入下载队列）
+     * */
+    fun createTaskWithPath(
+        url: String,
+        path: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        return DownloadTask(
+            id = null,
+            name = name,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+    }
+
+    /**
      * 用户调用该方法，进行任务的下载
      *
      * @param url 要下载的文件的url
@@ -130,6 +151,36 @@ object DownloadManager {
         listener: UserDownloadListener?
     ): DownloadTask {
         val path = getDownloadPath(saveDir, name)
+        // 创建任务
+        val downloadTask = DownloadTask(
+            id = null,
+            name = name,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+        // 处理任务
+        downloadTask.download()
+        return downloadTask
+    }
+
+    /**
+     * 用户调用该方法，进行任务的下载
+     *
+     * @param url 要下载的文件的url
+     * @param path 下载路径，例如/storage/emulated/0/Android/data/packagename/files/Music/红日.mp3
+     * @param name 文件名，需要自己带上后缀名
+     * @param listener 监听器，可以继承SimpleUserDownloadListener实现监听
+     * */
+    fun downloadWithPath(
+        url: String,
+        path: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
         // 创建任务
         val downloadTask = DownloadTask(
             id = null,

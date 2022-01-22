@@ -18,11 +18,23 @@
         android:layout_height="60dp"
         android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@{downloadTask.name}"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{downloadTask.name}"/>
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:downloadTips="@{downloadTask}"/>                
+            
+        </LinearLayout>
         
         <com.topview.purejoy.common.widget.StatusCircleButton
             android:layout_width="30dp"
