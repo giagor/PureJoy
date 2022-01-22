@@ -9,6 +9,11 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
  * */
 interface UserDownloadListener {
     /**
+     * 表示已经已经进入准备下载的阶段，对应的状态为DownloadStatus.PREPARE_DOWNLOAD
+     * */
+    fun onPrepareDownload(downloadTask: DownloadTask)
+
+    /**
      * 通知下载已经开始，任务刚开始下载时会回调该方法
      * */
     fun onStarted(downloadTask: DownloadTask)
@@ -18,7 +23,7 @@ interface UserDownloadListener {
      *
      * @param progress 取值为[0,100]间的整数
      * */
-    fun onProgress(downloadTask : DownloadTask,progress: Int)
+    fun onProgress(downloadTask: DownloadTask, progress: Int)
 
     /**
      * 通知下载已暂停，一般是用户手动暂停该下载任务，会回调该方法

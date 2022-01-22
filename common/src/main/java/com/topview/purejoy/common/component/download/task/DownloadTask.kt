@@ -237,6 +237,7 @@ class DownloadTask(
      * */
     private fun restoreFromPause() {
         status = DownloadStatus.PREPARE_DOWNLOAD
+        callObserversPrepareDownload()
         pauseTaskCounts = 0
     }
 
@@ -415,6 +416,14 @@ class DownloadTask(
         }
     }
 
+    internal fun callObserversPrepareDownload() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onPrepareDownload(this)
+            }
+        }
+    }
+
     /**
      * 注册观察者
      * */
@@ -436,6 +445,7 @@ class DownloadTask(
         if (!triggerDownload) {
             triggerDownload = true
             status = DownloadStatus.PREPARE_DOWNLOAD
+            callObserversPrepareDownload()
             TaskHandler.handleTask(this)
         }
     }
