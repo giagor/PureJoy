@@ -7,9 +7,10 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
  *
  * 一个简单的适配器模式，用户想监听下载的状态、进度等，可以让自己的监听器继承该类，并且重写不需要的方法造成冗余
  * */
+// todo 移除该类
 open class SimpleUserDownloadListener : UserDownloadListener {
     override fun onPrepareDownload(downloadTask: DownloadTask) {
-        
+
     }
 
     override fun onStarted(downloadTask: DownloadTask) {

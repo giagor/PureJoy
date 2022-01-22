@@ -12,7 +12,7 @@ class DownloadManageAdapter :
         R.layout.item_home_download_manage
     ) {
 
-    private var statusButtonClickListener: StatusButtonClickListener? = null
+    private var onClickListener: OnClickListener? = null
 
     override fun convert(
         holder: BaseDataBindingHolder<ItemHomeDownloadManageBinding>,
@@ -24,9 +24,13 @@ class DownloadManageAdapter :
             // 设置数据
             it.downloadTask = item
             // 设置监听器
-            statusButtonClickListener?.let { listener ->
+            onClickListener?.let { listener ->
                 it.statusButtonClickListener = View.OnClickListener {
                     listener.onStatusButtonClick(item)
+                }
+
+                it.cancelTaskClickListener = View.OnClickListener {
+                    listener.onCancelTaskClick(item)
                 }
             }
         }
@@ -35,11 +39,12 @@ class DownloadManageAdapter :
     /**
      * 设置监听器
      * */
-    fun setStatusButtonClickListener(listener: StatusButtonClickListener) {
-        this.statusButtonClickListener = listener
+    fun setStatusButtonClickListener(listener: OnClickListener) {
+        this.onClickListener = listener
     }
 
-    interface StatusButtonClickListener {
-        fun onStatusButtonClick(downloadTask: DownloadTask)
+    interface OnClickListener {
+        fun onStatusButtonClick(downloadTask: DownloadTask) 
+        fun onCancelTaskClick(downloadTask: DownloadTask) 
     }
 }

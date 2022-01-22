@@ -18,7 +18,7 @@ import com.topview.purejoy.home.util.getAndroidViewModelFactory
 @Route(path = HomeRouter.ACTIVITY_HOME_DOWNLOAD_MANAGE)
 class DownloadManageActivity :
     MVVMActivity<DownloadManageViewModel, ActivityHomeDownloadManageBinding>(),
-    DownloadManageAdapter.StatusButtonClickListener {
+    DownloadManageAdapter.OnClickListener {
 
     private val downloadListener = object : SimpleUserDownloadListener() {
         override fun onPrepareDownload(downloadTask: DownloadTask) {
@@ -28,7 +28,7 @@ class DownloadManageActivity :
         override fun onStarted(downloadTask: DownloadTask) {
             updateItem(downloadTask)
         }
-        
+
         override fun onProgress(downloadTask: DownloadTask, progress: Int) {
             updateItem(downloadTask)
         }
@@ -128,6 +128,15 @@ class DownloadManageActivity :
             }
 
             else -> {}
+        }
+    }
+
+    override fun onCancelTaskClick(downloadTask: DownloadTask) {
+        when (downloadTask.getStatus()) {
+            DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED, DownloadStatus.PREPARE_DOWNLOAD -> {
+                downloadTask.cancelDownload()
+                updateItem(downloadTask)
+            }
         }
     }
 

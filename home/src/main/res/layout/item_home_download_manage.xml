@@ -11,6 +11,9 @@
         <variable
             name="statusButtonClickListener"
             type="OnClickListener" />
+        <variable
+            name="cancelTaskClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -42,6 +45,13 @@
             app:progress="@{downloadTask.progress}"
             app:circleButtonStatus="@{downloadTask}"
             app:onClickListener="@{statusButtonClickListener}"/>
+        
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/home_ic_cancel_download"
+            app:cancelIconVisibility="@{downloadTask}"
+            app:onClickListener="@{cancelTaskClickListener}"/>
         
     </LinearLayout>
 </layout>

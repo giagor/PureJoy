@@ -1,6 +1,7 @@
 package com.topview.purejoy.home.download
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +22,10 @@ fun setDownloadTasks(recyclerView: RecyclerView, tasks: List<DownloadTask>?) {
 @BindingAdapter("circleButtonStatus")
 fun setCircleButtonStatus(button: StatusCircleButton, task: DownloadTask) {
     when (task.getStatus()) {
-        DownloadStatus.INITIAL, DownloadStatus.PREPARE_DOWNLOAD -> {
+        DownloadStatus.INITIAL, DownloadStatus.PREPARE_DOWNLOAD, DownloadStatus.CANCELED -> {
             button.visibility = View.GONE
         }
+
         DownloadStatus.DOWNLOADING -> {
             button.visibility = View.VISIBLE
             button.setStatus(StatusCircleButton.START)
@@ -53,6 +55,24 @@ fun setDownloadTips(tv: TextView, task: DownloadTask) {
         DownloadStatus.PREPARE_DOWNLOAD -> {
             tv.visibility = View.VISIBLE
             tv.text = tv.context.getString(R.string.home_download_manage_prepare_download)
+        }
+
+        DownloadStatus.CANCELED -> {
+            tv.visibility = View.VISIBLE
+            tv.text = tv.context.getString(R.string.home_download_manage_task_cancelling)
+        }
+    }
+}
+
+@BindingAdapter("cancelIconVisibility")
+fun setCancelIconVisibility(iv: ImageView, task: DownloadTask) {
+    when (task.getStatus()) {
+        DownloadStatus.INITIAL, DownloadStatus.CANCELED -> {
+            iv.visibility = View.GONE
+        }
+
+        DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED, DownloadStatus.PREPARE_DOWNLOAD -> {
+            iv.visibility = View.VISIBLE
         }
     }
 }

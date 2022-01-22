@@ -144,15 +144,20 @@ class DownloadTask(
 
         // 获取前一个状态
         val prePaused = checkPaused()
+        val prePrepare = checkPrepare()
         status = DownloadStatus.CANCELED
         for (subTask in subTasks) {
             subTask.cancelSubTask()
         }
 
-        // 特殊处理下 暂停 -> 取消 的这种状态迁移，方便清理资源，以及处理回调
-        if (prePaused) {
+        // 特殊处理下 暂停or准备下载 -> 取消 的状态迁移，方便清理资源，以及处理回调
+        if (prePaused || prePrepare) {
+            // todo 弄个普通线程池
             thread {
-                notifyCanceled()
+                clearTaskInfo()
+                callObserverOnCancelled()
+                // 移除所有观察者
+                removeAllObservers()
             }
         }
     }
