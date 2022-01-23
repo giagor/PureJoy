@@ -25,7 +25,8 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private var progressCircleRadius = dpToPx(15F)
     private var progressDoneColor: Int = Color.GREEN
     private var progressUndoneColor: Int = Color.GRAY
-    
+    private var progressWidth = dpToPx(3F)
+
     private var status = PAUSE
     private var progress = 0F
 
@@ -36,7 +37,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = progressDoneColor
         style = Paint.Style.STROKE
-        strokeWidth = dpToPx(3F)
+        strokeWidth = progressWidth
     }
 
     /**
@@ -58,6 +59,14 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
         trianglePath.lineTo(width / 2 - halfStatusSize, height / 2 + halfStatusSize)
         trianglePath.lineTo(width / 2 + halfStatusSize, (height / 2).toFloat())
         trianglePath.close()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // 重新测量View的高度，使得View在wrap_content下，也有合理的大小
+        val size = (progressCircleRadius + progressWidth) * 2
+        val width = resolveSize(size.toInt(), widthMeasureSpec)
+        val height = resolveSize(size.toInt(), heightMeasureSpec)
+        setMeasuredDimension(width, height)
     }
 
     override fun onDraw(canvas: Canvas) {
