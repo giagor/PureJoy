@@ -38,4 +38,17 @@
         <attr name="borderColor" format="color"/>
         <attr name="backgroundColor" format="color"/>
     </declare-styleable>
+    
+    <declare-styleable name="StatusCircleButton">
+        <attr name="status_button_size" format="dimension"/>
+        <attr name="status_color" format="color"/>
+        <attr name="progress_circle_radius" format="dimension"/>
+        <attr name="progress_done_color" format="color"/>
+        <attr name="progress_undone_color" format="color"/>
+        <attr name ="status">
+            <enum name = "pause" value="1"/>
+            <enum name = "start" value="2"/>
+        </attr>
+        <attr name="progress" format="integer"/>
+    </declare-styleable>
 </resources>

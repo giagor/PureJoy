@@ -20,26 +20,28 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
+    private val statusButtonSize = dpToPx(13F)
     private var statusColor: Int = Color.GREEN
+    private var progressCircleRadius = dpToPx(15F)
     private var progressDoneColor: Int = Color.GREEN
     private var progressUndoneColor: Int = Color.GRAY
-    private var progressCircleRadius = dpToPx(15F)
-    private val statusButtonSize = dpToPx(15F)
+    
     private var status = PAUSE
-
-    // TODO 假设的进度条，记得移除
     private var progress = 0F
 
-    private val statusPaint = Paint().apply {
+    private val statusPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = statusColor
     }
 
-    private val progressPaint = Paint().apply {
+    private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = progressDoneColor
         style = Paint.Style.STROKE
         strokeWidth = dpToPx(3F)
     }
 
+    /**
+     * 三角形路径
+     * */
     private var trianglePath = Path()
 
     /**
