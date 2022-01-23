@@ -120,11 +120,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        val halfStatusSize = statusButtonSize / 2
-        trianglePath.moveTo(width / 2 - halfStatusSize, height / 2 - halfStatusSize)
-        trianglePath.lineTo(width / 2 - halfStatusSize, height / 2 + halfStatusSize)
-        trianglePath.lineTo(width / 2 + halfStatusSize, (height / 2).toFloat())
-        trianglePath.close()
+        setTrianglePath()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -189,6 +185,50 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
             false,
             progressPaint
         )
+    }
+
+    /**
+     * 设置三角形路径
+     * */
+    private fun setTrianglePath() {
+        trianglePath.reset()
+        val halfStatusSize = statusButtonSize / 2
+        trianglePath.moveTo(width / 2 - halfStatusSize, height / 2 - halfStatusSize)
+        trianglePath.lineTo(width / 2 - halfStatusSize, height / 2 + halfStatusSize)
+        trianglePath.lineTo(width / 2 + halfStatusSize, (height / 2).toFloat())
+        trianglePath.close()
+    }
+
+    fun setStatusButtonSize(size: Float) {
+        this.statusButtonSize = size
+        setTrianglePath()
+        invalidate()
+    }
+
+    fun setStatusColor(color: Int) {
+        statusPaint.color = color
+        invalidate()
+    }
+
+    fun setProgressCircleRadius(radius: Float) {
+        this.progressCircleRadius = radius
+        requestLayout()
+    }
+
+    fun setProgressDoneColor(color: Int) {
+        this.progressDoneColor = color
+        invalidate()
+    }
+
+    fun setProgressUnDoneColor(color: Int) {
+        this.progressUndoneColor = color
+        invalidate()
+    }
+
+    fun setProgressStrokeWidth(width: Float) {
+        this.progressStrokeWidth = width
+        progressPaint.strokeWidth = width
+        requestLayout()
     }
 
     /**
