@@ -23,7 +23,7 @@ fun setDownloadSongInfos(recyclerView: RecyclerView, tasks: List<DownloadSongInf
 fun setCircleButtonStatus(button: StatusCircleButton, songInfo: DownloadSongInfo) {
     when (songInfo.status) {
         DownloadStatus.INITIAL, DownloadStatus.PREPARE_DOWNLOAD, DownloadStatus.CANCELED -> {
-            button.visibility = View.GONE
+            button.visibility = View.INVISIBLE
         }
 
         DownloadStatus.DOWNLOADING -> {
@@ -44,22 +44,31 @@ fun setCircleButtonStatus(button: StatusCircleButton, songInfo: DownloadSongInfo
 fun setDownloadTips(tv: TextView, songInfo: DownloadSongInfo) {
     when (songInfo.status) {
         DownloadStatus.INITIAL -> {
-            tv.visibility = View.VISIBLE
             tv.text = tv.context.getString(R.string.home_download_manage_click_to_download)
         }
 
-        DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED -> {
-            tv.visibility = View.INVISIBLE
+        DownloadStatus.DOWNLOADING -> {
+            tv.text = tv.context.getString(R.string.home_download_manage_task_downloading)
+        }
+
+        DownloadStatus.PAUSED -> {
+            tv.text = tv.context.getString(R.string.home_download_manage_task_paused)
         }
 
         DownloadStatus.PREPARE_DOWNLOAD -> {
-            tv.visibility = View.VISIBLE
             tv.text = tv.context.getString(R.string.home_download_manage_prepare_download)
         }
 
         DownloadStatus.CANCELED -> {
-            tv.visibility = View.VISIBLE
             tv.text = tv.context.getString(R.string.home_download_manage_task_cancelling)
+        }
+        
+        DownloadStatus.SUCCESS ->{
+            tv.text = tv.context.getString(R.string.home_download_manage_task_success)
+        }
+        
+        DownloadStatus.FAILURE -> {
+            tv.text = tv.context.getString(R.string.home_download_manage_task_failure)
         }
     }
 }
@@ -68,7 +77,7 @@ fun setDownloadTips(tv: TextView, songInfo: DownloadSongInfo) {
 fun setCancelIconVisibility(iv: ImageView, songInfo: DownloadSongInfo) {
     when (songInfo.status) {
         DownloadStatus.INITIAL, DownloadStatus.CANCELED -> {
-            iv.visibility = View.GONE
+            iv.visibility = View.INVISIBLE
         }
 
         DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED, DownloadStatus.PREPARE_DOWNLOAD -> {

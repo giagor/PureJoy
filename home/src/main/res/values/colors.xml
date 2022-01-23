@@ -9,4 +9,10 @@
     
     <!--"我的"界面-->
     <color name="home_mine_divider_color">#BEBEBE</color>
+
+    <!--"下载管理"界面-->
+    <color name="home_download_manage_divider_color">#BEBEBE</color>
+    
+    <!--黑色字体-->
+    <color name="home_black_text_color">#212121</color>
 </resources>

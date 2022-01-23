@@ -19,29 +19,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{downloadSongInfo.name}"/>
+                android:text="@{downloadSongInfo.name}"
+                android:textColor="@color/home_black_text_color"
+                android:textSize="17sp"
+                android:singleLine="true"/>
             
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:downloadTips="@{downloadSongInfo}"/>                
+                app:downloadTips="@{downloadSongInfo}"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"/>                
             
         </LinearLayout>
         
         <com.topview.purejoy.common.widget.StatusCircleButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:progress="@{downloadSongInfo.progress}"
             app:circleButtonStatus="@{downloadSongInfo}"
             app:onClickListener="@{statusButtonClickListener}"/>
@@ -50,8 +57,9 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/home_ic_cancel_download"
+            android:layout_marginStart="5dp"
             app:cancelIconVisibility="@{downloadSongInfo}"
-            app:onClickListener="@{cancelTaskClickListener}"/>
+            app:onClickListener="@{cancelTaskClickListener}" />
         
     </LinearLayout>
 </layout>
