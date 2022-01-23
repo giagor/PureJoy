@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import com.topview.purejoy.common.R
 import com.topview.purejoy.common.util.dpToPx
 
 class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
@@ -20,25 +21,49 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    private val statusButtonSize = dpToPx(13F)
-    private var statusColor: Int = Color.GREEN
-    private var progressCircleRadius = dpToPx(15F)
-    private var progressDoneColor: Int = Color.GREEN
-    private var progressUndoneColor: Int = Color.GRAY
-    private var progressWidth = dpToPx(3F)
+    /**
+     * 中间的状态的大小（长宽）
+     * */
+    private var statusButtonSize = 0F
 
-    private var status = PAUSE
+    /**
+     * 中间状态的颜色
+     * */
+    private var statusColor: Int = 0
+
+    /**
+     * 进度条与圆心的半径
+     * */
+    private var progressCircleRadius = 0F
+
+    /**
+     * 已完成的进度条的颜色
+     * */
+    private var progressDoneColor: Int = 0
+
+    /**
+     * 未完成的进度条的颜色
+     * */
+    private var progressUndoneColor: Int = 0
+
+    /**
+     * 进度条边的宽度
+     * */
+    private var progressStrokeWidth = 0F
+
+    /**
+     * 显示的状态
+     * */
+    private var status = 0
+
+    /**
+     * 当前进度
+     * */
     private var progress = 0F
 
-    private val statusPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = statusColor
-    }
+    private val statusPaint: Paint
 
-    private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = progressDoneColor
-        style = Paint.Style.STROKE
-        strokeWidth = progressWidth
-    }
+    private val progressPaint: Paint
 
     /**
      * 三角形路径
@@ -53,6 +78,47 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
         add(START)
     }
 
+    init {
+        initAttrs(attrs)
+
+        statusPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = statusColor
+        }
+
+        progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = progressDoneColor
+            style = Paint.Style.STROKE
+            strokeWidth = progressStrokeWidth
+        }
+    }
+
+    private fun initAttrs(attrs: AttributeSet?) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.StatusCircleButton)
+        statusButtonSize =
+            typedArray.getDimension(R.styleable.StatusCircleButton_status_button_size, dpToPx(13F))
+        statusColor =
+            typedArray.getColor(R.styleable.StatusCircleButton_status_color, Color.GREEN)
+        progressCircleRadius =
+            typedArray.getDimension(
+                R.styleable.StatusCircleButton_progress_circle_radius,
+                dpToPx(15F)
+            )
+        progressDoneColor =
+            typedArray.getColor(R.styleable.StatusCircleButton_progress_done_color, Color.GREEN)
+        progressUndoneColor =
+            typedArray.getColor(R.styleable.StatusCircleButton_progress_undone_color, Color.GRAY)
+        progressStrokeWidth =
+            typedArray.getDimension(
+                R.styleable.StatusCircleButton_progress_stroke_width,
+                dpToPx(3F)
+            )
+        status =
+            typedArray.getInt(R.styleable.StatusCircleButton_status, PAUSE)
+        progress =
+            typedArray.getFloat(R.styleable.StatusCircleButton_progress, 0F)
+        typedArray.recycle()
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         val halfStatusSize = statusButtonSize / 2
         trianglePath.moveTo(width / 2 - halfStatusSize, height / 2 - halfStatusSize)
@@ -63,7 +129,7 @@ class StatusCircleButton(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // 重新测量View的高度，使得View在wrap_content下，也有合理的大小
-        val size = (progressCircleRadius + progressWidth) * 2
+        val size = (progressCircleRadius + progressStrokeWidth) * 2
         val width = resolveSize(size.toInt(), widthMeasureSpec)
         val height = resolveSize(size.toInt(), heightMeasureSpec)
         setMeasuredDimension(width, height)
