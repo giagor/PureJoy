@@ -1,38 +1,29 @@
 package com.topview.purejoy.home.data.source
 
 import com.topview.purejoy.common.business.db.AppDatabaseManager
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
-import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.task.DownloadTask
 import java.util.*
 
 class HomeLocalStore {
-    fun getDownloadTaskList(): List<DownloadTask> {
+    fun getDownloadSongInfoList(): List<DownloadSongInfo> {
         val appDatabase =
             checkNotNull(AppDatabaseManager.appDatabase, { "Didn't initialize AppDatabase yet" })
         val dao = appDatabase.downloadSongInfoDao()
         // 数据库中查询下载歌曲的信息
-        val downloadSongInfoList = dao.queryDownloadSongInfo()
-        // 存放下载任务的列表
-        val downloadTasks: LinkedList<DownloadTask> = LinkedList<DownloadTask>()
-        // 将下载歌曲信息映射为下载任务
-        for (downloadSongInfo in downloadSongInfoList) {
-            val downloadingTask = DownloadingSongManager.get(downloadSongInfo.tag)
-            // 若该歌曲没有正在下载，则为其创建一个对应的下载任务
-            if (downloadingTask == null) {
-                downloadTasks.addLast(
-                    DownloadManager.createTaskWithPath(
-                        downloadSongInfo.url,
-                        downloadSongInfo.path,
-                        downloadSongInfo.name,
-                        null
-                    )
-                )
-                // 若该歌曲正在下载，则直接获取其对应的下载任务
+        val localSongInfoList = dao.queryDownloadSongInfo()
+        // 要返回的List
+        val songInfoList = LinkedList<DownloadSongInfo>()
+        for (localInfo in localSongInfoList) {
+            val memoryInfo = DownloadingSongManager.get(localInfo.tag)
+            // 若该歌曲没有正在下载，则添加到最后
+            if (memoryInfo == null) {
+                songInfoList.addLast(localInfo)
+                // 若该歌曲正在下载，则添加到列表的最前面
             } else {
-                downloadTasks.addFirst(downloadingTask)
+                songInfoList.addFirst(memoryInfo)
             }
         }
-        return downloadTasks
+        return songInfoList
     }
 }

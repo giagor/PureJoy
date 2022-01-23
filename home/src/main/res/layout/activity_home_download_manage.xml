@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             app:layoutManager="@{downloadTaskLayoutManager}"
             app:adapter="@{downloadTaskAdapter}"
-            app:downloadTasks="@{downloadManageViewModel.downloadTasksLiveData}"/>
+            app:downloadSongInfos="@{downloadManageViewModel.downloadSongsLiveData}"/>
         
     </LinearLayout>
 </layout>

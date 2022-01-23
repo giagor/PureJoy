@@ -156,6 +156,7 @@ object TaskHandler {
             // 将子任务插入到数据库中
             DownloadManager.downDbHelper.insertSubDownloadTasks(downloadTask.subTasks)
         }
+        downloadTask.callObserversInsertTaskToDb()
         return downloadTask
     }
 

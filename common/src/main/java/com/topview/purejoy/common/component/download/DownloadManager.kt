@@ -71,6 +71,13 @@ object DownloadManager {
     internal val downloadDispatcher: DownloadDispatcher = DownloadDispatcher()
 
     /**
+     * 对于开始下载，且还未下载结束的任务的缓存
+     * key：任务的tag
+     * value：任务
+     * */
+    private val taskMap: MutableMap<String, DownloadTask> = HashMap()
+
+    /**
      * 初始化方法
      *
      * @param applicationContext 通常是Application context
@@ -198,4 +205,13 @@ object DownloadManager {
     }
 
     fun batchDownload() = BatchDownloadTask()
+
+    internal fun putTask(tag: String, task: DownloadTask) {
+        taskMap[tag] = task
+    }
+
+    internal fun removeTask(tag: String): DownloadTask? = taskMap.remove(tag)
+
+    fun getTask(tag: String): DownloadTask? = taskMap[tag]
+
 }

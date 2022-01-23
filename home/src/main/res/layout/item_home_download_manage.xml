@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.topview.purejoy.common.component.download.task.DownloadTask"/>
+        <import type="com.topview.purejoy.common.business.download.bean.DownloadSongInfo"/>
         <import type="android.view.View.OnClickListener"/>
         <variable
-            name="downloadTask"
-            type="DownloadTask" />
+            name="downloadSongInfo"
+            type="DownloadSongInfo" />
         <variable
             name="statusButtonClickListener"
             type="OnClickListener" />
@@ -30,27 +30,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{downloadTask.name}"/>
+                android:text="@{downloadSongInfo.name}"/>
             
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:downloadTips="@{downloadTask}"/>                
+                app:downloadTips="@{downloadSongInfo}"/>                
             
         </LinearLayout>
         
         <com.topview.purejoy.common.widget.StatusCircleButton
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:progress="@{downloadTask.progress}"
-            app:circleButtonStatus="@{downloadTask}"
+            app:progress="@{downloadSongInfo.progress}"
+            app:circleButtonStatus="@{downloadSongInfo}"
             app:onClickListener="@{statusButtonClickListener}"/>
         
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/home_ic_cancel_download"
-            app:cancelIconVisibility="@{downloadTask}"
+            app:cancelIconVisibility="@{downloadSongInfo}"
             app:onClickListener="@{cancelTaskClickListener}"/>
         
     </LinearLayout>

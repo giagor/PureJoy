@@ -13,6 +13,10 @@ open class SimpleUserDownloadListener : UserDownloadListener {
 
     }
 
+    override fun insertTaskToDb(downloadTask: DownloadTask) {
+        
+    }
+    
     override fun onStarted(downloadTask: DownloadTask) {
 
     }

@@ -1,6 +1,6 @@
 package com.topview.purejoy.common.business.download.manager
 
-import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 
 /**
  * 正在下载的歌曲的管理者
@@ -8,15 +8,15 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
 object DownloadingSongManager {
     /**
      * Key：下载任务的标识符tag
-     * Value：下载任务
+     * Value：下载的歌曲信息
      * */
-    private val downloadSongMap: MutableMap<String, DownloadTask> = HashMap()
+    private val downloadSongMap: MutableMap<String, DownloadSongInfo> = HashMap()
 
-    fun put(tag: String, task: DownloadTask) {
-        downloadSongMap.put(tag, task)
+    fun put(tag: String, songInfo: DownloadSongInfo) {
+        downloadSongMap[tag] = songInfo
     }
 
-    fun get(tag: String): DownloadTask? = downloadSongMap[tag]
+    fun get(tag: String): DownloadSongInfo? = downloadSongMap[tag]
 
     fun remove(tag: String) {
         downloadSongMap.remove(tag)

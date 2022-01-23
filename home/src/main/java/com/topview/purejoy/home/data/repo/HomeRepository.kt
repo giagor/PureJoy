@@ -1,6 +1,6 @@
 package com.topview.purejoy.home.data.repo
 
-import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.home.data.source.HomeLocalStore
 import com.topview.purejoy.home.data.source.HomeRemoteStore
 import com.topview.purejoy.home.entity.*
@@ -46,8 +46,8 @@ internal object HomeRepository {
         }
 
     // TODO 没有下载任务时考虑返回null
-    suspend fun getDownloadTaskList(): List<DownloadTask> =
+    suspend fun getDownloadSongInfoList(): List<DownloadSongInfo> =
         withContext(Dispatchers.IO) {
-            homeLocalStore.getDownloadTaskList()
+            homeLocalStore.getDownloadSongInfoList()
         }
 }

@@ -1,6 +1,7 @@
 package com.topview.purejoy.common.business.download.listener
 
 import com.topview.purejoy.common.business.db.AppDatabaseManager
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.task.DownloadTask
@@ -21,6 +22,18 @@ internal class DownloadSongListenerWrapper : SimpleUserDownloadListener() {
             get() {
                 return field++
             }
+    }
+
+    override fun insertTaskToDb(downloadTask: DownloadTask) {
+        super.insertTaskToDb(downloadTask)
+
+        // 业务层同步将数据插入到数据库中
+        AppDatabaseManager.appDatabase?.let {
+            ThreadUtil.runOnIO {
+                val downloadSongInfo = DownloadSongInfo.copyFromTask(downloadTask)
+                it.downloadSongInfoDao().insertDownloadSongInfo(downloadSongInfo)
+            }
+        }
     }
 
     override fun onFailure(downloadTask: DownloadTask, msg: String) {

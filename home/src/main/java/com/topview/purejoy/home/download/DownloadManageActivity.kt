@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.DownloadTask
@@ -73,11 +75,9 @@ class DownloadManageActivity :
     }
 
     private fun observe() {
-        // TODO 如果列表过大，就在子线程中添加监听器
-        viewModel.downloadTasksLiveData.observe(this) {
-            // TODO 对于未开始下载的任务，考虑开始下载时才加监听
-            for (task in it) {
-                task.registerObserver(downloadListener)
+        viewModel.downloadSongsLiveData.observe(this) {
+            for (songInfo in it) {
+                DownloadManager.getTask(songInfo.tag)?.registerObserver(downloadListener)
             }
         }
     }
@@ -99,43 +99,71 @@ class DownloadManageActivity :
     private fun initEvent() {
         // 点击监听
         adapter.setOnItemClickListener { adapter, _, position ->
-            val task: DownloadTask = adapter.getItem(position) as DownloadTask
-            if (task.getStatus() == DownloadStatus.INITIAL) {
-                DownloadUtil.downloadMusic(this@DownloadManageActivity, task)
+            val songInfo: DownloadSongInfo = adapter.getItem(position) as DownloadSongInfo
+            if (songInfo.status == DownloadStatus.INITIAL) {
+                DownloadUtil.downloadMusic(this, songInfo, downloadListener)
             }
         }
     }
 
     private fun updateItem(downloadTask: DownloadTask) {
-        adapter.notifyItemChanged(adapter.getItemPosition(downloadTask))
+        val songInfoList = adapter.data
+        for ((index, songInfo) in songInfoList.withIndex()) {
+            if (songInfo.tag == downloadTask.tag) {
+                songInfo.status = downloadTask.getStatus()
+                songInfo.progress = downloadTask.getProgress()
+                adapter.notifyItemChanged(index)
+                break
+            }
+        }
+
+//        DownloadingSongManager.get(downloadTask.tag)?.let {
+//            it.status = downloadTask.getStatus()
+//            it.progress = downloadTask.getProgress()
+//            adapter.notifyItemChanged(adapter.getItemPosition(it))
+//        }
     }
 
     private fun removeItem(downloadTask: DownloadTask) {
-        adapter.remove(downloadTask)
+        val songInfoList = adapter.data
+        for (songInfo in songInfoList) {
+            if (songInfo.tag == downloadTask.tag) {
+                songInfo.status = downloadTask.getStatus()
+                adapter.remove(songInfo)
+                break
+            }
+        }
+
+//        DownloadingSongManager.get(downloadTask.tag)?.let {
+//            it.status = downloadTask.getStatus()
+//            adapter.remove(it)
+//        }
     }
 
     /**
      * 状态按钮的点击事件
      * */
-    override fun onStatusButtonClick(downloadTask: DownloadTask) {
-        when (downloadTask.getStatus()) {
+    override fun onStatusButtonClick(songInfo: DownloadSongInfo) {
+        when (songInfo.status) {
             DownloadStatus.DOWNLOADING -> {
-                downloadTask.pauseDownload()
+                DownloadManager.getTask(songInfo.tag)?.pauseDownload()
             }
 
             DownloadStatus.PAUSED -> {
-                downloadTask.resumeDownload()
+                DownloadManager.getTask(songInfo.tag)?.resumeDownload()
             }
 
             else -> {}
         }
     }
 
-    override fun onCancelTaskClick(downloadTask: DownloadTask) {
-        when (downloadTask.getStatus()) {
+    override fun onCancelTaskClick(songInfo: DownloadSongInfo) {
+        when (songInfo.status) {
             DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED, DownloadStatus.PREPARE_DOWNLOAD -> {
-                downloadTask.cancelDownload()
-                updateItem(downloadTask)
+                DownloadManager.getTask(songInfo.tag)?.let {
+                    it.cancelDownload()
+                    updateItem(it)
+                }
             }
         }
     }

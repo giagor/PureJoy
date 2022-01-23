@@ -2,6 +2,7 @@ package com.topview.purejoy.common.component.download.task
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
@@ -18,7 +19,12 @@ import kotlin.concurrent.thread
  *
  * 表示一个完整的下载任务，它可以被分解为多个子任务
  * */
-@Entity
+@Entity(
+    indices = [Index(
+        value = ["tag"],
+        unique = true
+    )]
+)
 class DownloadTask(
     /** 父任务id */
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
@@ -229,6 +235,7 @@ class DownloadTask(
 //                }
 //            }
 //        }
+
         // 执行各个子任务
         for (subDownloadTask in subTasks) {
             if (!subDownloadTask.checkCompleted()) {
@@ -287,11 +294,13 @@ class DownloadTask(
     }
 
     private fun notifySuccess() {
+
         callObserversOnSuccess()
 //        DownloadManager.handler.post {
 //            downloadListener?.onSuccess()
 //        }
 
+        DownloadManager.removeTask(tag)
         if (breakPointDownload) {
             // 数据库中删除对应的任务
             DownloadManager.downDbHelper.deleteDownloadTask(this)
@@ -313,6 +322,7 @@ class DownloadTask(
     private fun notifyCanceled() {
         clearTaskInfo()
         callObserverOnCancelled()
+        DownloadManager.removeTask(tag)
 //        DownloadManager.handler.post {
 //            downloadListener?.onCancelled()
 //        }
@@ -334,6 +344,7 @@ class DownloadTask(
     private fun notifyFailure(msg: String) {
         clearTaskInfo()
         callObserversOnFailure(msg)
+        DownloadManager.removeTask(tag)
 //        DownloadManager.handler.post {
 //            downloadListener?.onFailure()
 //        }
@@ -429,6 +440,14 @@ class DownloadTask(
         }
     }
 
+    internal fun callObserversInsertTaskToDb() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.insertTaskToDb(this)
+            }
+        }
+    }
+
     /**
      * 注册观察者
      * */
@@ -451,6 +470,7 @@ class DownloadTask(
             triggerDownload = true
             status = DownloadStatus.PREPARE_DOWNLOAD
             callObserversPrepareDownload()
+            DownloadManager.putTask(tag, this)
             TaskHandler.handleTask(this)
         }
     }

@@ -3,12 +3,12 @@ package com.topview.purejoy.home.download.adapter
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
-import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ItemHomeDownloadManageBinding
 
 class DownloadManageAdapter :
-    BaseQuickAdapter<DownloadTask, BaseDataBindingHolder<ItemHomeDownloadManageBinding>>(
+    BaseQuickAdapter<DownloadSongInfo, BaseDataBindingHolder<ItemHomeDownloadManageBinding>>(
         R.layout.item_home_download_manage
     ) {
 
@@ -16,13 +16,13 @@ class DownloadManageAdapter :
 
     override fun convert(
         holder: BaseDataBindingHolder<ItemHomeDownloadManageBinding>,
-        item: DownloadTask
+        item: DownloadSongInfo
     ) {
         // 获取Binding
         val binding: ItemHomeDownloadManageBinding? = holder.dataBinding
         binding?.let {
             // 设置数据
-            it.downloadTask = item
+            it.downloadSongInfo = item
             // 设置监听器
             onClickListener?.let { listener ->
                 it.statusButtonClickListener = View.OnClickListener {
@@ -44,7 +44,7 @@ class DownloadManageAdapter :
     }
 
     interface OnClickListener {
-        fun onStatusButtonClick(downloadTask: DownloadTask) 
-        fun onCancelTaskClick(downloadTask: DownloadTask) 
+        fun onStatusButtonClick(songInfo: DownloadSongInfo)
+        fun onCancelTaskClick(songInfo: DownloadSongInfo)
     }
 }

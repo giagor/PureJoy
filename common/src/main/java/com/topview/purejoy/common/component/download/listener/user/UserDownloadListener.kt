@@ -14,6 +14,11 @@ interface UserDownloadListener {
     fun onPrepareDownload(downloadTask: DownloadTask)
 
     /**
+     * 若下载任务插入到数据库中，则回调该方法。该方法有利于业务层做一些数据的同步。
+     * */
+    fun insertTaskToDb(downloadTask: DownloadTask)
+
+    /**
      * 通知下载已经开始，任务刚开始下载时会回调该方法
      * */
     fun onStarted(downloadTask: DownloadTask)

@@ -5,14 +5,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
 import com.topview.purejoy.common.component.download.status.DownloadStatus
-import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.widget.StatusCircleButton
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.download.adapter.DownloadManageAdapter
 
-@BindingAdapter("downloadTasks")
-fun setDownloadTasks(recyclerView: RecyclerView, tasks: List<DownloadTask>?) {
+@BindingAdapter("downloadSongInfos")
+fun setDownloadSongInfos(recyclerView: RecyclerView, tasks: List<DownloadSongInfo>?) {
     tasks?.let {
         val adapter = recyclerView.adapter as DownloadManageAdapter
         adapter.setList(it)
@@ -20,8 +20,8 @@ fun setDownloadTasks(recyclerView: RecyclerView, tasks: List<DownloadTask>?) {
 }
 
 @BindingAdapter("circleButtonStatus")
-fun setCircleButtonStatus(button: StatusCircleButton, task: DownloadTask) {
-    when (task.getStatus()) {
+fun setCircleButtonStatus(button: StatusCircleButton, songInfo: DownloadSongInfo) {
+    when (songInfo.status) {
         DownloadStatus.INITIAL, DownloadStatus.PREPARE_DOWNLOAD, DownloadStatus.CANCELED -> {
             button.visibility = View.GONE
         }
@@ -41,8 +41,8 @@ fun setCircleButtonStatus(button: StatusCircleButton, task: DownloadTask) {
 }
 
 @BindingAdapter("downloadTips")
-fun setDownloadTips(tv: TextView, task: DownloadTask) {
-    when (task.getStatus()) {
+fun setDownloadTips(tv: TextView, songInfo: DownloadSongInfo) {
+    when (songInfo.status) {
         DownloadStatus.INITIAL -> {
             tv.visibility = View.VISIBLE
             tv.text = tv.context.getString(R.string.home_download_manage_click_to_download)
@@ -65,8 +65,8 @@ fun setDownloadTips(tv: TextView, task: DownloadTask) {
 }
 
 @BindingAdapter("cancelIconVisibility")
-fun setCancelIconVisibility(iv: ImageView, task: DownloadTask) {
-    when (task.getStatus()) {
+fun setCancelIconVisibility(iv: ImageView, songInfo: DownloadSongInfo) {
+    when (songInfo.status) {
         DownloadStatus.INITIAL, DownloadStatus.CANCELED -> {
             iv.visibility = View.GONE
         }
