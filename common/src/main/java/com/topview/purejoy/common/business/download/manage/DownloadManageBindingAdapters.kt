@@ -1,15 +1,15 @@
-package com.topview.purejoy.home.download
+package com.topview.purejoy.common.business.download.manage
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.R
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.widget.StatusCircleButton
-import com.topview.purejoy.home.R
-import com.topview.purejoy.home.download.adapter.DownloadManageAdapter
+import com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter
 
 @BindingAdapter("downloadSongInfos")
 fun setDownloadSongInfos(recyclerView: RecyclerView, tasks: List<DownloadSongInfo>?) {
@@ -44,31 +44,31 @@ fun setCircleButtonStatus(button: StatusCircleButton, songInfo: DownloadSongInfo
 fun setDownloadTips(tv: TextView, songInfo: DownloadSongInfo) {
     when (songInfo.status) {
         DownloadStatus.INITIAL -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_click_to_download)
+            tv.text = tv.context.getString(R.string.common_download_manage_click_to_download)
         }
 
         DownloadStatus.DOWNLOADING -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_task_downloading)
+            tv.text = tv.context.getString(R.string.common_download_manage_task_downloading)
         }
 
         DownloadStatus.PAUSED -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_task_paused)
+            tv.text = tv.context.getString(R.string.common_download_manage_task_paused)
         }
 
         DownloadStatus.PREPARE_DOWNLOAD -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_prepare_download)
+            tv.text = tv.context.getString(R.string.common_download_manage_prepare_download)
         }
 
         DownloadStatus.CANCELED -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_task_cancelling)
+            tv.text = tv.context.getString(R.string.common_download_manage_task_cancelling)
         }
         
         DownloadStatus.SUCCESS ->{
-            tv.text = tv.context.getString(R.string.home_download_manage_task_success)
+            tv.text = tv.context.getString(R.string.common_download_manage_task_success)
         }
         
         DownloadStatus.FAILURE -> {
-            tv.text = tv.context.getString(R.string.home_download_manage_task_failure)
+            tv.text = tv.context.getString(R.string.common_download_manage_task_failure)
         }
     }
 }

@@ -1,25 +1,25 @@
-package com.topview.purejoy.home.download.adapter
+package com.topview.purejoy.common.business.download.manage.adapter
 
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
-import com.topview.purejoy.home.R
-import com.topview.purejoy.home.databinding.ItemHomeDownloadManageBinding
+import com.topview.purejoy.common.R
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
+import com.topview.purejoy.common.databinding.ItemCommonDownloadManageBinding
 
 class DownloadManageAdapter :
-    BaseQuickAdapter<DownloadSongInfo, BaseDataBindingHolder<ItemHomeDownloadManageBinding>>(
-        R.layout.item_home_download_manage
+    BaseQuickAdapter<DownloadSongInfo, BaseDataBindingHolder<ItemCommonDownloadManageBinding>>(
+        R.layout.item_common_download_manage
     ) {
 
     private var onClickListener: OnClickListener? = null
 
     override fun convert(
-        holder: BaseDataBindingHolder<ItemHomeDownloadManageBinding>,
+        holder: BaseDataBindingHolder<ItemCommonDownloadManageBinding>,
         item: DownloadSongInfo
     ) {
         // 获取Binding
-        val binding: ItemHomeDownloadManageBinding? = holder.dataBinding
+        val binding: ItemCommonDownloadManageBinding? = holder.dataBinding
         binding?.let {
             // 设置数据
             it.downloadSongInfo = item

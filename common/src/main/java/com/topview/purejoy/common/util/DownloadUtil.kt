@@ -1,14 +1,17 @@
 package com.topview.purejoy.common.util
 
 import android.Manifest
+import android.app.PendingIntent
 import android.os.Environment
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
-import com.topview.purejoy.common.business.download.listener.DownloadSongListenerWrapper
-import com.topview.purejoy.common.business.download.manager.DownloadingSongManager
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.db.AppDatabaseManager
+import com.topview.purejoy.common.business.data.manager.DownloadingSongManager
 import com.topview.purejoy.common.component.download.DownloadManager
+import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import java.io.File
@@ -27,6 +30,7 @@ object DownloadUtil {
      * @param activity 申请权限需要使用到
      * @param name 歌曲的名字
      * @param url 下载的url
+     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -59,6 +63,7 @@ object DownloadUtil {
      * @param fragment 申请权限需要使用到
      * @param name 歌曲的名字
      * @param url 下载的url
+     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -90,6 +95,7 @@ object DownloadUtil {
      *
      * @param activity 申请权限需要使用到
      * @param songInfo 已有的歌曲下载记录
+     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -119,6 +125,7 @@ object DownloadUtil {
      *
      * @param fragment 申请权限需要使用到
      * @param songInfo 已有的歌曲下载记录
+     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -205,6 +212,99 @@ object DownloadUtil {
             }
         } else {
             permissionDenied?.invoke()
+        }
+    }
+
+    /**
+     * DownloadUtil中使用这个监听器，完成业务层的下载数据的同步
+     * */
+    internal class DownloadSongListenerWrapper() :
+        SimpleUserDownloadListener() {
+
+//    private var startNotificationId: Int? = null
+
+        companion object {
+            private const val DOWNLOAD_NOTIFICATION_TITLE = "下载通知"
+            private const val DOWNLOAD_SUCCESS = "下载成功"
+            private const val DOWNLOADING = "正在下载"
+            private const val DOWNLOAD_FAILURE = "下载失败"
+            private const val DOWNLOAD_CANCEL = "下载取消"
+            private const val ALREADY_DOWNLOADED = "已经下载过了"
+            private var notificationId: Int = 1
+                get() {
+                    return field++
+                }
+        }
+
+        override fun insertTaskToDb(downloadTask: DownloadTask) {
+            super.insertTaskToDb(downloadTask)
+
+            // 业务层同步将数据插入到数据库中
+            AppDatabaseManager.appDatabase?.let {
+                ThreadUtil.runOnIO {
+                    val downloadSongInfo = DownloadSongInfo.copyFromTask(downloadTask)
+                    it.downloadSongInfoDao().insertDownloadSongInfo(downloadSongInfo)
+                }
+            }
+        }
+
+        override fun onStarted(downloadTask: DownloadTask) {
+            super.onStarted(downloadTask)
+
+//        // 启动"正在下载"的通知
+//        startNotificationId = notificationId
+//        showNotification(downloadTask, DOWNLOADING, startNotificationId!!)
+        }
+
+        override fun onFailure(downloadTask: DownloadTask, msg: String) {
+            super.onFailure(downloadTask, msg)
+            deleteDownloadSongInfoRecord(downloadTask.tag)
+
+            showNotification(downloadTask, DOWNLOAD_FAILURE, notificationId)
+        }
+
+        override fun onCancelled(downloadTask: DownloadTask) {
+            super.onCancelled(downloadTask)
+            deleteDownloadSongInfoRecord(downloadTask.tag)
+            showNotification(downloadTask, DOWNLOAD_CANCEL, notificationId)
+        }
+
+        override fun onSuccess(downloadTask: DownloadTask) {
+            super.onSuccess(downloadTask)
+            deleteDownloadSongInfoRecord(downloadTask.tag)
+//        startNotificationId?.let {
+//            NotificationHelper.cancelNotification(it)
+//        }
+            showNotification(downloadTask, DOWNLOAD_SUCCESS, notificationId)
+        }
+
+        override fun alreadyDownloaded(downloadTask: DownloadTask) {
+            super.alreadyDownloaded(downloadTask)
+            deleteDownloadSongInfoRecord(downloadTask.tag)
+            showNotification(downloadTask, ALREADY_DOWNLOADED, notificationId)
+        }
+
+        private fun deleteDownloadSongInfoRecord(tag: String) {
+            DownloadingSongManager.remove(tag)
+            AppDatabaseManager.appDatabase?.let {
+                ThreadUtil.runOnIO { it.downloadSongInfoDao().deleteDownloadSongInfo(tag) }
+            }
+        }
+
+        private fun showNotification(
+            downloadTask: DownloadTask,
+            contentText: String,
+            notificationId: Int,
+            pendingIntent: PendingIntent? = null
+        ) {
+            val builder: NotificationCompat.Builder =
+                NotificationHelper.getCommonNotifyBuilder(NotificationHelper.DOWNLOAD_CHANNEL_ID)
+                    .setContentTitle(DOWNLOAD_NOTIFICATION_TITLE)
+                    .setContentText("${downloadTask.name} $contentText")
+            pendingIntent?.let {
+                builder.setContentIntent(it)
+            }
+            NotificationHelper.showNotification(notificationId, builder.build())
         }
     }
 }

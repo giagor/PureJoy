@@ -1,25 +1,26 @@
-package com.topview.purejoy.home.download
+package com.topview.purejoy.common.business.download.manage
 
+import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.R
+import com.topview.purejoy.common.app.CommonApplication
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.databinding.ActivityCommonDownloadManageBinding
 import com.topview.purejoy.common.mvvm.activity.MVVMActivity
+import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.DownloadUtil
-import com.topview.purejoy.home.R
-import com.topview.purejoy.home.databinding.ActivityHomeDownloadManageBinding
-import com.topview.purejoy.home.download.adapter.DownloadManageAdapter
-import com.topview.purejoy.home.router.HomeRouter
-import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
-@Route(path = HomeRouter.ACTIVITY_HOME_DOWNLOAD_MANAGE)
+@Route(path = CommonRouter.ACTIVITY_COMMON_DOWNLOAD_MANAGE)
 class DownloadManageActivity :
-    MVVMActivity<DownloadManageViewModel, ActivityHomeDownloadManageBinding>(),
+    MVVMActivity<DownloadManageViewModel, ActivityCommonDownloadManageBinding>(),
     DownloadManageAdapter.OnClickListener {
 
     private val downloadListener = object : SimpleUserDownloadListener() {
@@ -168,10 +169,13 @@ class DownloadManageActivity :
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.activity_home_download_manage
+    override fun getLayoutId(): Int = R.layout.activity_common_download_manage
 
     override fun getViewModelClass(): Class<DownloadManageViewModel> =
         DownloadManageViewModel::class.java
 
-    override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+    override fun createFactory(): ViewModelProvider.Factory =
+        ViewModelProvider.AndroidViewModelFactory.getInstance(
+            CommonApplication.getContext() as Application
+        )
 }

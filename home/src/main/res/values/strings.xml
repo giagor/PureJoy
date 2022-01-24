@@ -55,14 +55,4 @@
     <string name="home_video_unknown_error">出现未知错误，点击屏幕以重试</string>
     <string name="home_video_refresh_video_error">〒▽〒内容似乎失踪了呢\n点击屏幕重新加载</string>
     <string name="home_video_append_reload">重新加载</string>
-    
-    <!--"下载管理"界面相关-->
-    <string name="home_download_manage_click_to_download">点击开始下载</string>
-    <string name="home_download_manage_prepare_download">下载队列中等待</string>
-    <string name="home_download_manage_task_cancelling">取消中...</string>
-    <string name="home_download_manage_task_downloading">下载中</string>
-    <string name="home_download_manage_task_paused">已暂停</string>
-    <string name="home_download_manage_task_success">下载成功</string>
-    <string name="home_download_manage_task_failure">下载失败</string>
-    <string name="home_download_manage_title">下载管理</string>
 </resources>

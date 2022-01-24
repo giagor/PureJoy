@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.topview.purejoy.common.business.download.bean.DownloadSongInfo"/>
+        <import type="com.topview.purejoy.common.business.data.bean.DownloadSongInfo"/>
         <import type="android.view.View.OnClickListener"/>
         <variable
             name="downloadSongInfo"
-            type="DownloadSongInfo" />
+            type="com.topview.purejoy.common.business.data.bean.DownloadSongInfo" />
         <variable
             name="statusButtonClickListener"
             type="OnClickListener" />
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{downloadSongInfo.name}"
-                android:textColor="@color/home_black_text_color"
+                android:textColor="@color/common_black_text_color"
                 android:textSize="17sp"
                 android:singleLine="true"/>
             
@@ -56,7 +56,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/home_ic_cancel_download"
+            android:src="@drawable/common_ic_cancel_download"
             android:layout_marginStart="5dp"
             app:cancelIconVisibility="@{downloadSongInfo}"
             app:onClickListener="@{cancelTaskClickListener}" />

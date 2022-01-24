@@ -1,4 +1,4 @@
-package com.topview.purejoy.common.business.download.bean
+package com.topview.purejoy.common.business.data.bean
 
 import androidx.room.Entity
 import androidx.room.Ignore

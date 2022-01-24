@@ -1,9 +1,9 @@
-package com.topview.purejoy.common.business.download.local
+package com.topview.purejoy.common.business.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
 
 @Dao
 interface DownloadSongInfoDao {

@@ -62,8 +62,12 @@ object NotificationHelper {
 
     fun showNotification(notificationId: Int, notification: Notification) {
         checkInitialize()
-
         manager.notify(notificationId, notification)
+    }
+
+    fun cancelNotification(notificationId: Int) {
+        checkInitialize()
+        manager.cancel(notificationId)
     }
 
     private fun checkInitialize() {

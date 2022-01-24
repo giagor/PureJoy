@@ -1,11 +1,11 @@
-package com.topview.purejoy.home.data.source
+package com.topview.purejoy.common.business.data.source
 
-import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.data.manager.DownloadingSongManager
 import java.util.*
 
-class HomeLocalStore {
+class CommonLocalStore {
     fun getDownloadSongInfoList(): List<DownloadSongInfo> {
         val appDatabase =
             checkNotNull(AppDatabaseManager.appDatabase, { "Didn't initialize AppDatabase yet" })

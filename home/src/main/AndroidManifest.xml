@@ -7,9 +7,7 @@
     <application
         android:theme="@style/Theme.PureJoy"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".download.DownloadManageActivity"
-            android:exported="false" />
+
         <activity
             android:name=".search.SearchActivity"
             android:exported="true"

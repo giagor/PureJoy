@@ -1,6 +1,6 @@
-package com.topview.purejoy.common.business.download.manager
+package com.topview.purejoy.common.business.data.manager
 
-import com.topview.purejoy.common.business.download.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
 
 /**
  * 正在下载的歌曲的管理者
