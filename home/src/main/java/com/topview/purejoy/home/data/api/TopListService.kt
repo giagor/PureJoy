@@ -11,8 +11,8 @@ interface TopListService {
     fun getTopListDetail(): Call<TopListJson>
 
     @GET("/playlist/track/all")
-    fun getLittleTopListSong(
+    fun getLimitTopListSong(
         @Query("id") id: Long,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int?
     ): Call<LimitSongJson>
 }
