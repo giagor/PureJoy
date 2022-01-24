@@ -35,25 +35,27 @@ internal fun ClickablePlayIcon(
     }
     val loadState by viewModel.loadState.collectAsState()
     val controller = LocalMusicController.current
-    val playState = controller.playState.observeAsState()
+    val playState by controller.playState.observeAsState(false)
 
     LaunchedEffect(loadState, playState) {
-        if (pageState is PageState.Loading && loadState.data != null) {
-            loadState.data?.let {
-                controller.dataController?.apply {
-                    clear()
-                    addAll(it.map { it.wrap() })
+        if (pageState is PageState.Loading) {
+            if (loadState.data != null) {
+                loadState.data?.let {
+                    controller.dataController?.apply {
+                        clear()
+                        addAll(it.map { it.wrap() })
+                    }
+                    controller.playerController?.apply {
+                        jumpTo(0)
+                    }
                 }
-                controller.playerController?.apply {
-                    jumpTo(0)
-                }
+                pageState = PageState.Success
+            } else if (loadState.pageState is PageState.Error) {
+                pageState = PageState.Error
             }
-            pageState = PageState.Success
-        } else if (pageState is PageState.Success && playState.value == false) {
+        } else if (pageState is PageState.Success && ! playState) {
             // 遗忘曾经点击过的状态
             pageState = PageState.Empty
-        } else if (pageState is PageState.Loading && loadState.pageState is PageState.Error) {
-            pageState = PageState.Error
         }
     }
 
@@ -72,13 +74,16 @@ internal fun ClickablePlayIcon(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
-                                controller.playerController?.apply {
-                                    if (isPlaying) {
-                                        playOrPause()
+                                // 校验状态，只允许同时加载一个榜单的信息
+                                if (loadState.pageState !is PageState.Loading) {
+                                    controller.playerController?.apply {
+                                        if (isPlaying) {
+                                            playOrPause()
+                                        }
                                     }
+                                    pageState = PageState.Loading
+                                    viewModel.loadSongsByTopList(topList)
                                 }
-                                pageState = PageState.Loading
-                                viewModel.loadSongsByTopList(topList)
                             },
                             indication = null
                         )
