@@ -30,6 +30,7 @@ import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Composable
 internal fun TopListScreen(
+    modifier: Modifier = Modifier,
     state: PageState,
     musicLoadState: MusicItemLoadState,
     topListMap: Map<TopListTab, List<TopList>>?,
@@ -56,7 +57,8 @@ internal fun TopListScreen(
                 onBackClick = onBackClick
             )
         },
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        modifier = modifier
     ) {
         SimpleStatusScreen(
             state = state,
