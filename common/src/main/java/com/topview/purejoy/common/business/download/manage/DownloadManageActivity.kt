@@ -10,7 +10,7 @@ import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
 import com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
+import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.databinding.ActivityCommonDownloadManageBinding
@@ -23,7 +23,7 @@ class DownloadManageActivity :
     MVVMActivity<DownloadManageViewModel, ActivityCommonDownloadManageBinding>(),
     DownloadManageAdapter.OnClickListener {
 
-    private val downloadListener = object : SimpleUserDownloadListener() {
+    private val downloadListener = object : UserDownloadListener {
         override fun onPrepareDownload(downloadTask: DownloadTask) {
             updateItem(downloadTask)
         }

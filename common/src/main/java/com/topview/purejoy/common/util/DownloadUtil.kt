@@ -14,7 +14,6 @@ import com.topview.purejoy.common.business.data.manager.DownloadingSongManager
 import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.download.manage.DownloadManageActivity
 import com.topview.purejoy.common.component.download.DownloadManager
-import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import java.io.File
@@ -218,7 +217,7 @@ object DownloadUtil {
      * DownloadUtil中使用这个监听器，完成业务层的下载数据的同步
      * */
     internal class DownloadSongListenerWrapper() :
-        SimpleUserDownloadListener() {
+        UserDownloadListener {
 
         private var startNotificationId: Int? = null
 
