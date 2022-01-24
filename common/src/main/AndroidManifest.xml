@@ -13,9 +13,8 @@
 
         <activity
             android:name=".business.download.manage.DownloadManageActivity"
-            android:exported="false">
-            
-        </activity>
+            android:exported="false"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>

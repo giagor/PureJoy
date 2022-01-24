@@ -2,14 +2,17 @@ package com.topview.purejoy.common.util
 
 import android.Manifest
 import android.app.PendingIntent
+import android.content.Intent
 import android.os.Environment
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.permissionx.guolindev.PermissionX
+import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
-import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.data.manager.DownloadingSongManager
+import com.topview.purejoy.common.business.db.AppDatabaseManager
+import com.topview.purejoy.common.business.download.manage.DownloadManageActivity
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.user.SimpleUserDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
@@ -217,7 +220,7 @@ object DownloadUtil {
     internal class DownloadSongListenerWrapper() :
         SimpleUserDownloadListener() {
 
-//    private var startNotificationId: Int? = null
+        private var startNotificationId: Int? = null
 
         companion object {
             private const val DOWNLOAD_NOTIFICATION_TITLE = "下载通知"
@@ -247,30 +250,43 @@ object DownloadUtil {
         override fun onStarted(downloadTask: DownloadTask) {
             super.onStarted(downloadTask)
 
-//        // 启动"正在下载"的通知
-//        startNotificationId = notificationId
-//        showNotification(downloadTask, DOWNLOADING, startNotificationId!!)
+            // 启动"正在下载"的通知
+            startNotificationId = notificationId
+            val intent = Intent(CommonApplication.getContext(), DownloadManageActivity::class.java)
+            // 跳转到下载管理界面的意图
+            val pendingIntent = PendingIntent.getActivity(
+                CommonApplication.getContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            showNotification(downloadTask, DOWNLOADING, startNotificationId!!, pendingIntent)
         }
 
         override fun onFailure(downloadTask: DownloadTask, msg: String) {
             super.onFailure(downloadTask, msg)
             deleteDownloadSongInfoRecord(downloadTask.tag)
-
+            startNotificationId?.let {
+                NotificationHelper.cancelNotification(it)
+            }
             showNotification(downloadTask, DOWNLOAD_FAILURE, notificationId)
         }
 
         override fun onCancelled(downloadTask: DownloadTask) {
             super.onCancelled(downloadTask)
             deleteDownloadSongInfoRecord(downloadTask.tag)
+            startNotificationId?.let {
+                NotificationHelper.cancelNotification(it)
+            }
             showNotification(downloadTask, DOWNLOAD_CANCEL, notificationId)
         }
 
         override fun onSuccess(downloadTask: DownloadTask) {
             super.onSuccess(downloadTask)
             deleteDownloadSongInfoRecord(downloadTask.tag)
-//        startNotificationId?.let {
-//            NotificationHelper.cancelNotification(it)
-//        }
+            startNotificationId?.let {
+                NotificationHelper.cancelNotification(it)
+            }
             showNotification(downloadTask, DOWNLOAD_SUCCESS, notificationId)
         }
 
