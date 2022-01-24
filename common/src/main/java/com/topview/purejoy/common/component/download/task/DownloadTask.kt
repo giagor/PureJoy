@@ -209,30 +209,16 @@ class DownloadTask(
         // 仅执行处于PrepareDownload状态的任务
         if (!checkPrepare()) {
             DownloadManager.downloadDispatcher.finished(this)
-//            taskComplete()
             return
         }
 
         status = DownloadStatus.DOWNLOADING
         if (resumed) {
             resumed = false
-//            it.onResumed()
             callObserversOnResume()
         } else {
-//            it.onStarted()
             callObserversOnStart()
         }
-//        downloadListener?.let {
-//            DownloadManager.handler.post {
-//                // 根据resumed的值，回调用户不同的接口
-//                if (resumed) {
-//                    resumed = false
-//                    it.onResumed()
-//                } else {
-//                    it.onStarted()
-//                }
-//            }
-//        }
 
         // 执行各个子任务
         for (subDownloadTask in subTasks) {
@@ -292,19 +278,13 @@ class DownloadTask(
     }
 
     private fun notifySuccess() {
-
         callObserversOnSuccess()
-//        DownloadManager.handler.post {
-//            downloadListener?.onSuccess()
-//        }
-
         DownloadManager.removeTask(tag)
         if (breakPointDownload) {
             // 数据库中删除对应的任务
             DownloadManager.downDbHelper.deleteDownloadTask(this)
         }
         taskComplete()
-//        DownloadManager.downloadDispatcher.finished(this)
     }
 
     private fun notifyProgress(transmission: Long) {
@@ -312,42 +292,25 @@ class DownloadTask(
         progress = (transmissionTotalSize * 100 / totalSize).toInt()
 
         callObserversOnProgress(progress)
-//        DownloadManager.handler.post {
-//            downloadListener?.onProgress(progress)
-//        }
     }
 
     private fun notifyCanceled() {
         clearTaskInfo()
         callObserverOnCancelled()
         DownloadManager.removeTask(tag)
-//        DownloadManager.handler.post {
-//            downloadListener?.onCancelled()
-//        }
-        // 通知调度器
-//        DownloadManager.downloadDispatcher.finished(this)
         taskComplete()
     }
 
     private fun notifyPaused() {
         callObserversOnPause()
-//        DownloadManager.handler.post {
-//            downloadListener?.onPaused()
-//        }
         // 通知调度器
         DownloadManager.downloadDispatcher.finished(this)
-//        taskComplete()
     }
 
     private fun notifyFailure(msg: String) {
         clearTaskInfo()
         callObserversOnFailure(msg)
         DownloadManager.removeTask(tag)
-//        DownloadManager.handler.post {
-//            downloadListener?.onFailure()
-//        }
-        // 通知调度器
-//        DownloadManager.downloadDispatcher.finished(this)
         taskComplete()
     }
 

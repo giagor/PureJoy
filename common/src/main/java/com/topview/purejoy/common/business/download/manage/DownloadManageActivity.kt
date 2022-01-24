@@ -122,12 +122,6 @@ class DownloadManageActivity :
                 break
             }
         }
-
-//        DownloadingSongManager.get(downloadTask.tag)?.let {
-//            it.status = downloadTask.getStatus()
-//            it.progress = downloadTask.getProgress()
-//            adapter.notifyItemChanged(adapter.getItemPosition(it))
-//        }
     }
 
     private fun removeItem(downloadTask: DownloadTask) {
@@ -139,11 +133,6 @@ class DownloadManageActivity :
                 break
             }
         }
-
-//        DownloadingSongManager.get(downloadTask.tag)?.let {
-//            it.status = downloadTask.getStatus()
-//            adapter.remove(it)
-//        }
     }
 
     /**
