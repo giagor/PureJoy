@@ -1,7 +1,7 @@
 package com.topview.purejoy.common.component.download.configure
 
 import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 /**
  * Created by giagor on 2021/12/18
@@ -26,4 +26,12 @@ open class DefaultDownloadConfiguration : DownloadConfiguration() {
     override fun getDownloadOkClient(): OkHttpClient = defaultOkClient
 
     override fun getDownloadThreadNum(): Int = defaultDownloadThreadNum
+
+    override fun getCommonThreadPool(): ExecutorService {
+        return ThreadPoolExecutor(
+            3, Int.MAX_VALUE,
+            60L, TimeUnit.SECONDS,
+            SynchronousQueue()
+        )
+    }
 }

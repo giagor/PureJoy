@@ -7,7 +7,7 @@ import java.util.concurrent.Executors
 
 /**
  * Created by giagor on 2021/12/18
- * 
+ *
  * 对下载任务进行调度
  * */
 class DownloadDispatcher {
@@ -30,17 +30,17 @@ class DownloadDispatcher {
 
     fun enqueue(task: DownloadTask) {
         // 加锁保证任务可以正确地被添加
-        synchronized(this){
+        synchronized(this) {
             readyTaskQueue.addLast(task)
         }
         promoteAndExecute()
     }
 
     private fun promoteAndExecute() {
-        var executedTask : DownloadTask? = null
+        var executedTask: DownloadTask? = null
 
         // 加锁保证任务可以正确被执行
-        synchronized(this){
+        synchronized(this) {
             // 如果当前在下载的任务数没有到达最大值，并且等待队列中有任务
             if (runningTaskQueue.size < maxDownloadCounts && readyTaskQueue.isNotEmpty()) {
                 executedTask = readyTaskQueue.removeFirst()

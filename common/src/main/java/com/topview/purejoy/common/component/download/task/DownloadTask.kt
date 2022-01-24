@@ -2,26 +2,33 @@ package com.topview.purejoy.common.component.download.task
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.topview.purejoy.common.component.download.DownloadManager
 import com.topview.purejoy.common.component.download.listener.subtask.SubDownloadListener
 import com.topview.purejoy.common.component.download.listener.user.UserDownloadListener
 import com.topview.purejoy.common.component.download.status.DownloadStatus
-import com.topview.purejoy.common.component.download.task.controller.TaskController
+import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
 import java.util.concurrent.ExecutorService
-import kotlin.concurrent.thread
 
 /**
  * Created by giagor on 2021/12/18
  *
  * 表示一个完整的下载任务，它可以被分解为多个子任务
  * */
-@Entity
+@Entity(
+    indices = [Index(
+        value = ["tag"],
+        unique = true
+    )]
+)
 class DownloadTask(
     /** 父任务id */
     @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    /** 文件的名字 */
+    var name: String,
     /** 文件的保存路径 */
     var path: String,
     /** 下载资源的url */
@@ -34,7 +41,7 @@ class DownloadTask(
     @Ignore var breakPointDownload: Boolean,
     /** 用户的监听器 */
     @Ignore var downloadListener: UserDownloadListener? = null,
-) : SubDownloadListener, TaskController {
+) : SubDownloadListener {
     /**
      * 通过url、path，唯一标识一个下载任务
      * */
@@ -78,13 +85,27 @@ class DownloadTask(
     private var failTaskCounts = 0
 
     /**
+     * 下载进度。范围：0-100
+     * */
+    @Ignore
+    private var progress: Int = 0
+
+    /**
      * 表示是否从"暂停"的状态中恢复过来，方便回调用户的接口
      * */
+    @Volatile
     @Ignore
     private var resumed = false
 
     @Ignore
     private val observers: MutableList<UserDownloadListener> = ArrayList()
+
+    /**
+     * 表示是否已经触发了下载
+     * */
+    @Volatile
+    @Ignore
+    private var triggerDownload = false
 
     init {
         downloadListener?.let {
@@ -93,12 +114,12 @@ class DownloadTask(
     }
 
     constructor() : this(
-        null, "", "", 0, 0,
+        null, "", "", "", 0, 0,
         false, null
     )
 
     @Synchronized
-    override fun pauseDownload() {
+    fun pauseDownload() {
         if (!canPause()) {
             return
         }
@@ -110,18 +131,17 @@ class DownloadTask(
     }
 
     @Synchronized
-    override fun resumeDownload() {
+    fun resumeDownload() {
         if (!canResume()) {
             return
         }
-
         restoreFromPause()
         resumed = true
         DownloadManager.downloadDispatcher.enqueue(this)
     }
 
     @Synchronized
-    override fun cancelDownload() {
+    fun cancelDownload() {
         // 判断是否可以取消下载
         if (!canCancel()) {
             return
@@ -129,15 +149,19 @@ class DownloadTask(
 
         // 获取前一个状态
         val prePaused = checkPaused()
+        val prePrepare = checkPrepare()
         status = DownloadStatus.CANCELED
         for (subTask in subTasks) {
             subTask.cancelSubTask()
         }
 
-        // 特殊处理下 暂停 -> 取消 的这种状态迁移，方便清理资源，以及处理回调
-        if (prePaused) {
-            thread {
-                notifyCanceled()
+        // 特殊处理下 暂停or准备下载 -> 取消 的状态迁移，方便清理资源，以及处理回调
+        if (prePaused || prePrepare) {
+            DownloadManager.downloadConfiguration.getCommonThreadPool().execute {
+                clearTaskInfo()
+                callObserverOnCancelled()
+                // 移除所有观察者
+                removeAllObservers()
             }
         }
     }
@@ -182,8 +206,8 @@ class DownloadTask(
     }
 
     internal fun executeSubTasks(executorService: ExecutorService) {
-        // 仅执行处于INITIAL状态的任务
-        if (!checkInitial()) {
+        // 仅执行处于PrepareDownload状态的任务
+        if (!checkPrepare()) {
             DownloadManager.downloadDispatcher.finished(this)
             return
         }
@@ -191,23 +215,11 @@ class DownloadTask(
         status = DownloadStatus.DOWNLOADING
         if (resumed) {
             resumed = false
-//            it.onResumed()
             callObserversOnResume()
         } else {
-//            it.onStarted()
             callObserversOnStart()
         }
-//        downloadListener?.let {
-//            DownloadManager.handler.post {
-//                // 根据resumed的值，回调用户不同的接口
-//                if (resumed) {
-//                    resumed = false
-//                    it.onResumed()
-//                } else {
-//                    it.onStarted()
-//                }
-//            }
-//        }
+
         // 执行各个子任务
         for (subDownloadTask in subTasks) {
             if (!subDownloadTask.checkCompleted()) {
@@ -220,7 +232,8 @@ class DownloadTask(
      * 从"暂停"状态中恢复后，要做的一些处理
      * */
     private fun restoreFromPause() {
-        status = DownloadStatus.INITIAL
+        status = DownloadStatus.PREPARE_DOWNLOAD
+        callObserversPrepareDownload()
         pauseTaskCounts = 0
     }
 
@@ -266,42 +279,30 @@ class DownloadTask(
 
     private fun notifySuccess() {
         callObserversOnSuccess()
-//        DownloadManager.handler.post {
-//            downloadListener?.onSuccess()
-//        }
-
+        DownloadManager.removeTask(tag)
         if (breakPointDownload) {
             // 数据库中删除对应的任务
             DownloadManager.downDbHelper.deleteDownloadTask(this)
         }
-        DownloadManager.downloadDispatcher.finished(this)
+        taskComplete()
     }
 
     private fun notifyProgress(transmission: Long) {
         transmissionTotalSize += transmission
-        val progress = (transmissionTotalSize * 100 / totalSize).toInt()
+        progress = (transmissionTotalSize * 100 / totalSize).toInt()
 
         callObserversOnProgress(progress)
-//        DownloadManager.handler.post {
-//            downloadListener?.onProgress(progress)
-//        }
     }
 
     private fun notifyCanceled() {
         clearTaskInfo()
         callObserverOnCancelled()
-//        DownloadManager.handler.post {
-//            downloadListener?.onCancelled()
-//        }
-        // 通知调度器
-        DownloadManager.downloadDispatcher.finished(this)
+        DownloadManager.removeTask(tag)
+        taskComplete()
     }
 
     private fun notifyPaused() {
         callObserversOnPause()
-//        DownloadManager.handler.post {
-//            downloadListener?.onPaused()
-//        }
         // 通知调度器
         DownloadManager.downloadDispatcher.finished(this)
     }
@@ -309,11 +310,8 @@ class DownloadTask(
     private fun notifyFailure(msg: String) {
         clearTaskInfo()
         callObserversOnFailure(msg)
-//        DownloadManager.handler.post {
-//            downloadListener?.onFailure()
-//        }
-        // 通知调度器
-        DownloadManager.downloadDispatcher.finished(this)
+        DownloadManager.removeTask(tag)
+        taskComplete()
     }
 
     /**
@@ -333,7 +331,7 @@ class DownloadTask(
     internal fun callObserversOnStart() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onStarted()
+                observer.onStarted(this)
             }
         }
     }
@@ -341,7 +339,7 @@ class DownloadTask(
     internal fun callObserversOnProgress(progress: Int) {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onProgress(progress)
+                observer.onProgress(this, progress)
             }
         }
     }
@@ -349,7 +347,7 @@ class DownloadTask(
     internal fun callObserversOnPause() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onPaused()
+                observer.onPaused(this)
             }
         }
     }
@@ -357,7 +355,7 @@ class DownloadTask(
     internal fun callObserversOnResume() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onResumed()
+                observer.onResumed(this)
             }
         }
     }
@@ -365,7 +363,7 @@ class DownloadTask(
     internal fun callObserversOnFailure(msg: String) {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onFailure(msg)
+                observer.onFailure(this, msg)
             }
         }
     }
@@ -373,7 +371,7 @@ class DownloadTask(
     internal fun callObserverOnCancelled() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onCancelled()
+                observer.onCancelled(this)
             }
         }
     }
@@ -381,7 +379,7 @@ class DownloadTask(
     internal fun callObserversOnSuccess() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.onSuccess()
+                observer.onSuccess(this)
             }
         }
     }
@@ -389,7 +387,23 @@ class DownloadTask(
     internal fun callObserverAlreadyDownloaded() {
         for (observer in observers) {
             DownloadManager.handler.post {
-                observer.alreadyDownloaded()
+                observer.alreadyDownloaded(this)
+            }
+        }
+    }
+
+    internal fun callObserversPrepareDownload() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.onPrepareDownload(this)
+            }
+        }
+    }
+
+    internal fun callObserversInsertTaskToDb() {
+        for (observer in observers) {
+            DownloadManager.handler.post {
+                observer.insertTaskToDb(this)
             }
         }
     }
@@ -409,20 +423,61 @@ class DownloadTask(
     }
 
     /**
+     * 触发任务的下载
+     * */
+    fun download() {
+        if (!triggerDownload) {
+            triggerDownload = true
+            status = DownloadStatus.PREPARE_DOWNLOAD
+            callObserversPrepareDownload()
+            DownloadManager.putTask(tag, this)
+            TaskHandler.handleTask(this)
+        }
+    }
+
+    /**
+     * 移除所有的观察者
+     * */
+    private fun removeAllObservers() {
+        observers.clear()
+    }
+
+    /**
+     * 任务完成
+     * */
+    private fun taskComplete() {
+        // 移除所有观察者
+        removeAllObservers()
+        // 通知调度器
+        DownloadManager.downloadDispatcher.finished(this)
+    }
+
+    /**
      * 设置状态
      * */
-    fun setStatus(status: Int) {
+    internal fun setStatus(status: Int) {
         this.status = status
     }
+
+    /**
+     * 获取状态
+     * */
+    fun getStatus() = status
 
     private fun getFinishedCount() =
         successTaskCounts + cancelTaskCounts + pauseTaskCounts + failTaskCounts
 
-    private fun checkInitial() = status == DownloadStatus.INITIAL
+    fun getProgress(): Int = progress
 
-    private fun checkPaused() = status == DownloadStatus.PAUSED
+    fun checkInitial() = status == DownloadStatus.INITIAL
 
-    private fun checkFinished() = getFinishedCount() == subTasks.size
+    fun checkDownloading() = status == DownloadStatus.DOWNLOADING
+
+    fun checkPrepare() = status == DownloadStatus.PREPARE_DOWNLOAD
+
+    fun checkPaused() = status == DownloadStatus.PAUSED
+
+    fun checkFinished() = getFinishedCount() == subTasks.size
 
     /**
      * 判断是否可以取消下载

@@ -10,6 +10,11 @@
         <service
             android:name=".music.service.MusicService"
             android:process=":music" />
+
+        <activity
+            android:name=".business.download.manage.DownloadManageActivity"
+            android:exported="false"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>

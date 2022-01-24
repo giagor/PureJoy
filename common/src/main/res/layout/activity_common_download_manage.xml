@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <import type="com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter"/>
+        <import type="com.topview.purejoy.common.business.download.manage.DownloadManageViewModel"/>
+        <import type="android.view.View"/>
+        <variable
+            name="downloadTaskLayoutManager"
+            type="LinearLayoutManager" />
+        <variable
+            name="downloadTaskAdapter"
+            type="com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter" />
+        <variable
+            name="downloadManageViewModel"
+            type="com.topview.purejoy.common.business.download.manage.DownloadManageViewModel" />
+        <variable
+            name="backListener"
+            type="View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/common_padding_left"
+        android:paddingEnd="@dimen/common_padding_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/common_ic_back_arror" 
+                android:layout_alignParentStart="true"
+                app:onClickListener="@{backListener}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/common_download_manage_title"
+                android:textSize="18sp"
+                android:textColor="@color/common_black_text_color"/>
+
+        </RelativeLayout>
+        
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                app:layoutManager="@{downloadTaskLayoutManager}"
+                app:adapter="@{downloadTaskAdapter}"
+                app:downloadSongInfos="@{downloadManageViewModel.downloadSongsLiveData}"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/common_download_manage_task_empty"
+                android:layout_gravity="center"
+                android:visibility="@{downloadManageViewModel.taskEmptyLiveData ? View.VISIBLE : View.GONE}"/>
+            
+        </FrameLayout>
+        
+        
+    </LinearLayout>
+</layout>

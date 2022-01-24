@@ -170,11 +170,16 @@ class DailyRecommendActivity : NoBindingActivity<DailySongsViewModel>() {
     }
 
     private fun downloadMusic(fileName: String, url: String) {
-        DownloadUtil.downloadMusic(this, fileName, url, null, {
-            showToast(this, "已加入下载任务队列", Toast.LENGTH_SHORT)
-        }, {
-            showToast(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT)
-        })
+        DownloadUtil.downloadMusic(
+            activity = this,
+            name = fileName,
+            url = url,
+            permissionAllowed = {
+                showToast(this, "已加入下载任务队列", Toast.LENGTH_SHORT)
+            },
+            permissionDenied = {
+                showToast(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT)
+            })
     }
 
     override fun onDestroy() {

@@ -34,7 +34,7 @@ object HomeRouter {
     fun routeToVideoFragment(): Fragment? {
         return routeWithoutParams(FRAGMENT_HOME_VIDEO) as? Fragment
     }
-
+    
     /**
      * 不需要传递参数的路由，可以直接调用该方法
      *

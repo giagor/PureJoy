@@ -16,8 +16,6 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
-import com.topview.purejoy.common.component.download.task.controller.TaskController
-import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -30,13 +28,13 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *
  * 2.下载单个任务
  * 调用方式：
- * val taskController : TaskController = DownloadManager.download(url,saveDir,name,listener)
+ * val task : DownloadTask = DownloadManager.download(url,saveDir,name,listener)
  * 暂停下载：
- * taskController.pauseDownload()
+ * task.pauseDownload()
  * 从暂停中恢复下载：
- * taskController.resumeDownload()
+ * task.resumeDownload()
  * 取消下载：
- * taskController.cancelDownload()
+ * task.cancelDownload()
  *
  * 3.批量下载(下载多个任务)
  * 调用方式：
@@ -50,13 +48,13 @@ import com.topview.purejoy.common.component.download.util.getDownloadPath
  *      .addTask(7, url7, saveDir7, name7, listener7)
  *      .downloadAll()
  * 获取某个具体下载任务的控制类(通过标识符获取)：
- * val taskController : TaskController? = batchDownloadTask.getTask(1)
+ * val task : DownloadTask? = batchDownloadTask.getTask(1)
  * 暂停下载某个具体任务：
- * taskController?.pauseDownload()
+ * task?.pauseDownload()
  * 从暂停中恢复下载某个具体任务：
- * taskController?.resumeDownload()
+ * task?.resumeDownload()
  * 取消下载某个具体任务：
- * taskController?.cancelDownload()
+ * task?.cancelDownload()
  * */
 object DownloadManager {
 
@@ -71,6 +69,13 @@ object DownloadManager {
         DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
     internal val downDbHelper: DownloadDbHelper = DownloadDbHelperImpl()
     internal val downloadDispatcher: DownloadDispatcher = DownloadDispatcher()
+
+    /**
+     * 对于开始下载，且还未下载结束的任务的缓存
+     * key：任务的tag
+     * value：任务
+     * */
+    private val taskMap: MutableMap<String, DownloadTask> = HashMap()
 
     /**
      * 初始化方法
@@ -96,6 +101,49 @@ object DownloadManager {
     }
 
     /**
+     * 创建一个任务（不加入下载队列）
+     * */
+    fun createTask(
+        url: String,
+        saveDir: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        val path = getDownloadPath(saveDir, name)
+        return DownloadTask(
+            id = null,
+            name = name,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+    }
+
+    /**
+     * 创建一个任务（不加入下载队列）
+     * */
+    fun createTaskWithPath(
+        url: String,
+        path: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        return DownloadTask(
+            id = null,
+            name = name,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+    }
+
+    /**
      * 用户调用该方法，进行任务的下载
      *
      * @param url 要下载的文件的url
@@ -108,11 +156,12 @@ object DownloadManager {
         saveDir: String,
         name: String,
         listener: UserDownloadListener?
-    ): TaskController {
+    ): DownloadTask {
         val path = getDownloadPath(saveDir, name)
         // 创建任务
         val downloadTask = DownloadTask(
             id = null,
+            name = name,
             path = path,
             url = url,
             totalSize = 0,
@@ -121,9 +170,48 @@ object DownloadManager {
             downloadListener = listener
         )
         // 处理任务
-        TaskHandler.handleTask(downloadTask)
+        downloadTask.download()
+        return downloadTask
+    }
+
+    /**
+     * 用户调用该方法，进行任务的下载
+     *
+     * @param url 要下载的文件的url
+     * @param path 下载路径，例如/storage/emulated/0/Android/data/packagename/files/Music/红日.mp3
+     * @param name 文件名，需要自己带上后缀名
+     * @param listener 监听器，可以继承SimpleUserDownloadListener实现监听
+     * */
+    fun downloadWithPath(
+        url: String,
+        path: String,
+        name: String,
+        listener: UserDownloadListener?
+    ): DownloadTask {
+        // 创建任务
+        val downloadTask = DownloadTask(
+            id = null,
+            name = name,
+            path = path,
+            url = url,
+            totalSize = 0,
+            threadNum = 0,
+            breakPointDownload = false,
+            downloadListener = listener
+        )
+        // 处理任务
+        downloadTask.download()
         return downloadTask
     }
 
     fun batchDownload() = BatchDownloadTask()
+
+    internal fun putTask(tag: String, task: DownloadTask) {
+        taskMap[tag] = task
+    }
+
+    internal fun removeTask(tag: String): DownloadTask? = taskMap.remove(tag)
+
+    fun getTask(tag: String): DownloadTask? = taskMap[tag]
+
 }

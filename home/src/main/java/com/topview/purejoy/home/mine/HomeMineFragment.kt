@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.common.entity.User
+import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.UserManager
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeMineBinding
@@ -28,6 +29,10 @@ class HomeMineFragment : BindingFragment<FragmentHomeMineBinding>() {
     private fun initEvent() {
         binding.tvLoginTipsClickListener = View.OnClickListener {
             HomeRouter.routeToLoginActivity()
+        }
+        
+        binding.goDownloadManageClickListener = View.OnClickListener { 
+            CommonRouter.routeToDownloadManageActivity()
         }
     }
 }

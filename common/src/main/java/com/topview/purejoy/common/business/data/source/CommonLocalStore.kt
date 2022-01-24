@@ -1,17 +1,22 @@
-package com.topview.purejoy.home.data.source
+package com.topview.purejoy.common.business.data.source
 
-import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
+import com.topview.purejoy.common.business.db.AppDatabaseManager
 import com.topview.purejoy.common.business.data.manager.DownloadingSongManager
 import java.util.*
 
-class HomeLocalStore {
-    fun getDownloadSongInfoList(): List<DownloadSongInfo> {
+class CommonLocalStore {
+    fun getDownloadSongInfoList(): List<DownloadSongInfo>? {
         val appDatabase =
             checkNotNull(AppDatabaseManager.appDatabase, { "Didn't initialize AppDatabase yet" })
         val dao = appDatabase.downloadSongInfoDao()
         // 数据库中查询下载歌曲的信息
         val localSongInfoList = dao.queryDownloadSongInfo()
+        // 没有查找到数据则返回null
+        if (localSongInfoList.isEmpty()) {
+            return null
+        }
+
         // 要返回的List
         val songInfoList = LinkedList<DownloadSongInfo>()
         for (localInfo in localSongInfoList) {

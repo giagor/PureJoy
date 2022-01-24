@@ -21,16 +21,10 @@ object TaskHandler {
             downloadTask.url,
             object : ResourcePreviewCallback {
                 override fun onFailure(e: Exception) {
-//                    DownloadManager.handler.post {
-//                        downloadTask.downloadListener?.onFailure("下载出错")
-//                    }
                     downloadTask.callObserversOnFailure("下载出错")
                 }
 
                 override fun resourceErr() {
-//                    DownloadManager.handler.post {
-//                        downloadTask.downloadListener?.onFailure("找不到资源")
-//                    }
                     downloadTask.callObserversOnFailure("找不到资源")
                 }
 
@@ -38,9 +32,6 @@ object TaskHandler {
                     // 如果已经下载成功过且下载的文件仍然有效，就调用监听方法，并且return 
                     if (isAlreadyDownload(downloadTask.path, contentLength, downloadTask.tag)) {
                         downloadTask.setStatus(DownloadStatus.SUCCESS)
-//                        DownloadManager.handler.post {
-//                            downloadTask.downloadListener?.alreadyDownloaded()
-//                        }
                         downloadTask.callObserverAlreadyDownloaded()
                         return
                     }
@@ -154,6 +145,7 @@ object TaskHandler {
             // 将子任务插入到数据库中
             DownloadManager.downDbHelper.insertSubDownloadTasks(downloadTask.subTasks)
         }
+        downloadTask.callObserversInsertTaskToDb()
         return downloadTask
     }
 
