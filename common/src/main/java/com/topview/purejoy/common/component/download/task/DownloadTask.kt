@@ -365,7 +365,6 @@ class DownloadTask(
         subTasks.addAll(subDownloadTasks)
     }
 
-    // TODO 考虑handler放在for外面
     internal fun callObserversOnStart() {
         for (observer in observers) {
             DownloadManager.handler.post {
@@ -483,7 +482,6 @@ class DownloadTask(
     /**
      * 任务完成
      * */
-    // TODO 做的两件事情可以分离吗
     private fun taskComplete() {
         // 移除所有观察者
         removeAllObservers()
