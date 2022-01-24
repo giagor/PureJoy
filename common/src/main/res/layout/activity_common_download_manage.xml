@@ -7,6 +7,7 @@
         <import type="androidx.recyclerview.widget.LinearLayoutManager"/>
         <import type="com.topview.purejoy.common.business.download.manage.adapter.DownloadManageAdapter"/>
         <import type="com.topview.purejoy.common.business.download.manage.DownloadManageViewModel"/>
+        <import type="android.view.View"/>
         <variable
             name="downloadTaskLayoutManager"
             type="LinearLayoutManager" />
@@ -21,7 +22,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.topview.purejoy.common.business.download.manage.DownloadManageActivity"
         android:orientation="vertical"
         android:paddingStart="@dimen/common_padding_left"
         android:paddingEnd="@dimen/common_padding_right">
@@ -46,13 +46,27 @@
 
         </RelativeLayout>
         
-        <androidx.recyclerview.widget.RecyclerView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            app:layoutManager="@{downloadTaskLayoutManager}"
-            app:adapter="@{downloadTaskAdapter}"
-            app:downloadSongInfos="@{downloadManageViewModel.downloadSongsLiveData}"/>
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                app:layoutManager="@{downloadTaskLayoutManager}"
+                app:adapter="@{downloadTaskAdapter}"
+                app:downloadSongInfos="@{downloadManageViewModel.downloadSongsLiveData}"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/common_download_manage_task_empty"
+                android:layout_gravity="center"
+                android:visibility="@{downloadManageViewModel.taskEmptyLiveData ? View.VISIBLE : View.GONE}"/>
+            
+        </FrameLayout>
+        
         
     </LinearLayout>
 </layout>

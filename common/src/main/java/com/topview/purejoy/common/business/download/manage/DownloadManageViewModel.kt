@@ -13,10 +13,18 @@ class DownloadManageViewModel : MVVMViewModel() {
         MutableLiveData<List<DownloadSongInfo>>()
     }
 
+    val taskEmptyLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
     fun getDownloadSongInfoList() {
         viewModelScope.rxLaunch<List<DownloadSongInfo>> {
             onRequest = {
                 repository.getDownloadSongInfoList()
+            }
+
+            onEmpty = {
+                taskEmptyLiveData.value = true
             }
 
             onSuccess = {

@@ -7,9 +7,8 @@ import kotlinx.coroutines.withContext
 
 object CommonRepository {
     private val commonLocalStore: CommonLocalStore = CommonLocalStore()
-
-    // TODO 没有下载任务时考虑返回null
-    suspend fun getDownloadSongInfoList(): List<DownloadSongInfo> =
+    
+    suspend fun getDownloadSongInfoList(): List<DownloadSongInfo>? =
         withContext(Dispatchers.IO) {
             commonLocalStore.getDownloadSongInfoList()
         }
