@@ -17,6 +17,9 @@
         <variable
             name="downloadManageViewModel"
             type="com.topview.purejoy.common.business.download.manage.DownloadManageViewModel" />
+        <variable
+            name="backListener"
+            type="View.OnClickListener" />
     </data>
 
     <LinearLayout
@@ -34,7 +37,8 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/common_ic_back_arror" 
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                app:onClickListener="@{backListener}"/>
 
             <TextView
                 android:layout_width="wrap_content"

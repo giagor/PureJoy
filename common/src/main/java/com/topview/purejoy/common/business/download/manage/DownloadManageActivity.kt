@@ -2,6 +2,7 @@ package com.topview.purejoy.common.business.download.manage
 
 import android.app.Application
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -98,6 +99,10 @@ class DownloadManageActivity :
     }
 
     private fun initEvent() {
+        binding.backListener = View.OnClickListener {
+            finish()
+        }
+
         // 点击监听
         adapter.setOnItemClickListener { adapter, _, position ->
             val songInfo: DownloadSongInfo = adapter.getItem(position) as DownloadSongInfo
