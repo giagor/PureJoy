@@ -30,7 +30,6 @@ object DownloadUtil {
      * @param activity 申请权限需要使用到
      * @param name 歌曲的名字
      * @param url 下载的url
-     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -63,7 +62,6 @@ object DownloadUtil {
      * @param fragment 申请权限需要使用到
      * @param name 歌曲的名字
      * @param url 下载的url
-     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -95,7 +93,6 @@ object DownloadUtil {
      *
      * @param activity 申请权限需要使用到
      * @param songInfo 已有的歌曲下载记录
-     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
@@ -125,7 +122,6 @@ object DownloadUtil {
      *
      * @param fragment 申请权限需要使用到
      * @param songInfo 已有的歌曲下载记录
-     * @param pendingIntent 在通知中用于意图跳转
      * @param downloadListener 下载监听器
      * @param permissionAllowed 用户同意权限时的回调（包括原来已授权权限）
      * @param permissionDenied 用户拒绝权限时的回调
