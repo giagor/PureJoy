@@ -178,4 +178,11 @@ class DownloadManageActivity :
         ViewModelProvider.AndroidViewModelFactory.getInstance(
             CommonApplication.getContext() as Application
         )
+
+    override fun onDestroy() {
+        for (songInfo in adapter.data) {
+            DownloadManager.getTask(songInfo.tag)?.unregisterObserver(downloadListener)
+        }
+        super.onDestroy()
+    }
 }
