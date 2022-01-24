@@ -57,7 +57,7 @@ class DownloadManageActivity :
         }
 
         override fun alreadyDownloaded(downloadTask: DownloadTask) {
-            super.alreadyDownloaded(downloadTask)
+            removeItem(downloadTask)
         }
     }
 
