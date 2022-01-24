@@ -3,6 +3,7 @@ package com.topview.purejoy.home.tasks.toplist
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
@@ -15,6 +16,7 @@ import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.toplist.TopListScreen
 import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.theme.Gray245
+import com.topview.purejoy.home.util.ProvideMusicController
 
 @Route(path = HomeRouter.ACTIVITY_HOME_TOPLIST)
 class TopListActivity : ComposeActivity() {
@@ -32,21 +34,28 @@ class TopListActivity : ComposeActivity() {
         viewModel.loadTopListData()
         setContent {
             ProvideWindowInsets(consumeWindowInsets = false) {
-                val uiState by viewModel.pageState.collectAsState()
-                val data by viewModel.topListData.collectAsState()
-                val loadedUrl by viewModel.loadedCoverUrl.collectAsState()
+                ProvideMusicController {
+                    val uiState by viewModel.screenState.collectAsState()
+                    val data by viewModel.topListData.collectAsState()
+                    val loadedUrl by viewModel.loadedCoverUrl.collectAsState()
+                    val musicLoadState by viewModel.loadState.collectAsState()
 
-                if (uiState is PageState.Success && !loadedUrl) {
-                    viewModel.loadCovers()
-                }
-                TopListScreen(
-                    state = uiState,
-                    topListMap = data,
-                    onRetryClick = { viewModel.loadTopListData() },
-                    onBackClick = {
-                        finish()
+                    LaunchedEffect(uiState) {
+                        if (uiState is PageState.Success && !loadedUrl) {
+                            viewModel.loadCovers()
+                        }
                     }
-                )
+
+                    TopListScreen(
+                        state = uiState,
+                        musicLoadState = musicLoadState,
+                        topListMap = data,
+                        onRetryClick = { viewModel.loadTopListData() },
+                        onBackClick = {
+                            finish()
+                        }
+                    )
+                }
             }
         }
     }

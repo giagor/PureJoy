@@ -1,7 +1,9 @@
 package com.topview.purejoy.home.tasks.toplist
 
 import androidx.lifecycle.viewModelScope
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
+import com.topview.purejoy.home.components.status.MusicItemLoadState
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.data.repo.TopListRepository
 import com.topview.purejoy.home.entity.TopList
@@ -15,8 +17,15 @@ class TopListViewModel: MVVMViewModel() {
     /**
      * 页面的状态
      */
-    private var _pageState: MutableStateFlow<PageState> = MutableStateFlow(PageState.Loading)
-    val pageState: StateFlow<PageState> = _pageState
+    private var _screenState: MutableStateFlow<PageState> = MutableStateFlow(PageState.Loading)
+    val screenState: StateFlow<PageState> = _screenState
+
+    private var _loadState: MutableStateFlow<MusicItemLoadState> = MutableStateFlow(
+        MusicItemLoadState(
+            pageState = PageState.Empty
+        )
+    )
+    val loadState: StateFlow<MusicItemLoadState> = _loadState
 
     /**
      * 榜单数据
@@ -32,7 +41,7 @@ class TopListViewModel: MVVMViewModel() {
     val loadedCoverUrl: StateFlow<Boolean> = _loadedCoverUrl
 
     fun loadTopListData() {
-        _pageState.value = PageState.Loading
+        _screenState.value = PageState.Loading
         viewModelScope.rxLaunch<Map<TopListTab, List<TopList>>> {
             onRequest = {
                 val list = repository.getTopListDetail()
@@ -40,10 +49,10 @@ class TopListViewModel: MVVMViewModel() {
             }
             onSuccess = {
                 _topListData.value = it
-                _pageState.value = PageState.Success
+                _screenState.value = PageState.Success
             }
             onError = {
-                _pageState.value = PageState.Error
+                _screenState.value = PageState.Error
             }
         }
     }
@@ -63,4 +72,23 @@ class TopListViewModel: MVVMViewModel() {
             }
         }
     }
+
+    fun loadSongsByTopList(topList: TopList) {
+        viewModelScope.rxLaunch<List<MusicItem>> {
+            onRequest = {
+                _loadState.value = MusicItemLoadState(pageState = PageState.Loading)
+                repository.getSongs(topList)
+            }
+            onSuccess = {
+                _loadState.value = MusicItemLoadState(
+                    pageState = PageState.Success,
+                    data = it
+                )
+            }
+            onError = {
+                _loadState.value = MusicItemLoadState(pageState = PageState.Error)
+            }
+        }
+    }
+
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,19 +20,24 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.login.ScreenTitle
+import com.topview.purejoy.home.components.status.MusicItemLoadState
 import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.components.status.SimpleStatusScreen
 import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.entity.TopListTab
 import com.topview.purejoy.home.theme.Gray245
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 @Composable
 internal fun TopListScreen(
     state: PageState,
+    musicLoadState: MusicItemLoadState,
     topListMap: Map<TopListTab, List<TopList>>?,
     onRetryClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
+    val scaffoldState = rememberScaffoldState()
+    val errorTip = stringResource(id = R.string.home_toplist_load_song_error)
     Scaffold(
         topBar = {
             TopListScreenTitle(
@@ -50,6 +56,7 @@ internal fun TopListScreen(
                 onBackClick = onBackClick
             )
         },
+        scaffoldState = scaffoldState
     ) {
         SimpleStatusScreen(
             state = state,
@@ -63,11 +70,31 @@ internal fun TopListScreen(
                 TopListLoadingContent(Gray245)
             }
         ) {
-            if (topListMap != null) {
-                TopListContent(
-                    topListMap = topListMap,
-                )
+            Box {
+                if (topListMap != null) {
+                    TopListContent(
+                        topListMap = topListMap,
+                        onCardClick = {
+                            MusicLibraryRouter.routeToPlaylistDetailActivity(it.id)
+                        }
+                    )
+                }
+                when (musicLoadState.pageState) {
+                    is PageState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color.Gray
+                        )
+                    }
+                    is PageState.Error -> {
+                        LaunchedEffect(musicLoadState) {
+                            scaffoldState.snackbarHostState.showSnackbar(errorTip)
+                        }
+                    }
+                    else -> {}
+                }
             }
+
         }
     }
 
