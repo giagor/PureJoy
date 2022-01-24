@@ -28,14 +28,10 @@ data class DownloadSongInfo(
     @Ignore var status: Int = DownloadStatus.INITIAL,
     /** 下载进度 [0~100] */
     @Ignore var progress: Int = 0,
-    /** 已下载的大小 */
-    @Ignore var downloadedSize: Long,
-    /** 任务总大小 */
-    @Ignore var totalSize: Long,
     /** 任务的标识符（与下载库的tag相对应） */
     var tag: String
 ) {
-    constructor() : this(null, "", "", "", DownloadStatus.INITIAL, 0, 0, 0, "")
+    constructor() : this(null, "", "", "", DownloadStatus.INITIAL, 0, "")
 
     companion object {
         fun copyFromTask(downloadTask: DownloadTask): DownloadSongInfo {
@@ -44,8 +40,6 @@ data class DownloadSongInfo(
                 name = downloadTask.name,
                 url = downloadTask.url,
                 path = downloadTask.path,
-                downloadedSize = 0,
-                totalSize = downloadTask.totalSize,
                 tag = downloadTask.tag
             )
         }
