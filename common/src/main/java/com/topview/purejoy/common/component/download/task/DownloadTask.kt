@@ -12,7 +12,6 @@ import com.topview.purejoy.common.component.download.task.handler.TaskHandler
 import com.topview.purejoy.common.component.download.util.md5EncryptForStrings
 import java.io.File
 import java.util.concurrent.ExecutorService
-import kotlin.concurrent.thread
 
 /**
  * Created by giagor on 2021/12/18
@@ -158,8 +157,7 @@ class DownloadTask(
 
         // 特殊处理下 暂停or准备下载 -> 取消 的状态迁移，方便清理资源，以及处理回调
         if (prePaused || prePrepare) {
-            // todo 弄个普通线程池
-            thread {
+            DownloadManager.downloadConfiguration.getCommonThreadPool().execute {
                 clearTaskInfo()
                 callObserverOnCancelled()
                 // 移除所有观察者
