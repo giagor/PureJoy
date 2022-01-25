@@ -16,6 +16,7 @@ import coil.transition.CrossfadeTransition
 fun createImageRequestForCoil(
     data: Any?,
     placeholder: Drawable? = null,
+    requestBuilder: (ImageRequest.Builder.() -> Unit) = {},
     crossFade: Boolean = true,
     preferExactIntrinsicSize: Boolean = false
 ): ImageRequest {
@@ -29,5 +30,8 @@ fun createImageRequestForCoil(
     return builder.data(data)
         .placeholder(placeholder)
         .error(placeholder)
+        .apply {
+            requestBuilder()
+        }
         .build()
 }
