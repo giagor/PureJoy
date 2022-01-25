@@ -3,7 +3,6 @@ package com.topview.purejoy.home.components.toplist
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +21,6 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
 import com.topview.purejoy.common.util.createImageRequestForCoil
-import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.util.ImageUtil
 
@@ -58,13 +55,11 @@ internal fun OfficialTopListCard(
                         bottom.linkTo(parent.bottom)
                     },
                 headerContent = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
-                        contentDescription = null,
-                        tint = Color.White,
+                    ClickablePlayIcon(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .size(18.dp)
+                            .size(18.dp),
+                        topList = topList
                     )
                 }
             )

@@ -1,6 +1,8 @@
 package com.topview.purejoy.home.data.repo
 
+import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.home.data.bean.LimitSongJson
+import com.topview.purejoy.home.data.bean.toMusicItems
 import com.topview.purejoy.home.data.source.TopListRemoteStore
 import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.entity.TopListTab
@@ -16,7 +18,7 @@ object TopListRepository {
     suspend fun getTopListDetail(): List<TopList> =
         withContext(Dispatchers.IO) {
             val json = remoteStore.getTopListDetail()
-            if (json.code != 200) {
+            if (json == null || json.code != 200) {
                 return@withContext emptyList()
             } else {
                 val list: MutableList<TopList> = mutableListOf()
@@ -61,7 +63,7 @@ object TopListRepository {
             for (topList in list) {
                 if (topList.trackCoverUrl == null) {
                     val dataOfSong = remoteStore.getLimitTopListSong(topList.id, 3)
-                    dataOfSong.code?.let {
+                    dataOfSong?.code?.let {
                         if (it == 200) {
                             val urlList = listOf(
                                 dataOfSong.getPicUrlOfDefault(0, defaultUrl),
@@ -97,6 +99,15 @@ object TopListRepository {
             result
         }
     }
+
+    suspend fun getSongs(topList: TopList): List<MusicItem> =
+        withContext(Dispatchers.IO) {
+            val json = remoteStore.getLimitTopListSong(topList.id, null)
+            if (json == null || json.code != 200) {
+                error("cannot get the correct json object")
+            }
+            json.toMusicItems() ?: error("data is empty")
+        }
 
 
     private fun LimitSongJson.getPicUrlOfDefault(index: Int, default: String): String =

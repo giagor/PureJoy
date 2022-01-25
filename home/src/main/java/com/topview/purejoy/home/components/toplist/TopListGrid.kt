@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -14,14 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
 import com.topview.purejoy.common.util.createImageRequestForCoil
-import com.topview.purejoy.home.R
 import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.theme.Gray245
 import com.topview.purejoy.home.util.ImageUtil
@@ -69,8 +66,8 @@ internal inline fun TopListGrid(
  */
 @Composable
 internal fun TopListGridChild(
+    modifier: Modifier = Modifier,
     topList: TopList,
-    modifier: Modifier = Modifier
 ) {
     ConstraintLayout(modifier = modifier) {
         val (image, icon, update, name) = createRefs()
@@ -94,16 +91,14 @@ internal fun TopListGridChild(
                 modifier = Modifier.size(imageSize)
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.home_ic_toplist_music_play),
-            contentDescription = null,
-            tint = Color.White,
+        ClickablePlayIcon(
             modifier = Modifier
                 .size(20.dp)
                 .constrainAs(icon) {
                     end.linkTo(parent.end, 5.dp)
                     bottom.linkTo(image.bottom, 7.dp)
-                }
+                },
+            topList = topList
         )
         Surface(
             shape = RoundedCornerShape(50),

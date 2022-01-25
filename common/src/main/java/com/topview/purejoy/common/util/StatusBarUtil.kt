@@ -143,5 +143,6 @@ object StatusBarUtil {
                 insets
             }
         }
+        view.requestApplyInsets()
     }
 }
