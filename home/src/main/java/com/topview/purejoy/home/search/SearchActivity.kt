@@ -1,6 +1,7 @@
 package com.topview.purejoy.home.search
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,7 +45,7 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         super.onCreate(savedInstanceState)
 
         initView()
-        initBinding()
+        initEvent()
         observe()
         addFragment(R.id.home_fl_fragment_layout, SearchContentRecommendFragment.newInstance())
 
@@ -70,8 +71,11 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         })
     }
 
-    private fun initBinding() {
+    private fun initEvent() {
         binding.onQueryTextListener = onQueryTextListener
+        binding.backClickListener = View.OnClickListener {
+            finish()
+        }
     }
 
     override fun getLayoutId(): Int = R.layout.activity_home_search
