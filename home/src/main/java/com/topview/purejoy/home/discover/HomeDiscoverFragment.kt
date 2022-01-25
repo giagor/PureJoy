@@ -19,6 +19,7 @@ import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
@@ -31,7 +32,8 @@ private const val TAG = "HomeDiscoverFragment"
 private const val RECOMMEND_NEW_SONG_ROW_COUNT = 3
 
 @Route(path = HomeRouter.FRAGMENT_HOME_DISCOVER)
-class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
+class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>(),
+    DailyRecommendPlayListAdapter.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -98,7 +100,9 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         val layoutManager = LinearLayoutManager(requireContext()).apply {
             orientation = LinearLayoutManager.HORIZONTAL
         }
-        val adapter = DailyRecommendPlayListAdapter()
+        val adapter = DailyRecommendPlayListAdapter().apply {
+            setClickListener(this@HomeDiscoverFragment)
+        }
         val decoration = DailyRecommendPlayListDecoration()
         binding.dailyRecommendPlayListLayoutManager = layoutManager
         binding.dailyRecommendPlayListAdapter = adapter
@@ -140,5 +144,11 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
                 Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
+    }
+
+    override fun onPlayListClick(playList: PlayList) {
+        playList.id?.let {
+            MusicLibraryRouter.routeToPlaylistDetailActivity(it)
+        }
     }
 }

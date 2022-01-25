@@ -4,15 +4,20 @@
 
     <data>
         <import type="com.topview.purejoy.home.entity.PlayList"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="dailyRecommendPlayList"
             type="PlayList" />
+        <variable
+            name="playListClickListener"
+            type="OnClickListener" />
     </data>
     
     <LinearLayout
         android:layout_width="@dimen/home_discover_daily_recommend_playlist_img_size"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:onClickListener="@{playListClickListener}">
 
         <ImageView
             android:layout_width="@dimen/home_discover_daily_recommend_playlist_img_size"
