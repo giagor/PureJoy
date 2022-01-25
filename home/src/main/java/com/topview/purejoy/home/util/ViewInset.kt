@@ -48,7 +48,7 @@ class ViewInsetObserver(
      * 停止观察尺寸变化
      */
     fun stop() {
-        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
     }
 
     private fun getInsetSize(v: View): InsetSize =
