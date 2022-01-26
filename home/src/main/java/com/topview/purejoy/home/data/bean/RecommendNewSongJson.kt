@@ -51,10 +51,18 @@ class RecommendNewSongJson {
         class Song {
 
             var artists: MutableList<Artist>? = null
+            var album: Album? = null
+            var mvid: Long? = null
 
             class Artist {
                 var name: String? = null
                 var id: Long? = null
+            }
+
+            class Album {
+                var id: Long? = null
+                var name: String? = null
+                var picUrl: String? = null
             }
         }
     }
