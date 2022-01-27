@@ -6,7 +6,18 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity(primaryKeys = ["id"])
-data class RecoverMusicData(val id: Long, val name: String, val url: String? = null, val mv: Long)
+class RecoverMusicData(val id: Long, val name: String, val url: String? = null, val mv: Long) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is RecoverMusicData) {
+            return false
+        }
+        return other.id == id
+    }
+
+    override fun hashCode(): Int {
+        return id.toInt() * 37
+    }
+}
 
 @Entity
 data class RecoverARData(@PrimaryKey(autoGenerate = true)var rid: Int? = null,
