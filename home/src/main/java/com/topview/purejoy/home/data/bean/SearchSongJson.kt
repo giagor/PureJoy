@@ -16,13 +16,21 @@ class SearchSongJson {
         class Song {
             var id: Long? = null
             var name: String? = null
+            var mv: Long? = null
 
             @SerializedName("ar")
             var artists: MutableList<Artist>? = null
+            var al: Album? = null
 
             class Artist {
                 var id: Long? = null
                 var name: String? = null
+            }
+
+            class Album {
+                var id: Long? = null
+                var name: String? = null
+                var picUrl: String? = null
             }
         }
     }

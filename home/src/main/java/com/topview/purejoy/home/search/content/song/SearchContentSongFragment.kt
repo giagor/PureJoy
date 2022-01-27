@@ -1,22 +1,35 @@
 package com.topview.purejoy.home.search.content.song
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
+import android.widget.PopupWindow
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
+import com.topview.purejoy.common.util.getWindowHeight
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
+import com.topview.purejoy.home.databinding.LayoutSearchSongPopBinding
+import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 class SearchContentSongFragment :
-    LoadMoreFragment<SearchContentSongViewModel, FragmentHomeSearchContentSongBinding, SearchContentSongAdapter>() {
+    LoadMoreFragment<SearchContentSongViewModel, FragmentHomeSearchContentSongBinding, SearchContentSongAdapter>(),
+    SearchContentSongAdapter.ClickListener {
 
-    private val adapter = SearchContentSongAdapter()
+    private val adapter = SearchContentSongAdapter().apply {
+        setClickListener(this@SearchContentSongFragment)
+    }
 
     /**
      * 分页加载，每页的数量
@@ -27,6 +40,57 @@ class SearchContentSongFragment :
      * 记录最近一次的关键词搜索
      * */
     private var lastKeyword = ""
+
+    /**
+     * 记录点击弹出pop窗口对应的是哪首歌曲
+     * */
+    private var popClickSong: Song? = null
+
+    private val popView: View by lazy {
+        val binding: LayoutSearchSongPopBinding =
+            DataBindingUtil.inflate(
+                LayoutInflater.from(requireContext()),
+                R.layout.layout_search_song_pop,
+                null,
+                false
+            )
+        binding.nextPlayClickListener = View.OnClickListener {
+            popClickSong?.let {
+
+            }
+        }
+        binding.downloadClickListener = View.OnClickListener {
+            popClickSong?.let {
+//                DownloadUtil.downloadMusic(SearchContentSongFragment@this)
+            }
+        }
+        binding.root
+    }
+
+    private val popWindow: PopupWindow by lazy {
+        val popWindow = PopupWindow(popView)
+        val windowWidth = WindowManager.LayoutParams.MATCH_PARENT
+        val windowHeight = getWindowHeight(requireContext()) * 2 / 3
+        popWindow.width = windowWidth
+        popWindow.height = windowHeight
+        // 设置窗体的背景
+        popWindow.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.home_bg_search_pop
+            )
+        )
+        popWindow.isFocusable = true
+        // 关闭监听
+        popWindow.setOnDismissListener {
+            // 恢复父窗口的背景色
+            val parentWindow = (requireContext() as Activity).window
+            val attr = parentWindow.attributes
+            attr.alpha = 1f
+            parentWindow.attributes = attr
+        }
+        popWindow
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,5 +162,21 @@ class SearchContentSongFragment :
         @JvmStatic
         fun newInstance() =
             SearchContentSongFragment()
+    }
+
+    override fun onMenuClick(song: Song) {
+        popClickSong = song
+        // 设置屏幕背景透明度
+        val parentWindow = (requireContext() as Activity).window
+        val attr = parentWindow.attributes
+        attr.alpha = 0.7f
+        parentWindow.attributes = attr
+        // 弹出窗口
+        popWindow.showAtLocation(
+            (requireContext() as Activity).window.decorView,
+            Gravity.BOTTOM,
+            0,
+            0
+        )
     }
 }
