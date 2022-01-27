@@ -165,6 +165,10 @@ class HomeRemoteStore {
         return null
     }
 
+    fun requestSongUrl(id: Long): SongDetailJson? {
+        return homeService.requestSongUrl(id).awaitSync()
+    }
+
     private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
         val searchSongs = mutableListOf<Song>()
         songJson.forEach {
@@ -218,5 +222,4 @@ class HomeRemoteStore {
         }
         return searchPlayLists
     }
-
 }

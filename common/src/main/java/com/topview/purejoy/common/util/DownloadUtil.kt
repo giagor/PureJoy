@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Environment
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -26,6 +27,14 @@ object DownloadUtil {
         Environment.getExternalStorageDirectory().absolutePath.plus(File.separator)
             .plus(Environment.DIRECTORY_MUSIC)
 
+    private val defaultPermissionAllowed: ((DownloadTask) -> Unit) = {
+        showToast(CommonApplication.getContext(), "已加入下载任务队列", Toast.LENGTH_SHORT)
+    }
+
+    private val defaultPermissionDenied: (() -> Unit) = {
+        showToast(CommonApplication.getContext(), "拒绝权限将无法下载", Toast.LENGTH_SHORT)
+    }
+
     /**
      * 下载音乐
      *
@@ -41,8 +50,8 @@ object DownloadUtil {
         name: String,
         url: String,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: ((DownloadTask) -> Unit)? = null,
-        permissionDenied: (() -> Unit)? = null
+        permissionAllowed: ((DownloadTask) -> Unit)? = defaultPermissionAllowed,
+        permissionDenied: (() -> Unit)? = defaultPermissionDenied
     ) {
         PermissionX.init(activity)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -73,8 +82,8 @@ object DownloadUtil {
         name: String,
         url: String,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: ((DownloadTask) -> Unit)? = null,
-        permissionDenied: (() -> Unit)? = null
+        permissionAllowed: ((DownloadTask) -> Unit)? = defaultPermissionAllowed,
+        permissionDenied: (() -> Unit)? = defaultPermissionDenied
     ) {
         PermissionX.init(fragment)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -103,8 +112,8 @@ object DownloadUtil {
         activity: FragmentActivity,
         songInfo: DownloadSongInfo,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: ((DownloadTask) -> Unit)? = null,
-        permissionDenied: (() -> Unit)? = null
+        permissionAllowed: ((DownloadTask) -> Unit)? = defaultPermissionAllowed,
+        permissionDenied: (() -> Unit)? = defaultPermissionDenied
     ) {
         PermissionX.init(activity)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -132,8 +141,8 @@ object DownloadUtil {
         fragment: Fragment,
         songInfo: DownloadSongInfo,
         downloadListener: UserDownloadListener? = null,
-        permissionAllowed: ((DownloadTask) -> Unit)? = null,
-        permissionDenied: (() -> Unit)? = null
+        permissionAllowed: ((DownloadTask) -> Unit)? = defaultPermissionAllowed,
+        permissionDenied: (() -> Unit)? = defaultPermissionDenied
     ) {
         PermissionX.init(fragment)
             .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)

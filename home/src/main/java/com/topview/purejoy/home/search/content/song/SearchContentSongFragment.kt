@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.entity.wrap
+import com.topview.purejoy.common.util.DownloadUtil
 import com.topview.purejoy.common.util.getWindowHeight
+import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
@@ -79,8 +81,17 @@ class SearchContentSongFragment :
         }
         binding.downloadClickListener = View.OnClickListener {
             popClickSong?.let {
-//                DownloadUtil.downloadMusic(SearchContentSongFragment@this)
+                if (it.url == null) {
+                    viewModel.requestSongUrl(it)
+                } else {
+                    DownloadUtil.downloadMusic(
+                        this@SearchContentSongFragment,
+                        it.name ?: "",
+                        it.url!!
+                    )
+                }
             }
+            popWindow.dismiss()
         }
         binding.root
     }
@@ -170,10 +181,22 @@ class SearchContentSongFragment :
             loadMoreSuccess()
         })
 
+        // 对请求url进行观察
+        viewModel.requestUrlLiveData.observe(viewLifecycleOwner, {
+            if (it.url == null) {
+                showToast(requireContext(), "出现错误，无法加入下载队列")
+            } else {
+                DownloadUtil.downloadMusic(this@SearchContentSongFragment, it.name ?: "", it.url!!)
+            }
+        })
+
         // 对数据请求的状态进行观察
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 Status.SEARCH_SONG_LOAD_MORE_NET_ERROR -> adapter.loadMoreModule.loadMoreFail()
+                Status.SEARCH_SONG_REQUEST_URL_ID_EMPTY, Status.SEARCH_SONG_REQUEST_URL_ERROR -> {
+                    showToast(requireContext(), "出现错误，无法加入下载队列")
+                }
             }
         })
     }

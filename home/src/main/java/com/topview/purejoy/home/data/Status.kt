@@ -18,4 +18,6 @@ internal object Status {
      * */
     const val SEARCH_SONG_LOAD_MORE_NET_ERROR = "search_song_load_more_net_error"
     const val SEARCH_PLAYLIST_LOAD_MORE_NET_ERROR = "search_playlist_load_more_net_error"
+    const val SEARCH_SONG_REQUEST_URL_ERROR = "search_song_request_url_error"
+    const val SEARCH_SONG_REQUEST_URL_ID_EMPTY = "search_song_request_url_ID_EMPTY"
 }

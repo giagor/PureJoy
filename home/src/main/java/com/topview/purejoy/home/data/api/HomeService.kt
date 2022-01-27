@@ -30,4 +30,7 @@ interface HomeService {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int
     ): Call<SearchPlayListJson>
+
+    @GET("/song/url")
+    fun requestSongUrl(@Query("id") id: Long): Call<SongDetailJson>
 }
