@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.discover.adapter
 
+import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
 import com.topview.purejoy.home.R
@@ -11,6 +12,8 @@ class DailyRecommendPlayListAdapter :
         R.layout.item_home_daily_recommend_playlist
     ) {
 
+    private var clickListener: OnClickListener? = null
+
     override fun convert(
         holder: BaseDataBindingHolder<ItemHomeDailyRecommendPlaylistBinding>,
         item: PlayList
@@ -20,6 +23,12 @@ class DailyRecommendPlayListAdapter :
         binding?.let {
             // 设置数据
             it.dailyRecommendPlayList = item
+            // 设置监听器
+            clickListener?.let { listener ->
+                it.playListClickListener = View.OnClickListener {
+                    listener.onPlayListClick(item)
+                }
+            }
         }
     }
 
@@ -28,5 +37,13 @@ class DailyRecommendPlayListAdapter :
      * */
     fun setData(list: List<PlayList>) {
         setList(list)
+    }
+
+    fun setClickListener(listener: OnClickListener) {
+        this.clickListener = listener
+    }
+
+    interface OnClickListener {
+        fun onPlayListClick(playList: PlayList)
     }
 }

@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
+import com.topview.purejoy.common.music.data.Wrapper
+import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.util.getWindowWidth
 import com.topview.purejoy.common.util.showToast
@@ -19,6 +21,9 @@ import com.topview.purejoy.home.discover.adapter.DailyRecommendPlayListAdapter
 import com.topview.purejoy.home.discover.adapter.RecommendNewSongAdapter
 import com.topview.purejoy.home.discover.decoration.DailyRecommendPlayListDecoration
 import com.topview.purejoy.home.discover.decoration.RecommendNewSongDecoration
+import com.topview.purejoy.home.entity.PlayList
+import com.topview.purejoy.home.entity.Song
+import com.topview.purejoy.home.entity.toMusicItem
 import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
@@ -31,7 +36,13 @@ private const val TAG = "HomeDiscoverFragment"
 private const val RECOMMEND_NEW_SONG_ROW_COUNT = 3
 
 @Route(path = HomeRouter.FRAGMENT_HOME_DISCOVER)
-class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>() {
+class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDiscoverBinding>(),
+    DailyRecommendPlayListAdapter.OnClickListener, RecommendNewSongAdapter.ClickListener {
+
+    private lateinit var recommendNewSongAdapter: RecommendNewSongAdapter
+    private lateinit var dailyRecommendPlayListAdapter: DailyRecommendPlayListAdapter
+    private var recommendNewSongPlayListener: RecommendNewSongPlayListener? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -98,10 +109,12 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
         val layoutManager = LinearLayoutManager(requireContext()).apply {
             orientation = LinearLayoutManager.HORIZONTAL
         }
-        val adapter = DailyRecommendPlayListAdapter()
+        dailyRecommendPlayListAdapter = DailyRecommendPlayListAdapter().apply {
+            setClickListener(this@HomeDiscoverFragment)
+        }
         val decoration = DailyRecommendPlayListDecoration()
         binding.dailyRecommendPlayListLayoutManager = layoutManager
-        binding.dailyRecommendPlayListAdapter = adapter
+        binding.dailyRecommendPlayListAdapter = dailyRecommendPlayListAdapter
         binding.dailyRecommendPlayListDecoration = decoration
         binding.dailyRecommendPlayListSnapHelper = GravitySnapHelper(Gravity.START).apply {
             // 限制最大的抛掷距离
@@ -114,10 +127,12 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
             GridLayoutManager(requireContext(), RECOMMEND_NEW_SONG_ROW_COUNT).apply {
                 orientation = GridLayoutManager.HORIZONTAL
             }
-        val adapter = RecommendNewSongAdapter()
+        recommendNewSongAdapter = RecommendNewSongAdapter().apply {
+            setClickListener(this@HomeDiscoverFragment)
+        }
         val decoration = RecommendNewSongDecoration()
         binding.recommendNewSongLayoutManager = layoutManager
-        binding.recommendNewSongAdapter = adapter
+        binding.recommendNewSongAdapter = recommendNewSongAdapter
         binding.recommendNewSongDecoration = decoration
         binding.recommendNewSongSnapHelper = GravitySnapHelper(Gravity.START).apply {
             // 限制最大的抛掷距离
@@ -140,5 +155,33 @@ class HomeDiscoverFragment : MVVMFragment<HomeDiscoverViewModel, FragmentHomeDis
                 Status.DISCOVER_DAILY_RECOMMEND_PLAYLIST_NET_ERROR -> showDailyRecommendPlayListError()
             }
         })
+    }
+
+    override fun onPlayListClick(playList: PlayList) {
+        playList.id?.let {
+            MusicLibraryRouter.routeToPlaylistDetailActivity(it)
+        }
+    }
+
+    override fun onRecommendNewSongClick(song: Song) {
+        recommendNewSongPlayListener?.let { listener ->
+            val songs = recommendNewSongAdapter.data
+            if (songs.isNotEmpty()) {
+                val position = recommendNewSongAdapter.getItemPosition(song)
+                val wrapperList: MutableList<Wrapper> = mutableListOf()
+                songs.forEach {
+                    wrapperList.add(it.toMusicItem().wrap())
+                }
+                listener.onRecommendNewSongClick(position, wrapperList)
+            }
+        }
+    }
+
+    fun setRecommendNewSongPlayListener(listener: RecommendNewSongPlayListener) {
+        this.recommendNewSongPlayListener = listener
+    }
+
+    interface RecommendNewSongPlayListener {
+        fun onRecommendNewSongClick(position: Int, list: List<Wrapper>)
     }
 }

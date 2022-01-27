@@ -8,15 +8,20 @@ import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentPlaylistBinding
+import com.topview.purejoy.home.entity.PlayList
 import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.playlist.adapter.SearchContentPlayListAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
+import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
 class SearchContentPlayListFragment :
-    LoadMoreFragment<SearchContentPlayListViewModel, FragmentHomeSearchContentPlaylistBinding, SearchContentPlayListAdapter>() {
+    LoadMoreFragment<SearchContentPlayListViewModel, FragmentHomeSearchContentPlaylistBinding, SearchContentPlayListAdapter>(),
+    SearchContentPlayListAdapter.ClickListener {
 
-    private val adapter = SearchContentPlayListAdapter()
+    private val adapter = SearchContentPlayListAdapter().apply {
+        setClickListener(this@SearchContentPlayListFragment)
+    }
 
     /**
      * 分页加载，每页的数量
@@ -98,5 +103,11 @@ class SearchContentPlayListFragment :
         @JvmStatic
         fun newInstance() =
             SearchContentPlayListFragment()
+    }
+
+    override fun onPlaylistClick(playList: PlayList) {
+        playList.id?.let {
+            MusicLibraryRouter.routeToPlaylistDetailActivity(it)
+        }
     }
 }

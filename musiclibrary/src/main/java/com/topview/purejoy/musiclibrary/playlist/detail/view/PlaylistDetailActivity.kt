@@ -195,13 +195,8 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
         DownloadUtil.downloadMusic(
             activity = this,
             name = fileName,
-            url = url,
-            permissionAllowed = {
-                showToast(this, "已加入下载任务队列", Toast.LENGTH_SHORT)
-            },
-            permissionDenied = {
-                showToast(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT)
-            })
+            url = url
+        )
     }
 
     private fun handleClick(position: Int, data: List<MusicItem>) {

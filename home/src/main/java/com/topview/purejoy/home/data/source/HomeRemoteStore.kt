@@ -57,16 +57,39 @@ class HomeRemoteStore {
                     val artistNameBuilder = StringBuilder()
 
                     // 拼接歌手的名字
-                    val artists: List<RecommendNewSongJson.Result.Song.Artist>? = it.song?.artists
-                    artists?.forEach { artist ->
-                        artistNameBuilder.append(artist.name + " ")
+                    val artistsInfo: List<RecommendNewSongJson.Result.Song.Artist>? =
+                        it.song?.artists
+                    // 歌手列表
+                    var artists: MutableList<Artist>? = null
+                    // 获取歌手信息
+                    artistsInfo?.let { infos ->
+                        artists = mutableListOf()
+                        infos.forEach { artist ->
+                            artistNameBuilder.append(artist.name + " ")
+                            artists!!.add(
+                                Artist(
+                                    id = artist.id,
+                                    name = artist.name
+                                )
+                            )
+                        }
                     }
+                    // 获取专辑信息
+                    val albumInfo: RecommendNewSongJson.Result.Song.Album? = it.song?.album
+
                     list.add(
                         Song(
                             id = it.id,
                             name = it.name,
                             picUrl = it.picUrl,
-                            artistName = artistNameBuilder.toString()
+                            artistName = artistNameBuilder.toString(),
+                            mvId = it.song?.mvid,
+                            album = Album(
+                                id = albumInfo?.id,
+                                name = albumInfo?.name,
+                                picUrl = albumInfo?.picUrl
+                            ),
+                            artists = artists
                         )
                     )
                 }
@@ -142,22 +165,41 @@ class HomeRemoteStore {
         return null
     }
 
+    fun requestSongUrl(id: Long): SongDetailJson? {
+        return homeService.requestSongUrl(id).awaitSync()
+    }
+
     private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
         val searchSongs = mutableListOf<Song>()
         songJson.forEach {
             val artistNameBuilder = StringBuilder()
 
-            // 拼接歌手的名字
-            val artists: List<SearchSongJson.Result.Song.Artist>? = it.artists
-            artists?.forEach { artist ->
-                artistNameBuilder.append(artist.name + " ")
+            // 歌手列表
+            var artists: MutableList<Artist>? = null
+            // 获取歌手信息
+            val artistInfos: List<SearchSongJson.Result.Song.Artist>? = it.artists
+            artistInfos?.let { infos ->
+                artists = mutableListOf()
+                infos.forEach { artist ->
+                    artistNameBuilder.append(artist.name + " ")
+                    artists!!.add(
+                        Artist(id = artist.id, name = artist.name)
+                    )
+                }
             }
 
             searchSongs.add(
                 Song(
                     id = it.id,
                     name = it.name,
-                    artistName = artistNameBuilder.toString()
+                    artistName = artistNameBuilder.toString(),
+                    mvId = it.mv,
+                    album = Album(
+                        id = it.al?.id ?: 0,
+                        name = it.al?.name ?: "",
+                        picUrl = it.al?.picUrl ?: ""
+                    ),
+                    artists = artists
                 )
             )
         }
@@ -180,5 +222,4 @@ class HomeRemoteStore {
         }
         return searchPlayLists
     }
-
 }

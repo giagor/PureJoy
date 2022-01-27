@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.data.Status
+import com.topview.purejoy.home.data.bean.SongDetailJson
 import com.topview.purejoy.home.data.repo.HomeRepository
 import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.entity.SongPagerWrapper
@@ -30,6 +31,10 @@ class SearchContentSongViewModel : MVVMViewModel() {
      * */
     val searchSongCountLiveData: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
+    }
+
+    val requestUrlLiveData: MutableLiveData<Song> by lazy {
+        MutableLiveData<Song>()
     }
 
     fun getSearchSongByFirst(keyword: String, limit: Int) {
@@ -66,5 +71,31 @@ class SearchContentSongViewModel : MVVMViewModel() {
                 status.value = Status.SEARCH_SONG_LOAD_MORE_NET_ERROR
             }
         }
+    }
+
+    fun requestSongUrl(song: Song) {
+        if (song.id == null) {
+            status.value = Status.SEARCH_SONG_REQUEST_URL_ID_EMPTY
+            return
+        }
+
+        song.id?.let {
+            viewModelScope.rxLaunch<SongDetailJson> {
+                onRequest = {
+                    repository.requestSongUrl(it)
+                }
+
+                onSuccess = {
+                    song.url = it.data?.get(0)?.url
+                    requestUrlLiveData.value = song
+                }
+
+                onError = {
+                    status.value = Status.SEARCH_SONG_REQUEST_URL_ERROR
+                }
+            }
+        }
+
+
     }
 }

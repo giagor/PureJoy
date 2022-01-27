@@ -4,9 +4,13 @@
 
     <data>
         <import type="com.topview.purejoy.home.entity.PlayList"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="playlist"
             type="PlayList" />
+        <variable
+            name="playlistClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -15,7 +19,8 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/common_padding_left"
         android:paddingEnd="@dimen/common_padding_right"
-        android:gravity="center">
+        android:gravity="center"
+        app:onClickListener="@{playlistClickListener}">
 
         <ImageView
             android:layout_width="50dp"

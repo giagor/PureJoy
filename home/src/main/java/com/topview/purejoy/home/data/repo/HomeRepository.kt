@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.data.repo
 
+import com.topview.purejoy.home.data.bean.SongDetailJson
 import com.topview.purejoy.home.data.source.HomeLocalStore
 import com.topview.purejoy.home.data.source.HomeRemoteStore
 import com.topview.purejoy.home.entity.*
@@ -42,5 +43,10 @@ internal object HomeRepository {
     suspend fun loadMorePlayLists(keyword: String, offset: Int, limit: Int): List<PlayList>? =
         withContext(Dispatchers.IO) {
             homeRemoteStore.loadMorePlayLists(keyword, offset, limit)
+        }
+
+    suspend fun requestSongUrl(id: Long): SongDetailJson? =
+        withContext(Dispatchers.IO) {
+            homeRemoteStore.requestSongUrl(id)
         }
 }

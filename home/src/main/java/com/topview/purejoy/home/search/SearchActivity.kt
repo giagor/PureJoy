@@ -1,21 +1,26 @@
 package com.topview.purejoy.home.search
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.base.binding.BindingActivity
+import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
+import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
 import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
+import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
+import com.topview.purejoy.video.VideoPlayerLauncher
 
 @Route(path = ACTIVITY_HOME_SEARCH)
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
-    SearchKeywordListener {
+    SearchKeywordListener, SearchContentSongFragment.SearchSongPlayListener {
 
     private val bottomMusicBar: MusicBottomView by lazy {
         MusicBottomView(this)
@@ -44,7 +49,7 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         super.onCreate(savedInstanceState)
 
         initView()
-        initBinding()
+        initEvent()
         observe()
         addFragment(R.id.home_fl_fragment_layout, SearchContentRecommendFragment.newInstance())
 
@@ -64,17 +69,52 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
             if (tabFragment == null) {
                 replaceAndAddToBackStack(
                     R.id.home_fl_fragment_layout,
-                    SearchContentTabFragment.newInstance()
+                    SearchContentTabFragment.newInstance().apply {
+                        setSearchSongPlayListener(this@SearchActivity)
+                    }
                 )
             }
         })
     }
 
-    private fun initBinding() {
+    private fun initEvent() {
         binding.onQueryTextListener = onQueryTextListener
+        binding.backClickListener = View.OnClickListener {
+            finish()
+        }
     }
 
     override fun getLayoutId(): Int = R.layout.activity_home_search
 
     override fun getKeywordLiveData(): LiveData<String> = keywordLiveData
+
+    override fun onSearchSongItemClick(position: Int, list: List<Wrapper>) {
+        bottomMusicBar.controller.dataController?.clear()
+        bottomMusicBar.controller.dataController?.addAll(list)
+        bottomMusicBar.controller.playerController?.jumpTo(position)
+    }
+
+    override fun searchSongNextPlay(wrapper: Wrapper) {
+        bottomMusicBar.controller.dataController?.let { dataController ->
+            val datas = dataController.allItems()
+            datas?.let { queueSongs ->
+                if (queueSongs.isEmpty()) {
+                    dataController.add(wrapper)
+                    bottomMusicBar.controller.playerController?.jumpTo(0)
+                } else {
+                    val position = datas.indexOf(dataController.current())
+                    dataController.addAfter(wrapper, position)
+                }
+            }
+        }
+    }
+
+    override fun onMvClick(song: Song) {
+        if (bottomMusicBar.controller.playerController?.isPlaying == true) {
+            bottomMusicBar.controller.playerController?.playOrPause()
+        }
+        song.mvId?.let {
+            VideoPlayerLauncher.launch(true, it.toString())
+        }
+    }
 }

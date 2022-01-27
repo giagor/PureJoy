@@ -5,9 +5,13 @@
 
     <data>
         <import type="androidx.appcompat.widget.SearchView.OnQueryTextListener"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="onQueryTextListener"
             type="OnQueryTextListener" />
+        <variable
+            name="backClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -27,7 +31,8 @@
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/common_ic_back_arror" />
+                android:src="@drawable/common_ic_back_arror" 
+                app:onClickListener="@{backClickListener}"/>
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/home_sv_box"

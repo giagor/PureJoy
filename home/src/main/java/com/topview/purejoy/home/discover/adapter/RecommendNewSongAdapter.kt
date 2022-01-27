@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.discover.adapter
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
@@ -12,6 +13,8 @@ class RecommendNewSongAdapter :
     BaseQuickAdapter<Song, BaseDataBindingHolder<ItemHomeRecommendNewSongBinding>>(
         R.layout.item_home_recommend_new_song
     ) {
+
+    private var clickListener: ClickListener? = null
 
     override fun onItemViewHolderCreated(
         viewHolder: BaseDataBindingHolder<ItemHomeRecommendNewSongBinding>,
@@ -40,6 +43,12 @@ class RecommendNewSongAdapter :
         binding?.let {
             // 设置数据
             it.recommendNewSong = item
+            // 设置监听器
+            clickListener?.let { listener ->
+                it.songClickListener = View.OnClickListener {
+                    listener.onRecommendNewSongClick(item)
+                }
+            }
         }
     }
 
@@ -48,5 +57,13 @@ class RecommendNewSongAdapter :
      * */
     fun setData(list: List<Song>) {
         setList(list)
+    }
+
+    fun setClickListener(listener: ClickListener) {
+        this.clickListener = listener
+    }
+
+    interface ClickListener {
+        fun onRecommendNewSongClick(song: Song)
     }
 }

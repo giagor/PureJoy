@@ -1,6 +1,8 @@
 package com.topview.purejoy.home.search
 
 import android.annotation.SuppressLint
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +52,25 @@ fun loadMorePlayLists(recyclerView: RecyclerView, list: List<PlayList>?) {
  * */
 @SuppressLint("SetTextI18n")
 @BindingAdapter("playListCountsInfo")
-fun setPlayListCountsInfo(textView : TextView, playList: PlayList){
+fun setPlayListCountsInfo(textView: TextView, playList: PlayList) {
     textView.text = "${playList.songCounts}首，播放${playList.playCount}次"
+}
+
+/**
+ * 是否显示MV图标
+ * */
+@BindingAdapter("mvVisibility")
+fun setMvVisibility(iv: ImageView, song: Song) {
+    if (song.mvId == null) {
+        iv.visibility = View.INVISIBLE
+        return
+    }
+
+    song.mvId?.let {
+        if (it == 0L) {
+            iv.visibility = View.INVISIBLE
+        } else {
+            iv.visibility = View.VISIBLE
+        }
+    }
 }

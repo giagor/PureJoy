@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View.OnClickListener"/>
+        <variable
+            name="nextPlayClickListener"
+            type="OnClickListener" />
+        <variable
+            name="downloadClickListener"
+            type="OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_search_content_song_pop_next_play"
+            android:gravity="center"
+            android:textSize="18sp"
+            app:onClickListener="@{nextPlayClickListener}"/>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_search_content_song_pop_download"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            app:onClickListener="@{downloadClickListener}"/>
+    </LinearLayout>
+</layout>

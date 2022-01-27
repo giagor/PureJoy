@@ -4,16 +4,21 @@
 
     <data>
         <import type="com.topview.purejoy.home.entity.Song"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="recommendNewSong"
             type="Song" />
+        <variable
+            name="songClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground"
+        app:onClickListener = "@{songClickListener}">
 
         <ImageView
             android:layout_width="50dp"

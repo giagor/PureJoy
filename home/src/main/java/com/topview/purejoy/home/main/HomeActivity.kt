@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.common.mvvm.activity.MVVMActivity
 import com.topview.purejoy.home.R
@@ -16,7 +17,8 @@ import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
 private const val TAG = "HomeActivity"
 
-class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
+class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>(),
+    HomeDiscoverFragment.RecommendNewSongPlayListener {
 
     private val bottomMusicBar: MusicBottomView by lazy {
         MusicBottomView(activity = this)
@@ -41,7 +43,9 @@ class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
     }
 
     private fun initView() {
-        discoverFragment = HomeDiscoverFragment()
+        discoverFragment = HomeDiscoverFragment().apply {
+            setRecommendNewSongPlayListener(this@HomeActivity)
+        }
         curShowFragment = discoverFragment
         addFragment(R.id.home_fl_fragment_layout, curShowFragment!!)
 
@@ -50,8 +54,8 @@ class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
             bottomMusicBar.addMusicBottomBar(bottomNavigationView.height)
         }
     }
-    
-    private fun initData(){
+
+    private fun initData() {
         viewModel.keepLogin()
     }
 
@@ -65,6 +69,10 @@ class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
                 hide(curShowFragment!!)
                 if (discoverFragment == null) {
                     discoverFragment = HomeRouter.routeToDiscoverFragment()
+                    // 设置监听器
+                    (discoverFragment as? HomeDiscoverFragment)?.setRecommendNewSongPlayListener(
+                        this
+                    )
                     addFragment(R.id.home_fl_fragment_layout, discoverFragment!!)
                 } else {
                     show(discoverFragment!!)
@@ -116,4 +124,10 @@ class HomeActivity : MVVMActivity<HomeViewModel, ActivityHomeHomeBinding>() {
     override fun getViewModelClass(): Class<HomeViewModel> = HomeViewModel::class.java
 
     override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    override fun onRecommendNewSongClick(position: Int, list: List<Wrapper>) {
+        bottomMusicBar.controller.dataController?.clear()
+        bottomMusicBar.controller.dataController?.addAll(list)
+        bottomMusicBar.controller.playerController?.jumpTo(position)
+    }
 }
