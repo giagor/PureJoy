@@ -7,16 +7,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.base.binding.BindingActivity
+import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
 import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
 import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
+import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 
 @Route(path = ACTIVITY_HOME_SEARCH)
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
-    SearchKeywordListener {
+    SearchKeywordListener, SearchContentSongFragment.SearchSongPlayListener {
 
     private val bottomMusicBar: MusicBottomView by lazy {
         MusicBottomView(this)
@@ -65,7 +67,9 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
             if (tabFragment == null) {
                 replaceAndAddToBackStack(
                     R.id.home_fl_fragment_layout,
-                    SearchContentTabFragment.newInstance()
+                    SearchContentTabFragment.newInstance().apply { 
+                        setSearchSongPlayListener(this@SearchActivity)
+                    }
                 )
             }
         })
@@ -81,4 +85,10 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
     override fun getLayoutId(): Int = R.layout.activity_home_search
 
     override fun getKeywordLiveData(): LiveData<String> = keywordLiveData
+
+    override fun onSearchSongItemClick(position: Int, list: List<Wrapper>) {
+        bottomMusicBar.controller.dataController?.clear()
+        bottomMusicBar.controller.dataController?.addAll(list)
+        bottomMusicBar.controller.playerController?.jumpTo(position)
+    }
 }

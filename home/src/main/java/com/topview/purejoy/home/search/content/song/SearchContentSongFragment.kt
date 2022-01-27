@@ -11,13 +11,18 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
+import com.topview.purejoy.common.music.data.Wrapper
+import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.util.getWindowHeight
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
 import com.topview.purejoy.home.databinding.LayoutSearchSongPopBinding
 import com.topview.purejoy.home.entity.Song
+import com.topview.purejoy.home.entity.toMusicItem
 import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
@@ -29,6 +34,18 @@ class SearchContentSongFragment :
 
     private val adapter = SearchContentSongAdapter().apply {
         setClickListener(this@SearchContentSongFragment)
+        setOnItemClickListener { adapter, view, position ->
+            searchSongPlayListener?.let { listener ->
+                val songs = adapter.data
+                if (songs.isNotEmpty()) {
+                    val wrapperList: MutableList<Wrapper> = mutableListOf()
+                    songs.forEach {
+                        wrapperList.add((it as Song).toMusicItem().wrap())
+                    }
+                    listener.onSearchSongItemClick(position, wrapperList)
+                }
+            }
+        }
     }
 
     /**
@@ -40,6 +57,8 @@ class SearchContentSongFragment :
      * 记录最近一次的关键词搜索
      * */
     private var lastKeyword = ""
+
+    private var searchSongPlayListener: SearchSongPlayListener? = null
 
     /**
      * 记录点击弹出pop窗口对应的是哪首歌曲
@@ -178,5 +197,13 @@ class SearchContentSongFragment :
             0,
             0
         )
+    }
+
+    fun setSearchSongPlayListener(listener: SearchSongPlayListener) {
+        this.searchSongPlayListener = listener
+    }
+
+    interface SearchSongPlayListener {
+        fun onSearchSongItemClick(position: Int, list: List<Wrapper>)
     }
 }

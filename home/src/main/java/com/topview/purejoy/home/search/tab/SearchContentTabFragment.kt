@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.topview.purejoy.common.base.binding.BindingFragment
+import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentTabBinding
 import com.topview.purejoy.home.search.content.playlist.SearchContentPlayListFragment
@@ -15,7 +16,11 @@ private const val SEARCH_CONTENT_PAGER_COUNTS = 2
 private const val SEARCH_CONTENT_SONG_FRAGMENT_POSITION = 0
 private const val SEARCH_CONTENT_PLAYLIST_FRAGMENT_POSITION = 1
 
-class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBinding>() {
+class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBinding>(),
+    SearchContentSongFragment.SearchSongPlayListener {
+
+    private var searchSongPlayListener: SearchContentSongFragment.SearchSongPlayListener? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,7 +46,9 @@ class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBin
 
         override fun getItem(position: Int): Fragment {
             return if (position == SEARCH_CONTENT_SONG_FRAGMENT_POSITION) {
-                SearchContentSongFragment.newInstance()
+                SearchContentSongFragment.newInstance().apply {
+                    setSearchSongPlayListener(this@SearchContentTabFragment)
+                }
             } else {
                 SearchContentPlayListFragment.newInstance()
             }
@@ -52,5 +59,13 @@ class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBin
         @JvmStatic
         fun newInstance() =
             SearchContentTabFragment()
+    }
+
+    override fun onSearchSongItemClick(position: Int, list: List<Wrapper>) {
+        searchSongPlayListener?.onSearchSongItemClick(position, list)
+    }
+
+    fun setSearchSongPlayListener(listener: SearchContentSongFragment.SearchSongPlayListener) {
+        this.searchSongPlayListener = listener
     }
 }
