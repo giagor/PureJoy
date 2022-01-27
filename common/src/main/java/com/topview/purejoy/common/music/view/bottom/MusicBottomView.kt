@@ -50,6 +50,8 @@ class MusicBottomView(
                 iv.loadImageRequest = it.al.picUrl
                 nameTx.text = it.name
             }
+            popHelper.musicPopWindow.updateCurrentItem(it)
+
         }
         controller.playState.observe(activity) {
             if (it) {
@@ -57,6 +59,12 @@ class MusicBottomView(
             } else {
                 stateIv.setImageResource(R.drawable.music_bottom_bar_play_32)
             }
+        }
+        controller.playItems.observe(activity) { list ->
+            popHelper.musicPopWindow.updateWindow(list)
+        }
+        controller.currentMode.observe(activity) {
+            popHelper.musicPopWindow.updateMode(it)
         }
         stateIv.setOnClickListener {
             controller.playerController?.playOrPause()

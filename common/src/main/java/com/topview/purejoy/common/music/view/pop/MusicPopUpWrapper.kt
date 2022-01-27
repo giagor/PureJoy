@@ -67,6 +67,10 @@ class MusicPopUpWrapper(context: Context, width: Int, height: Int, val window: W
         viewHolder.setText(R.id.music_playing_pop_playing_count_tx, "($count)")
     }
 
+    fun updateCurrentItem(item: MusicItem?) {
+        adapter.currentItem = item
+    }
+
     fun updateMode(mode: Int) {
         val iv = when(mode) {
             MediaModeSetting.ORDER -> R.drawable.music_playing_order_16
