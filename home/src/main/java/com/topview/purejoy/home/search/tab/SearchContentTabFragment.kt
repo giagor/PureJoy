@@ -65,6 +65,10 @@ class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBin
         searchSongPlayListener?.onSearchSongItemClick(position, list)
     }
 
+    override fun searchSongNextPlay(wrapper: Wrapper) {
+        searchSongPlayListener?.searchSongNextPlay(wrapper)
+    }
+
     fun setSearchSongPlayListener(listener: SearchContentSongFragment.SearchSongPlayListener) {
         this.searchSongPlayListener = listener
     }

@@ -11,8 +11,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.entity.wrap
@@ -74,9 +72,10 @@ class SearchContentSongFragment :
                 false
             )
         binding.nextPlayClickListener = View.OnClickListener {
-            popClickSong?.let {
-
+            popClickSong?.let { song ->
+                searchSongPlayListener?.searchSongNextPlay(song.toMusicItem().wrap())
             }
+            popWindow.dismiss()
         }
         binding.downloadClickListener = View.OnClickListener {
             popClickSong?.let {
@@ -107,6 +106,8 @@ class SearchContentSongFragment :
             val attr = parentWindow.attributes
             attr.alpha = 1f
             parentWindow.attributes = attr
+            // 将记录点击歌曲的变量置空
+            popClickSong = null
         }
         popWindow
     }
@@ -205,5 +206,6 @@ class SearchContentSongFragment :
 
     interface SearchSongPlayListener {
         fun onSearchSongItemClick(position: Int, list: List<Wrapper>)
+        fun searchSongNextPlay(wrapper: Wrapper)
     }
 }

@@ -67,7 +67,7 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
             if (tabFragment == null) {
                 replaceAndAddToBackStack(
                     R.id.home_fl_fragment_layout,
-                    SearchContentTabFragment.newInstance().apply { 
+                    SearchContentTabFragment.newInstance().apply {
                         setSearchSongPlayListener(this@SearchActivity)
                     }
                 )
@@ -90,5 +90,20 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         bottomMusicBar.controller.dataController?.clear()
         bottomMusicBar.controller.dataController?.addAll(list)
         bottomMusicBar.controller.playerController?.jumpTo(position)
+    }
+
+    override fun searchSongNextPlay(wrapper: Wrapper) {
+        bottomMusicBar.controller.dataController?.let { dataController ->
+            val datas = dataController.allItems()
+            datas?.let { queueSongs ->
+                if (queueSongs.isEmpty()) {
+                    dataController.add(wrapper)
+                    bottomMusicBar.controller.playerController?.jumpTo(0)
+                } else {
+                    val position = datas.indexOf(dataController.current())
+                    dataController.addAfter(wrapper, position)
+                }
+            }
+        }
     }
 }
