@@ -9,6 +9,7 @@ import com.topview.purejoy.common.base.binding.BindingFragment
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentTabBinding
+import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.search.content.playlist.SearchContentPlayListFragment
 import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 
@@ -67,6 +68,10 @@ class SearchContentTabFragment : BindingFragment<FragmentHomeSearchContentTabBin
 
     override fun searchSongNextPlay(wrapper: Wrapper) {
         searchSongPlayListener?.searchSongNextPlay(wrapper)
+    }
+
+    override fun onMvClick(song: Song) {
+        searchSongPlayListener?.onMvClick(song)
     }
 
     fun setSearchSongPlayListener(listener: SearchContentSongFragment.SearchSongPlayListener) {

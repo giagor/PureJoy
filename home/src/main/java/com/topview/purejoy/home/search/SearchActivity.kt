@@ -11,10 +11,12 @@ import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
+import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
 import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
 import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
+import com.topview.purejoy.video.VideoPlayerLauncher
 
 @Route(path = ACTIVITY_HOME_SEARCH)
 class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
@@ -104,6 +106,15 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
                     dataController.addAfter(wrapper, position)
                 }
             }
+        }
+    }
+
+    override fun onMvClick(song: Song) {
+        if (bottomMusicBar.controller.playerController?.isPlaying == true) {
+            bottomMusicBar.controller.playerController?.playOrPause()
+        }
+        song.mvId?.let {
+            VideoPlayerLauncher.launch(true, it.toString())
         }
     }
 }

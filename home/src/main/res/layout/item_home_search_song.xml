@@ -11,6 +11,9 @@
         <variable
             name="menuClickListener"
             type="OnClickListener" />
+        <variable
+            name="mvClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -44,6 +47,14 @@
                 android:text="@{searchSong.artistName}"/>
             
         </LinearLayout>
+        
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/home_ic_search_mv"
+            android:layout_marginEnd="5dp"
+            app:onClickListener="@{mvClickListener}"
+            app:mvVisibility="@{searchSong}"/>
         
         <ImageView
             android:layout_width="25dp"

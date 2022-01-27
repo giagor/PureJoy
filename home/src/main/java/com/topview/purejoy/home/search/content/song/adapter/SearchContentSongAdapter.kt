@@ -22,8 +22,11 @@ class SearchContentSongAdapter :
             it.searchSong = item
             // 设置监听器
             clickListener?.let { listener ->
-                it.menuClickListener = View.OnClickListener { 
+                it.menuClickListener = View.OnClickListener {
                     listener.onMenuClick(item)
+                }
+                it.mvClickListener = View.OnClickListener {
+                    listener.onMvClick(item)
                 }
             }
         }
@@ -35,5 +38,6 @@ class SearchContentSongAdapter :
 
     interface ClickListener {
         fun onMenuClick(song: Song)
+        fun onMvClick(song: Song)
     }
 }

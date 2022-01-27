@@ -223,6 +223,10 @@ class SearchContentSongFragment :
         )
     }
 
+    override fun onMvClick(song: Song) {
+        searchSongPlayListener?.onMvClick(song)
+    }
+
     fun setSearchSongPlayListener(listener: SearchSongPlayListener) {
         this.searchSongPlayListener = listener
     }
@@ -230,5 +234,6 @@ class SearchContentSongFragment :
     interface SearchSongPlayListener {
         fun onSearchSongItemClick(position: Int, list: List<Wrapper>)
         fun searchSongNextPlay(wrapper: Wrapper)
+        fun onMvClick(song: Song)
     }
 }
