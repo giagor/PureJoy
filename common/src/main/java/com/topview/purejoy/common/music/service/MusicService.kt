@@ -197,10 +197,8 @@ class MusicService : MediaService<MusicItem>() {
                                     "${it.name}成功添加到播放列表中", Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            itemTransformation.transform(fail!!.castAs()!!)?.let {
-                                Toast.makeText(applicationContext,
-                                    "添加歌曲失败", Toast.LENGTH_SHORT).show()
-                            }
+                            Toast.makeText(applicationContext,
+                                "添加歌曲失败", Toast.LENGTH_SHORT).show()
                         }
                     }
                     else -> {
