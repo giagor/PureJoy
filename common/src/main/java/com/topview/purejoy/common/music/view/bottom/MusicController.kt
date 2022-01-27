@@ -56,14 +56,11 @@ open class MusicController {
                     currentItem.postValue(null)
                     playItems.postValue(mutableListOf())
                 } else {
-                    val list = playItems.value ?: mutableListOf()
-                    source.forEach { w ->
+                    val items = dataController?.allItems() ?: mutableListOf()
+                    val list = mutableListOf<MusicItem>()
+                    for (w in items) {
                         w.getMusicItem()?.let {
-                            if (list.contains(it)) {
-                                list.remove(it)
-                            } else {
-                                list.add(it)
-                            }
+                            list.add(it)
                         }
                     }
                     playItems.postValue(list)
