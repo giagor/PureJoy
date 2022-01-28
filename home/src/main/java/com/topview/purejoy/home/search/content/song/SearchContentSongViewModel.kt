@@ -63,6 +63,7 @@ class SearchContentSongViewModel : MVVMViewModel() {
 
             onError = {
                 loadingLiveData.value = false
+                status.value = Status.SEARCH_SONG_FIRST_ERROR
             }
 
             onEmpty = {

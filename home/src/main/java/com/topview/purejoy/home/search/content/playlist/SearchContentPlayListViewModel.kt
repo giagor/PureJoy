@@ -58,6 +58,7 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
 
             onError = {
                 loadingLiveData.value = false
+                status.value = Status.SEARCH_PLAYLIST_FIRST_ERROR
             }
 
             onEmpty = {
