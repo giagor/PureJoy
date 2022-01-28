@@ -200,6 +200,7 @@ class SearchContentSongFragment :
                 Status.SEARCH_SONG_REQUEST_URL_ID_EMPTY, Status.SEARCH_SONG_REQUEST_URL_ERROR -> {
                     showToast(requireContext(), "出现错误，无法加入下载队列")
                 }
+                Status.SEARCH_SONG_FIRST_ERROR -> showToast(requireContext(), "搜索歌曲出现错误")
             }
         })
     }

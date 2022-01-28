@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
+import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentPlaylistBinding
@@ -98,6 +99,7 @@ class SearchContentPlayListFragment :
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 Status.SEARCH_PLAYLIST_LOAD_MORE_NET_ERROR -> adapter.loadMoreModule.loadMoreFail()
+                Status.SEARCH_PLAYLIST_FIRST_ERROR -> showToast(requireContext(), "搜索歌单出现错误")
             }
         })
     }

@@ -32,9 +32,14 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
         MutableLiveData<Int>()
     }
 
+    val loadingLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
     fun getSearchPlayListByFirst(keyword: String, limit: Int) {
         viewModelScope.rxLaunch<PlayListPagerWrapper> {
             onRequest = {
+                loadingLiveData.value = true
                 repository.getSearchPlayListByFirst(keyword, limit)
             }
 
@@ -48,6 +53,16 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
                     searchResult.addAll(playlists)
                     searchPlayListByFirstRequestLiveData.value = searchResult
                 }
+                loadingLiveData.value = false
+            }
+
+            onError = {
+                loadingLiveData.value = false
+                status.value = Status.SEARCH_PLAYLIST_FIRST_ERROR
+            }
+
+            onEmpty = {
+                loadingLiveData.value = false
             }
         }
     }
@@ -61,7 +76,7 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
             onSuccess = {
                 searchPlayListsLoadMoreLiveData.value = it
             }
-            
+
             onError = {
                 status.value = Status.SEARCH_PLAYLIST_LOAD_MORE_NET_ERROR
             }
