@@ -37,13 +37,19 @@ class SearchContentSongViewModel : MVVMViewModel() {
         MutableLiveData<Song>()
     }
 
+    val loadingLiveData: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
     fun getSearchSongByFirst(keyword: String, limit: Int) {
         viewModelScope.rxLaunch<SongPagerWrapper> {
             onRequest = {
+                loadingLiveData.value = true
                 repository.getSearchSongByFirst(keyword, limit)
             }
 
             onSuccess = {
+                loadingLiveData.value = false
                 it.songCount?.let { songCount ->
                     searchSongCountLiveData.value = songCount
                 }
@@ -53,6 +59,14 @@ class SearchContentSongViewModel : MVVMViewModel() {
                     searchResult.addAll(songs)
                     searchSongsByFirstRequestLiveData.value = searchResult
                 }
+            }
+
+            onError = {
+                loadingLiveData.value = false
+            }
+
+            onEmpty = {
+                loadingLiveData.value = false
             }
         }
     }
