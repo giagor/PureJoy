@@ -12,8 +12,8 @@ import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.ActivityHomeSearchBinding
 import com.topview.purejoy.home.entity.Song
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.router.HomeRouter.ACTIVITY_HOME_SEARCH
-import com.topview.purejoy.home.search.content.recommend.SearchContentRecommendFragment
 import com.topview.purejoy.home.search.content.song.SearchContentSongFragment
 import com.topview.purejoy.home.search.tab.SearchContentTabFragment
 import com.topview.purejoy.video.VideoPlayerLauncher
@@ -51,7 +51,10 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
         initView()
         initEvent()
         observe()
-        addFragment(R.id.home_fl_fragment_layout, SearchContentRecommendFragment.newInstance())
+        val recommendFragment = HomeRouter.routeToSearchRecommendFragment()
+        recommendFragment?.let {
+            addFragment(R.id.home_fl_fragment_layout, it)
+        }
 
         bottomMusicBar.addMusicBottomBar()
     }
@@ -69,7 +72,7 @@ class SearchActivity : BindingActivity<ActivityHomeSearchBinding>(),
             if (tabFragment == null) {
                 replaceAndAddToBackStack(
                     R.id.home_fl_fragment_layout,
-                    SearchContentTabFragment.newInstance().apply {
+                    (HomeRouter.routeToSearchTabFragment() as SearchContentTabFragment).apply {
                         setSearchSongPlayListener(this@SearchActivity)
                     }
                 )
