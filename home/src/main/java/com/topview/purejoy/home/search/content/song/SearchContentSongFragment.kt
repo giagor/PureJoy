@@ -11,6 +11,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.entity.wrap
@@ -23,11 +24,13 @@ import com.topview.purejoy.home.databinding.FragmentHomeSearchContentSongBinding
 import com.topview.purejoy.home.databinding.LayoutSearchSongPopBinding
 import com.topview.purejoy.home.entity.Song
 import com.topview.purejoy.home.entity.toMusicItem
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.song.adapter.SearchContentSongAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
+@Route(path = HomeRouter.FRAGMENT_HOME_SEARCH_SONG)
 class SearchContentSongFragment :
     LoadMoreFragment<SearchContentSongViewModel, FragmentHomeSearchContentSongBinding, SearchContentSongAdapter>(),
     SearchContentSongAdapter.ClickListener {
@@ -199,12 +202,6 @@ class SearchContentSongFragment :
                 }
             }
         })
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            SearchContentSongFragment()
     }
 
     override fun onMenuClick(song: Song) {

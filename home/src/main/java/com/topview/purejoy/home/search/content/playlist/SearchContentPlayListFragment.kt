@@ -4,17 +4,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.topview.purejoy.common.component.loadmore.LoadMoreFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.data.Status
 import com.topview.purejoy.home.databinding.FragmentHomeSearchContentPlaylistBinding
 import com.topview.purejoy.home.entity.PlayList
+import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.search.SearchKeywordListener
 import com.topview.purejoy.home.search.common.SearchConstant
 import com.topview.purejoy.home.search.content.playlist.adapter.SearchContentPlayListAdapter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
 import com.topview.purejoy.musiclibrary.router.MusicLibraryRouter
 
+@Route(path = HomeRouter.FRAGMENT_HOME_SEARCH_PLAYLIST)
 class SearchContentPlayListFragment :
     LoadMoreFragment<SearchContentPlayListViewModel, FragmentHomeSearchContentPlaylistBinding, SearchContentPlayListAdapter>(),
     SearchContentPlayListAdapter.ClickListener {
@@ -97,12 +100,6 @@ class SearchContentPlayListFragment :
                 Status.SEARCH_PLAYLIST_LOAD_MORE_NET_ERROR -> adapter.loadMoreModule.loadMoreFail()
             }
         })
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            SearchContentPlayListFragment()
     }
 
     override fun onPlaylistClick(playList: PlayList) {
