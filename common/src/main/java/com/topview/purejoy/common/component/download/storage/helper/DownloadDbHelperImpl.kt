@@ -27,7 +27,7 @@ class DownloadDbHelperImpl : DownloadDbHelper {
 
     override fun deleteDownloadTask(downloadTask: DownloadTask) {
         checkInitializer()
-        DbManager.downloadDatabase!!.downloadTaskDao().deleteDownloadTask(downloadTask)
+        DbManager.downloadDatabase!!.downloadTaskDao().deleteDownloadTask(downloadTask.tag)
     }
 
     override fun getSubDownloadTaskByParentId(parentId: Long): List<SubDownloadTask> {

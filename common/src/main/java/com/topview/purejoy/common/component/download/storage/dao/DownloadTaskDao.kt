@@ -23,10 +23,10 @@ interface DownloadTaskDao {
     /**
      * 删除下载任务
      *
-     * @param downloadTask 要删除的任务
+     * @param tag 要删除任务的tag
      * */
-    @Delete
-    fun deleteDownloadTask(downloadTask: DownloadTask)
+    @Query("DELETE FROM DownloadTask WHERE tag = :tag")
+    fun deleteDownloadTask(tag: String)
 
     /**
      * 查找下载任务
