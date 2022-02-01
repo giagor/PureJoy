@@ -7,12 +7,6 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.component.download.task.SubDownloadTask
 import java.io.File
 
-/**
- * 如果资源太小，则采取单线程下载。因为在资源太小的情况下，如果采取多线程下载，那么线程创建、切换等开销，将
- * 会拖慢整体的下载速度
- * */
-private const val MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE = 20 * 1024 * 1024
-
 object TaskHandler {
     fun handleTask(
         downloadTask: DownloadTask,
@@ -94,12 +88,9 @@ object TaskHandler {
         downloadTask.totalSize = totalSize
         // 是否断点续传
         downloadTask.breakPointDownload = breakPointDownload
-        // 决定单线程下载还是多线程下载，并配置线程数
-        if (totalSize > MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE) {
-            downloadTask.threadNum = DownloadManager.downloadConfiguration.getDownloadThreadNum()
-        } else {
-            downloadTask.threadNum = 1
-        }
+        // 根据下载任务的大小，配置下载的线程数
+        downloadTask.threadNum =
+            DownloadManager.downloadConfiguration.getDownloadThreadNum(downloadTask.totalSize)
     }
 
     /**
