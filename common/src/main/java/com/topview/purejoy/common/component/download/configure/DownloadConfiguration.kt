@@ -17,7 +17,7 @@ abstract class DownloadConfiguration {
     /**
      * 默认情况下，使用多少个线程去下载一个任务
      * */
-    abstract fun getDownloadThreadNum(): Int
+    abstract fun getDownloadThreadNum(taskTotalLength: Long): Int
 
     /**
      * 获取一个线程池，用于处理一些普通的后台任务。

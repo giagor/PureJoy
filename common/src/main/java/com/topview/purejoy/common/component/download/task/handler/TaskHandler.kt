@@ -7,12 +7,6 @@ import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.component.download.task.SubDownloadTask
 import java.io.File
 
-/**
- * 如果资源太小，则采取单线程下载。因为在资源太小的情况下，如果采取多线程下载，那么线程创建、切换等开销，将
- * 会拖慢整体的下载速度
- * */
-private const val MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE = 20 * 1024 * 1024
-
 object TaskHandler {
     fun handleTask(
         downloadTask: DownloadTask,
@@ -43,7 +37,7 @@ object TaskHandler {
                         DownloadManager.downDbHelper.getDownloadTaskByTag(downloadTask.tag)
                     // 若数据库中找到父任务的记录
                     if (cacheTask != null) {
-                        val parentId: Long = cacheTask.id!!
+//                        val parentId: Long = cacheTask.id!!
                         val parentTotalSize: Long = cacheTask.totalSize
                         // 若数据库中记录的父任务记录和服务器返回的不同，说明资源的长度已经改变了
                         if (parentTotalSize != contentLength) {
@@ -52,18 +46,21 @@ object TaskHandler {
                             clearTaskInfo(downloadTask.path, cacheTask)
                             handleNewTask(downloadTask)
                         } else {
-                            // 父任务的资源长度和服务器返回的长度相同，再判断数据库中子任务的数量与当前线程数是否相同
-                            val subTasks: List<SubDownloadTask> =
-                                DownloadManager.downDbHelper.getSubDownloadTaskByParentId(parentId)
-                            if (subTasks.size != downloadTask.threadNum) {
-                                // 数据库中删除父任务和子任务，本地删除path相关的文件  
-                                // 当做新任务处理，数据库中插入父任务和子任务的记录
-                                clearTaskInfo(downloadTask.path, cacheTask)
-                                handleNewTask(downloadTask)
-                            } else {
-                                // 复用之前的下载任务
-                                handleExistingTask(downloadTask, cacheTask)
-                            }
+//                            // 父任务的资源长度和服务器返回的长度相同，再判断数据库中子任务的数量与当前线程数是否相同
+//                            val subTasks: List<SubDownloadTask> =
+//                                DownloadManager.downDbHelper.getSubDownloadTaskByParentId(parentId)
+//                            if (subTasks.size != downloadTask.threadNum) {
+//                                // 数据库中删除父任务和子任务，本地删除path相关的文件  
+//                                // 当做新任务处理，数据库中插入父任务和子任务的记录
+//                                clearTaskInfo(downloadTask.path, cacheTask)
+//                                handleNewTask(downloadTask)
+//                            } else {
+//                                // 复用之前的下载任务
+//                                handleExistingTask(downloadTask, cacheTask)
+//                            }
+                            
+                            // 复用之前的下载任务
+                            handleExistingTask(downloadTask, cacheTask)
                         }
                     } else {
                         // 若数据库中找不到父任务的记录，则本地删除path相关的文件，然后当作新任务处理
@@ -94,12 +91,9 @@ object TaskHandler {
         downloadTask.totalSize = totalSize
         // 是否断点续传
         downloadTask.breakPointDownload = breakPointDownload
-        // 决定单线程下载还是多线程下载，并配置线程数
-        if (totalSize > MULTI_THREAD_DOWNLOAD_MINIMUM_SIZE) {
-            downloadTask.threadNum = DownloadManager.downloadConfiguration.getDownloadThreadNum()
-        } else {
-            downloadTask.threadNum = 1
-        }
+        // 根据下载任务的大小，配置下载的线程数
+        downloadTask.threadNum =
+            DownloadManager.downloadConfiguration.getDownloadThreadNum(downloadTask.totalSize)
     }
 
     /**
