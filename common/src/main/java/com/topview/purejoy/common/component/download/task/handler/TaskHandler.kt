@@ -39,11 +39,12 @@ object TaskHandler {
                     if (cacheTask != null) {
 //                        val parentId: Long = cacheTask.id!!
                         val parentTotalSize: Long = cacheTask.totalSize
-                        // 若数据库中记录的父任务记录和服务器返回的不同，说明资源的长度已经改变了
-                        if (parentTotalSize != contentLength) {
+                        // 若下载任务的本地文件被删除了，或者，数据库中记录的父任务记录和服务器返回的不同（说明
+                        // 资源的长度已经改变了），则将其当做新任务处理
+                        if (!File(downloadTask.path).exists() || parentTotalSize != contentLength) {
                             // 数据库中删除父任务和子任务，本地删除path相关的文件
-                            // 当做新任务处理，数据库中插入父任务和子任务的记录
                             clearTaskInfo(downloadTask.path, cacheTask)
+                            // 当做新任务处理，数据库中插入父任务和子任务的记录
                             handleNewTask(downloadTask)
                         } else {
 //                            // 父任务的资源长度和服务器返回的长度相同，再判断数据库中子任务的数量与当前线程数是否相同
@@ -58,7 +59,7 @@ object TaskHandler {
 //                                // 复用之前的下载任务
 //                                handleExistingTask(downloadTask, cacheTask)
 //                            }
-                            
+
                             // 复用之前的下载任务
                             handleExistingTask(downloadTask, cacheTask)
                         }
