@@ -55,8 +55,10 @@ class DownloadDispatcher {
      * 当任务执行完后，调用该方法，通知任务已执行完成
      * */
     fun finished(task: DownloadTask) {
-        // 在执行队列中移除该任务
-        runningTaskQueue.remove(task)
+        synchronized(this) {
+            // 在执行队列中移除该任务
+            runningTaskQueue.remove(task)
+        }
         // 再次尝试执行任务
         promoteAndExecute()
     }
