@@ -2,6 +2,7 @@ package com.topview.purejoy.common.business.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.topview.purejoy.common.business.data.bean.DownloadSongInfo
 
@@ -10,7 +11,7 @@ interface DownloadSongInfoDao {
     /**
      * 插入DownloadSongInfo
      * */
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDownloadSongInfo(downloadSongInfo: DownloadSongInfo): Long
 
     /**
