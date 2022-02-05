@@ -30,9 +30,13 @@ class HomeMineFragment : BindingFragment<FragmentHomeMineBinding>() {
         binding.tvLoginTipsClickListener = View.OnClickListener {
             HomeRouter.routeToLoginActivity()
         }
-        
-        binding.goDownloadManageClickListener = View.OnClickListener { 
+
+        binding.goDownloadManageClickListener = View.OnClickListener {
             CommonRouter.routeToDownloadManageActivity()
+        }
+        
+        binding.aboutPageClickListener = View.OnClickListener {
+            HomeRouter.routeToAboutActivity()
         }
     }
 }
