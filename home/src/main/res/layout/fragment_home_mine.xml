@@ -20,83 +20,90 @@
             type="OnClickListener" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".mine.HomeMineFragment"
-        android:orientation="vertical"
         android:paddingStart="@dimen/common_padding_left"
         android:paddingEnd="@dimen/common_padding_right">
-        
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
-            
-            <com.topview.purejoy.common.widget.compose.RoundedCornerImageView
-                android:id="@+id/home_riv_user_portrait"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_centerInParent="true"
-                app:userPortrait="@{homeMineFragment.userLiveData}"/>
-            
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <com.topview.purejoy.common.widget.compose.RoundedCornerImageView
+                    android:id="@+id/home_riv_user_portrait"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true"
+                    app:userPortrait="@{homeMineFragment.userLiveData}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@id/home_riv_user_portrait"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:userNickName="@{homeMineFragment.userLiveData}"/>
+
+            </RelativeLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_below="@id/home_riv_user_portrait"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:userNickName="@{homeMineFragment.userLiveData}"/>
-            
-        </RelativeLayout>
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="#CD5555"
-            app:onClickListener="@{tvLoginTipsClickListener}"
-            app:loginTips="@{homeMineFragment.userLiveData}"/>
-        
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/home_mine_divider_color"/>
-        
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            android:layout_marginTop="25dp">
+                android:layout_gravity="end"
+                android:textColor="#CD5555"
+                app:onClickListener="@{tvLoginTipsClickListener}"
+                app:loginTips="@{homeMineFragment.userLiveData}"/>
 
-            <TextView
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/home_mine_go_download_manage"
-                android:gravity="center"
-                android:textSize="18sp"
-                app:onClickListener="@{goDownloadManageClickListener}"/>
-            
-        </androidx.cardview.widget.CardView>
+                android:layout_height="0.5dp"
+                android:background="@color/home_mine_divider_color"/>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            android:layout_marginTop="25dp">
-
-            <TextView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/home_mine_about_page"
-                android:gravity="center"
-                android:textSize="18sp"
-                app:onClickListener="@{aboutPageClickListener}"/>
+                android:layout_height="45dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                android:layout_marginTop="25dp">
 
-        </androidx.cardview.widget.CardView>
-        
-    </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/home_mine_go_download_manage"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    app:onClickListener="@{goDownloadManageClickListener}"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                android:layout_marginTop="25dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/home_mine_about_page"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    app:onClickListener="@{aboutPageClickListener}"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+    
+
 </layout>
