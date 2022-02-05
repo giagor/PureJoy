@@ -15,6 +15,9 @@
         <variable
             name="goDownloadManageClickListener"
             type="OnClickListener" />
+        <variable
+            name="aboutPageClickListener"
+            type="OnClickListener" />
     </data>
 
     <LinearLayout
@@ -77,8 +80,23 @@
                 app:onClickListener="@{goDownloadManageClickListener}"/>
             
         </androidx.cardview.widget.CardView>
-        
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            android:layout_marginTop="25dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/home_mine_about_page"
+                android:gravity="center"
+                android:textSize="18sp"
+                app:onClickListener="@{aboutPageClickListener}"/>
+
+        </androidx.cardview.widget.CardView>
         
     </LinearLayout>
 </layout>
