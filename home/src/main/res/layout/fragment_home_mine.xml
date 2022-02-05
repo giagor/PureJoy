@@ -67,42 +67,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/home_mine_divider_color"/>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/home_mine_go_download_manage"
-                    android:gravity="center"
-                    android:textSize="18sp"
-                    app:onClickListener="@{goDownloadManageClickListener}"/>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/home_mine_about_page"
-                    android:gravity="center"
-                    android:textSize="18sp"
-                    app:onClickListener="@{aboutPageClickListener}"/>
-
-            </androidx.cardview.widget.CardView>
-
+            
+            <include 
+                layout="@layout/layout_mine_item"
+                app:itemName="@{@string/home_mine_go_download_manage}"
+                app:clickListener="@{goDownloadManageClickListener}"/>
+            
+            <include 
+                layout="@layout/layout_mine_item"
+                app:itemName="@{@string/home_mine_about_page}"
+                app:clickListener="@{aboutPageClickListener}"/>
         </LinearLayout>
     </ScrollView>
     
