@@ -33,8 +33,10 @@ object Deps {
     }
 
     object Navigation {
-        const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:2.3.5"
-        const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:2.3.5"
+        const val version = "2.4.0"
+        const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
+        const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$version"
+        const val compose = "androidx.navigation:navigation-compose:$version"
     }
 
     object AndroidX {
@@ -94,6 +96,12 @@ object Deps {
     object Paging {
         const val runtime = "androidx.paging:paging-runtime-ktx:3.1.0"
         const val compose = "androidx.paging:paging-compose:1.0.0-alpha14"
+    }
+
+    object AboutPlugin {
+        const val version = "8.9.4"
+        const val pluginClassPath = "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$version"
+        const val core = "com.mikepenz:aboutlibraries-core:$version"
     }
 
     const val material = "com.google.android.material:material:1.4.0"

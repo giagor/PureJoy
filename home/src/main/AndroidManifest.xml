@@ -14,10 +14,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".tasks.login.LoginActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".tasks.toplist.TopListActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
+        <activity
+            android:name=".tasks.about.AboutActivity"
+            android:exported="false" />
         <activity
             android:name=".main.HomeActivity"
             android:exported="true"

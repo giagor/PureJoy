@@ -59,4 +59,9 @@
     <string name="home_video_unknown_error">出现未知错误，点击屏幕以重试</string>
     <string name="home_video_refresh_video_error">〒▽〒内容似乎失踪了呢\n点击屏幕重新加载</string>
     <string name="home_video_append_reload">重新加载</string>
+
+    <!--"关于"界面相关字符-->
+    <string name="home_about_title">关于</string>
+    <string name="home_about_code_source">源代码</string>
+    <string name="home_about_licenses">开源许可证</string>
 </resources>

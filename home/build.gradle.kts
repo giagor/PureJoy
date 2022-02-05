@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 android {
@@ -59,6 +60,7 @@ dependencies {
 
     implementation(Deps.Navigation.fragmentKtx)
     implementation(Deps.Navigation.navigationUiKtx)
+    implementation(Deps.Navigation.compose)
 
     implementation(Deps.Paging.runtime)
     implementation(Deps.Paging.compose)
@@ -69,6 +71,9 @@ dependencies {
 
     debugImplementation(Deps.Compose.uiDebugTool)
     androidTestImplementation(Deps.Compose.junitTest)
+
+    // About Library Core
+    implementation(Deps.AboutPlugin.core)
 
     testImplementation(TestDeps.Local.junit)
     androidTestImplementation(TestDeps.Instrumentation.espresso)
