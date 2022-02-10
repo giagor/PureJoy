@@ -15,6 +15,7 @@ import com.topview.purejoy.common.component.download.listener.user.UserDownloadL
 import com.topview.purejoy.common.component.download.status.DownloadStatus
 import com.topview.purejoy.common.component.download.task.DownloadTask
 import com.topview.purejoy.common.databinding.ActivityCommonDownloadManageBinding
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
 import com.topview.purejoy.common.mvvm.activity.MVVMActivity
 import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.DownloadUtil
@@ -24,6 +25,10 @@ class DownloadManageActivity :
     MVVMActivity<DownloadManageViewModel, ActivityCommonDownloadManageBinding>(),
     DownloadManageAdapter.OnClickListener {
 
+    private val bottomMusicBar: MusicBottomView by lazy {
+        MusicBottomView(activity = this)
+    }
+    
     private val downloadListener = object : UserDownloadListener {
         override fun onPrepareDownload(downloadTask: DownloadTask) {
             updateItem(downloadTask)
@@ -86,6 +91,7 @@ class DownloadManageActivity :
 
     private fun initView() {
         initRecyclerView()
+        bottomMusicBar.addMusicBottomBar()
     }
 
     private fun initData() {
