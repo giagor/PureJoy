@@ -179,10 +179,13 @@ class LyricView
         if (loadState is LyricLoadState.Success) {
             with(loadState) {
                 lyricList.indexOfFirst { progress < it.fromTime }
-            }.also {
-                if (it != highlight) {
-                    setHighlightLine(it - 1)
-                }
+                    .also {
+                        if (it == -1) {
+                            setHighlightLine(lyricList.size - 1)
+                        } else if (it != highlight) {
+                            setHighlightLine(it - 1)
+                        }
+                    }
             }
         }
     }
