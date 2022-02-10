@@ -52,4 +52,11 @@
         </attr>
         <attr name="progress" format="float"/>
     </declare-styleable>
+
+    <declare-styleable name="LyricView">
+        <attr name="highlightColor" format="color" />
+        <attr name="normalColor" format="color" />
+        <attr name="indicatorColor" format="color" />
+        <attr name="android:background" format="color"/>
+    </declare-styleable>
 </resources>

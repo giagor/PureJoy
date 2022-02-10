@@ -13,11 +13,16 @@
     <!--"下载管理"界面相关-->
     <string name="common_download_manage_click_to_download">点击开始下载</string>
     <string name="common_download_manage_prepare_download">下载队列中等待</string>
-    <string name="common_download_manage_task_cancelling">取消中...</string>
+    <string name="common_download_manage_task_cancelling">取消中…</string>
     <string name="common_download_manage_task_downloading">下载中</string>
     <string name="common_download_manage_task_paused">已暂停</string>
     <string name="common_download_manage_task_success">下载成功</string>
     <string name="common_download_manage_task_failure">下载失败</string>
     <string name="common_download_manage_title">下载管理</string>
     <string name="common_download_manage_task_empty">当前没有下载任务~~</string>
+
+    <!--歌词控件-->
+    <string name="common_lyric_loading">歌词加载中......</string>
+    <string name="common_lyric_error">加载歌词失败</string>
+    <string name="common_lyric_empty">暂无歌词</string>
 </resources>
