@@ -50,6 +50,7 @@
     <string name="home_mine_switch_account">切换账号>></string>
     <string name="home_mine_go_download_manage">下载管理</string>
     <string name="home_mine_about_page">关于</string>
+    <string name="home_mine_logout">退出登陆>></string>
     
     <!--"轮播图"相关-->
     <string name="home_banner_invalid_url_tips">不存在有效链接</string>
