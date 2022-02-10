@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.components.status.SnackBarState
+import com.topview.purejoy.home.components.status.PageState
 import com.topview.purejoy.home.theme.Red243
 import com.topview.purejoy.home.theme.Visibility
 import com.topview.purejoy.home.theme.VisibilityOff
@@ -32,11 +32,10 @@ internal fun PasswordLoginScreen(
         PasswordLoginScreenState()
     },
     onClose: (() -> Unit)? = null,
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
-    var buttonEnable by remember {
-        mutableStateOf(false)
-    }
+    val isLoading = state.pageState is PageState.Loading
+
     Scaffold(
         topBar = {
             LoginScreenTitle(
@@ -58,7 +57,6 @@ internal fun PasswordLoginScreen(
             PasswordField(
                 value = state.password,
                 onValueChange = { newValue ->
-                    buttonEnable = newValue.isNotEmpty()
                     state.password = newValue
                 },
                 modifier = Modifier
@@ -72,14 +70,16 @@ internal fun PasswordLoginScreen(
                     backgroundColor = Red243,
                     disabledBackgroundColor = Red243.copy(alpha = 0.6F)
                 ),
-                enabled = buttonEnable && !state.loading,
+                enabled = state.run {
+                    password.isNotEmpty() && !isLoading
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp)
             ) {
                 Text(text = "登录", color = Color.White)
             }
-            if (state.loading) {
+            if (isLoading) {
                 LoadingBox(
                     modifier = Modifier
                         .padding(top = 20.dp)
@@ -91,15 +91,6 @@ internal fun PasswordLoginScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
             )
-        }
-    }
-
-    if (state.snackBarState is SnackBarState.Show) {
-        LaunchedEffect(state.snackBarState) {
-            snackBarHostState.showSnackbar(
-                (state.snackBarState as SnackBarState.Show).message
-            )
-            state.snackBarState = SnackBarState.None
         }
     }
 }
@@ -156,9 +147,10 @@ private fun PasswordLoginScreenPreview() {
     }
 }
 
-class PasswordLoginScreenState {
-    var snackBarState: SnackBarState by mutableStateOf(SnackBarState.None)
-    var password: String by mutableStateOf("")
-    var loading: Boolean by mutableStateOf(false)
-    var loginSuccess by mutableStateOf(false)
+class PasswordLoginScreenState(
+    pageState: PageState = PageState.Empty,
+    password: String = "",
+) {
+    var password: String by mutableStateOf(password)
+    var pageState: PageState by mutableStateOf(pageState)
 }

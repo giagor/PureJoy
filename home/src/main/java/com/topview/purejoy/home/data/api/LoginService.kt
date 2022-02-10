@@ -4,10 +4,7 @@ import com.topview.purejoy.home.data.bean.LoginStatusJson
 import com.topview.purejoy.home.data.bean.PhoneExistJson
 import com.topview.purejoy.home.data.bean.UserJson
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface LoginService {
     @POST("/captcha/sent")
@@ -68,7 +65,9 @@ interface LoginService {
     ): Call<UserJson>
 
     @GET("/login/status")
-    fun checkLoginStatus(): Call<LoginStatusJson>
+    fun checkLoginStatus(
+        @Query("timestamp") timestamp: String,
+    ): Call<LoginStatusJson>
 
     @GET("/logout")
     fun logout(): Call<Unit>

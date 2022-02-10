@@ -57,6 +57,8 @@ class AboutActivity: ComposeActivity() {
     }
 
     private fun startActivityByUrl(url: String) {
-        Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }.also { startActivity(it) }
+        if (url.startsWith(prefix = "http", ignoreCase = true)) {
+            Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }.also { startActivity(it) }
+        }
     }
 }
