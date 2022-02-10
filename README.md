@@ -23,10 +23,20 @@ private const val BASE_URL = "..."
 
 
 ## Screenshots
-
-<img src="screenshots/discover.jpg" alt="discover" style="zoom: 20%;" /><img src="screenshots/video_list.jpg" alt="video_list" style="zoom:20%;" /><img src="screenshots/playlist_list.jpg" alt="playlist_list" style="zoom:20%;" />
-
-<img src="screenshots/download_manage.jpg" alt="download_manage" style="zoom: 20%;" /><img src="screenshots/play_detail.jpg" alt="play_detail" style="zoom: 20%;" /><img src="screenshots/video_play.jpg" alt="video_play" style="zoom: 20%;" />
+<table>
+    <tr>
+        <td><img src="screenshots/discover.jpg"/></td>
+        <td><img src="screenshots/video_list.jpg"/></td>
+        <td><img src="screenshots/playlist_list.jpg"/></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td><img src="screenshots/download_manage.jpg"/></td>
+        <td><img src="screenshots/play_detail.jpg"/></td>
+        <td><img src="screenshots/video_play.jpg"/></td>
+    </tr>
+</table>
 
 
 
