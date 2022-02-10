@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.mine
 
+import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.topview.purejoy.common.entity.User
@@ -34,3 +35,13 @@ fun setLoginTips(tv: TextView, user: User?) {
         tv.text = tv.context.getString(R.string.home_mine_go_login)
     }
 }
+
+@BindingAdapter("logoutTips")
+fun logoutTips(tv: TextView, user: User?){
+    if (user != null) {
+        tv.visibility = View.VISIBLE
+    } else {
+        tv.visibility = View.GONE
+    }
+}
+

@@ -9,6 +9,7 @@
     
     <!--"我的"界面-->
     <color name="home_mine_divider_color">#BEBEBE</color>
+    <color name="home_mine_login_text_color">#CD5555</color>
 
     <!--"下载管理"界面-->
     <color name="home_download_manage_divider_color">#BEBEBE</color>

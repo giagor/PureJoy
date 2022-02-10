@@ -4,11 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.topview.purejoy.home.mine.HomeMineFragment"/>
         <import type="android.view.View.OnClickListener"/>
-        <variable
-            name="homeMineFragment"
-            type="HomeMineFragment" />
+        <import type="com.topview.purejoy.home.mine.HomeMineViewModel"/>
+        <import type="android.view.View"/>
         <variable
             name="tvLoginTipsClickListener"
             type="OnClickListener" />
@@ -18,6 +16,9 @@
         <variable
             name="aboutPageClickListener"
             type="OnClickListener" />
+        <variable
+            name="viewModel"
+            type="HomeMineViewModel" />
     </data>
 
     <ScrollView
@@ -41,7 +42,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_centerInParent="true"
-                    app:userPortrait="@{homeMineFragment.userLiveData}"/>
+                    app:userPortrait="@{viewModel.userLiveData}"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
                     android:layout_marginTop="10dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:userNickName="@{homeMineFragment.userLiveData}"/>
+                    app:userNickName="@{viewModel.userLiveData}"/>
 
             </RelativeLayout>
 
@@ -59,9 +60,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:textColor="#CD5555"
+                android:textColor="@color/home_mine_login_text_color"
                 app:onClickListener="@{tvLoginTipsClickListener}"
-                app:loginTips="@{homeMineFragment.userLiveData}"/>
+                app:loginTips="@{viewModel.userLiveData}"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/home_mine_logout"
+                android:textColor="@color/home_mine_login_text_color"
+                app:logoutTips="@{viewModel.userLiveData}"
+                app:onClickListener="@{()->viewModel.logout()}"
+                android:layout_marginTop="5dp"/>
 
             <View
                 android:layout_width="match_parent"
