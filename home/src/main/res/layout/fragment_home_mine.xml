@@ -17,8 +17,12 @@
             name="aboutPageClickListener"
             type="OnClickListener" />
         <variable
+            name="clearCacheClickListener"
+            type="OnClickListener" />
+        <variable
             name="viewModel"
             type="HomeMineViewModel" />
+
     </data>
 
     <ScrollView
@@ -88,6 +92,11 @@
                 layout="@layout/layout_mine_item"
                 app:itemName="@{@string/home_mine_about_page}"
                 app:clickListener="@{aboutPageClickListener}"/>
+
+            <include
+                layout="@layout/layout_mine_item"
+                app:itemName="@{@string/home_mine_clear_cache}"
+                app:clickListener="@{clearCacheClickListener}"/>
         </LinearLayout>
     </ScrollView>
     
