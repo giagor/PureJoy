@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
@@ -25,15 +26,23 @@ import com.topview.purejoy.home.databinding.FragmentHomeMineBinding
 import com.topview.purejoy.home.router.HomeRouter
 import java.io.File
 
-@Route(path = HomeRouter.FRAGMENT_HOME_MINE)
-class HomeMineFragment : BindingFragment<FragmentHomeMineBinding>() {
+import androidx.lifecycle.ViewModelProvider
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
+import com.topview.purejoy.common.router.CommonRouter
+import com.topview.purejoy.home.R
+import com.topview.purejoy.home.databinding.FragmentHomeMineBinding
+import com.topview.purejoy.home.router.HomeRouter
+import com.topview.purejoy.home.util.getAndroidViewModelFactory
 
-    val userLiveData: LiveData<User?> = UserManager.userLiveData
+
+@Route(path = HomeRouter.FRAGMENT_HOME_MINE)
+class HomeMineFragment : MVVMFragment<HomeMineViewModel, FragmentHomeMineBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.homeMineFragment = this
+        binding.viewModel = viewModel
         initEvent()
     }
 
@@ -69,7 +78,7 @@ class HomeMineFragment : BindingFragment<FragmentHomeMineBinding>() {
         binding.goDownloadManageClickListener = View.OnClickListener {
             CommonRouter.routeToDownloadManageActivity()
         }
-        
+
         binding.aboutPageClickListener = View.OnClickListener {
             HomeRouter.routeToAboutActivity()
         }
@@ -125,5 +134,11 @@ class HomeMineFragment : BindingFragment<FragmentHomeMineBinding>() {
         }
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
+    }
+
+    override fun createFactory(): ViewModelProvider.Factory = getAndroidViewModelFactory()
+
+    override fun getViewModelClass(): Class<HomeMineViewModel> {
+        return HomeMineViewModel::class.java
     }
 }
