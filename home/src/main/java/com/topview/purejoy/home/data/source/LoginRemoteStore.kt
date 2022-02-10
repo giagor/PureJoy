@@ -42,7 +42,9 @@ class LoginRemoteStore {
         timestamp = getTimestamp()
     ).awaitSync()
 
-    fun checkLoginStatus(): LoginStatusJson? = loginService.checkLoginStatus().awaitSync()
+    fun checkLoginStatus(): LoginStatusJson? = loginService.checkLoginStatus(
+        getTimestamp()
+    ).awaitSync()
 
     fun logout() = loginService.logout().awaitSync()
 
