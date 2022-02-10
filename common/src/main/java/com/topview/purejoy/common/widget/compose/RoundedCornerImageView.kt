@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -166,14 +167,16 @@ class RoundedCornerImageView
         val backgroundColor = background?.let {
             Color(it)
         } ?: MaterialTheme.colors.surface
-        RoundImageViewCompose(
-            painter = imagePainter,
-            imageModifier = modifier,
-            percent = percent,
-            contentDescription = contentDescription,
-            border = borderStroke,
-            backgroundColor = backgroundColor
-        )
+        CompositionLocalProvider(LocalIndication provides NoIndication) {
+            RoundImageViewCompose(
+                painter = imagePainter,
+                imageModifier = modifier,
+                percent = percent,
+                contentDescription = contentDescription,
+                border = borderStroke,
+                backgroundColor = backgroundColor
+            )
+        }
     }
 }
 
@@ -228,14 +231,11 @@ internal fun getPainter(request: Any?, remoteLoader: RemoteLoader) =
                     BitmapPainter(this)
                 }
             }
-            is String, Int -> {
-                remoteLoader.getRemotePainter(request = this)
-            }
             is Painter -> {
                 this
             }
             else -> {
-                null
+                remoteLoader.getRemotePainter(request = this)
             }
         }
     }
