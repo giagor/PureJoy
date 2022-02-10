@@ -100,6 +100,12 @@ internal object LoginRepository {
         }
     }
 
+    suspend fun logout() {
+        withContext(Dispatchers.IO) {
+            loginRemoteStore.logout()
+        }
+    }
+
     private fun disposeProfile(profile: UserJson.Profile?): User? {
         return profile?.run {
             User(this.avatarUrl, this.nickname!!, this.userId!!, this.backgroundUrl)

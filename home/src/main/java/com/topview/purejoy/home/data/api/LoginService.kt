@@ -69,4 +69,7 @@ interface LoginService {
 
     @GET("/login/status")
     fun checkLoginStatus(): Call<LoginStatusJson>
+
+    @GET("/logout")
+    fun logout(): Call<Unit>
 }
