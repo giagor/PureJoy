@@ -22,8 +22,8 @@ import androidx.navigation.findNavController
 import com.topview.purejoy.common.base.ComposeFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.login.CaptchaScreen
-import com.topview.purejoy.home.components.login.LoginLoadState
 import com.topview.purejoy.home.components.login.rememberCaptchaScreenState
+import com.topview.purejoy.home.components.status.PageState
 
 class CaptchaFragment: ComposeFragment() {
 
@@ -42,19 +42,20 @@ class CaptchaFragment: ComposeFragment() {
     override fun ComposeView.FragmentContent() {
         val phoneArgName = stringResource(R.string.home_label_phone_number)
         val uiState = rememberCaptchaScreenState(phone = phone)
-        val loadState by viewModel.captchaLoginState.collectAsState()
+        val loadState by viewModel.pageState.collectAsState()
 
         LaunchedEffect(loadState) {
             when (loadState) {
-                is LoginLoadState.Success -> {
+                is PageState.Success -> {
                     activity?.finish()
                 }
-                is LoginLoadState.Error -> {
-                    uiState.snackBarHostState.showSnackbar(
-                        (loadState as LoginLoadState.Error).message
-                    )
-                }
                 else -> {}
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            viewModel.snackBarEvent.collect {
+                uiState.snackBarHostState.showSnackbar(it.message)
             }
         }
 
@@ -100,11 +101,11 @@ class CaptchaFragment: ComposeFragment() {
 @Composable
 private fun CrossFadeLoginIndicator(
     modifier: Modifier = Modifier,
-    loadState: LoginLoadState,
+    loadState: PageState,
 ) {
     Crossfade(loadState) {
         when (it) {
-            is LoginLoadState.Loading -> {
+            is PageState.Loading -> {
                 Box(
                     modifier = modifier,
                     contentAlignment = Alignment.Center

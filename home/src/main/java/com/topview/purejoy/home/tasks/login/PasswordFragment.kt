@@ -1,15 +1,15 @@
 package com.topview.purejoy.home.tasks.login
 
 import android.content.Context
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.topview.purejoy.common.base.ComposeFragment
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.components.login.PasswordLoginScreen
+import com.topview.purejoy.home.components.status.PageState
 
 class PasswordFragment: ComposeFragment() {
 
@@ -24,15 +24,29 @@ class PasswordFragment: ComposeFragment() {
     @Composable
     override fun ComposeView.FragmentContent() {
         Surface {
-            val uiState by passwordViewModel.passwordLoginScreenState.observeAsState()
+            val uiState by passwordViewModel.screenState.collectAsState()
+            val snackBarHostState = remember {
+                SnackbarHostState()
+            }
+            LaunchedEffect(uiState.pageState) {
+                when(uiState.pageState) {
+                    is PageState.Success -> {
+                        activity?.finish()
+                    }
+                    else -> {}
+                }
+            }
 
-            if (uiState!!.loginSuccess) {
-                activity?.finish()
+            LaunchedEffect(Unit) {
+                passwordViewModel.snackBarEvent.collect {
+                    snackBarHostState.showSnackbar(it.message)
+                }
             }
 
             PasswordLoginScreen(
                 onLoginClick = passwordViewModel::login,
-                state = uiState!!,
+                state = uiState,
+                snackBarHostState = snackBarHostState,
                 onClose = {
                     activity?.finish()
                 }

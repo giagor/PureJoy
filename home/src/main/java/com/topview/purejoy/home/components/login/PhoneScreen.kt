@@ -18,17 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.topview.purejoy.home.R
-import com.topview.purejoy.home.components.status.SnackBarState
 import com.topview.purejoy.home.theme.Red243
 
 @Composable
 internal fun PhoneScreen(
     phoneUiState: PhoneUiState = remember { PhoneUiState() },
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     onNextStepClick: () -> Unit = {},
     onClose: (() -> Unit)? = null,
     onTextChanged: (String) -> Unit = {}
 ) {
-    val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -66,15 +65,6 @@ internal fun PhoneScreen(
                         .align(Alignment.CenterHorizontally)
                 )
             }
-        }
-    }
-
-    if (phoneUiState.snackBarState is SnackBarState.Show) {
-        LaunchedEffect(phoneUiState.snackBarState) {
-            scaffoldState.snackbarHostState.showSnackbar(
-                (phoneUiState.snackBarState as SnackBarState.Show).message
-            )
-            phoneUiState.snackBarState = SnackBarState.None
         }
     }
 }
@@ -200,7 +190,6 @@ class PhoneUiState {
     var text: String by mutableStateOf("")
     var buttonEnable by mutableStateOf(false)
     var loading by mutableStateOf(false)
-    var snackBarState by mutableStateOf<SnackBarState>(SnackBarState.None)
 }
 
 @Composable

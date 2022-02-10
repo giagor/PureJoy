@@ -1,10 +1,11 @@
 package com.topview.purejoy.home.tasks.login
 
 import androidx.compose.material.Surface
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
@@ -21,25 +22,32 @@ class PhoneInputFragment: ComposeFragment() {
 
     @Composable
     override fun ComposeView.FragmentContent() {
-        val uiState by loginViewModel.phoneUiState.observeAsState()
+        val uiState by loginViewModel.phoneUiState.collectAsState()
         val captchaState by loginViewModel.captchaState.collectAsState()
-
+        val scaffoldState = rememberScaffoldState()
         val inputManager = LocalTextInputService.current
 
         if (captchaState) {
             // 重置跳转状态
             loginViewModel.resetCaptchaStatus()
             val bundle = bundleOf(
-                stringResource(R.string.home_label_phone_number) to uiState?.text)
+                stringResource(R.string.home_label_phone_number) to uiState.text)
             findNavController().navigate(
                 R.id.home_nav_code,
                 bundle
             )
         }
 
+        LaunchedEffect(Unit) {
+            loginViewModel.snackBarEvent.collect {
+                scaffoldState.snackbarHostState.showSnackbar(it.message)
+            }
+        }
+
         Surface {
             PhoneScreen(
-                uiState!!,
+                phoneUiState = uiState,
+                scaffoldState = scaffoldState,
                 onNextStepClick = {
                     // 隐藏软键盘
                     inputManager?.hideSoftwareKeyboard()

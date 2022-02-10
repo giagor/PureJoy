@@ -1,13 +1,13 @@
 package com.topview.purejoy.home.tasks.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.home.components.login.PhoneUiState
-import com.topview.purejoy.home.components.status.SnackBarState
+import com.topview.purejoy.home.components.status.SnackBarEvent
 import com.topview.purejoy.home.data.repo.LoginRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class LoginViewModel: MVVMViewModel() {
@@ -17,8 +17,8 @@ class LoginViewModel: MVVMViewModel() {
     /**
      * 手机号码界面状态
      */
-    private val _phoneUiState: MutableLiveData<PhoneUiState> = MutableLiveData(PhoneUiState())
-    val phoneUiState: LiveData<PhoneUiState> = _phoneUiState
+    private val _phoneUiState: MutableStateFlow<PhoneUiState> = MutableStateFlow(PhoneUiState())
+    val phoneUiState: StateFlow<PhoneUiState> = _phoneUiState
 
     /**
      * 验证码请求状态
@@ -27,14 +27,23 @@ class LoginViewModel: MVVMViewModel() {
     val captchaState: StateFlow<Boolean> = _captchaState
 
     /**
+     * SnackBar的弹出事件
+     */
+    private val _snackBarEvent: MutableSharedFlow<SnackBarEvent> = MutableSharedFlow(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val snackBarEvent: SharedFlow<SnackBarEvent> = _snackBarEvent
+
+    /**
      * 从UI状态中读取号码并发起请求
      */
     fun requestCode() {
-        _phoneUiState.value?.let { state ->
+        _phoneUiState.value.let { state ->
             // 仅接受一次loading
             if (! state.loading) {
                 if (state.text.length < 11) {
-                    _phoneUiState.value?.snackBarState = SnackBarState.Show("请输入合法的手机号码")
+                    _snackBarEvent.tryEmit(SnackBarEvent("请输入合法的手机号码"))
                     return@let
                 }
                 state.loading = true
@@ -47,7 +56,7 @@ class LoginViewModel: MVVMViewModel() {
                         _captchaState.value = true
                     }
                     onError = {
-                        state.snackBarState = SnackBarState.Show("请求验证码失败")
+                        _snackBarEvent.tryEmit(SnackBarEvent("请求验证码失败"))
                         resetPhoneUiState()
                     }
                 }
@@ -69,7 +78,7 @@ class LoginViewModel: MVVMViewModel() {
     }
 
     fun changeText(newValue: String) {
-        _phoneUiState.value?.let { uiState ->
+        _phoneUiState.value.let { uiState ->
             if (uiState.loading) {
                 return@let
             }
@@ -92,7 +101,7 @@ class LoginViewModel: MVVMViewModel() {
     }
 
     private fun resetPhoneUiState() {
-        phoneUiState.value?.apply {
+        phoneUiState.value.apply {
             loading = false
         }
     }

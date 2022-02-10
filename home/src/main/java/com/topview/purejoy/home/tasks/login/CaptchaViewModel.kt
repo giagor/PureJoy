@@ -6,24 +6,31 @@ import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.common.util.UserManager
-import com.topview.purejoy.home.components.login.LoginLoadState
+import com.topview.purejoy.home.components.status.PageState
+import com.topview.purejoy.home.components.status.SnackBarEvent
 import com.topview.purejoy.home.data.repo.LoginRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class CaptchaViewModel: MVVMViewModel() {
 
     private val loginRepository = LoginRepository
 
-    private val _captchaLoginState: MutableStateFlow<LoginLoadState> = MutableStateFlow(
-        LoginLoadState.None
+    private val _pageState: MutableStateFlow<PageState> = MutableStateFlow(
+        PageState.Empty
     )
-    var captchaLoginState: StateFlow<LoginLoadState> = _captchaLoginState
+    var pageState: StateFlow<PageState> = _pageState
+
+    /**
+     * SnackBar的弹出事件
+     */
+    private val _snackBarEvent: MutableSharedFlow<SnackBarEvent> = MutableSharedFlow(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val snackBarEvent: SharedFlow<SnackBarEvent> = _snackBarEvent
 
     /**
      * 生成秒数序列的Flow
@@ -59,10 +66,10 @@ class CaptchaViewModel: MVVMViewModel() {
      * 发起登录或创建用户请求
      */
     fun loginOrRegister(phone: String, captcha: String) {
-        if (_captchaLoginState.value !is LoginLoadState.Loading) {
+        if (_pageState.value !is PageState.Loading) {
             viewModelScope.rxLaunch<User> {
                 onRequest = {
-                    _captchaLoginState.value = LoginLoadState.Loading
+                    _pageState.value = PageState.Loading
                     if (loginRepository.checkExist(phone)) {
                         loginRepository.loginWithCaptcha(phone, captcha)
                     } else {
@@ -71,10 +78,11 @@ class CaptchaViewModel: MVVMViewModel() {
                 }
                 onSuccess = {
                     UserManager.login(it)
-                    _captchaLoginState.value = LoginLoadState.Success
+                    _pageState.value = PageState.Success
                 }
                 onEmpty = {
-                    _captchaLoginState.value = LoginLoadState.Error("登录失败，请重试")
+                    _pageState.value = PageState.Error
+                    _snackBarEvent.tryEmit(SnackBarEvent("登录失败，请重试"))
                 }
                 onError = {
                     onEmpty?.invoke(Unit)
