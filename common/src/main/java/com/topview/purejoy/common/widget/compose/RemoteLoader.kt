@@ -11,7 +11,7 @@ class RemoteLoader {
 
     @Composable
     fun getRemotePainter(
-        request: String
+        request: Any
     ): AsyncImagePainter {
         return rememberAsyncImagePainter(
             model = createImageRequestForCoil(

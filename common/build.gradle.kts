@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":dependencies"))
     // compose
     implementation(Deps.Compose.composeUiToolingPreview)
+    implementation(Deps.Compose.livedataRuntime)
     // Coil
     implementation(Deps.Coil.coilCore)
     implementation(Deps.Coil.composeExtension)

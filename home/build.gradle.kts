@@ -51,7 +51,6 @@ dependencies {
 
     implementation(Deps.Compose.composeUiToolingPreview)
     implementation(Deps.Compose.livedataRuntime)
-    implementation(Deps.Compose.composeNavigation)
     implementation(Deps.Compose.composeActivity)
     implementation(Deps.Compose.composeViewBinding)
     implementation(Deps.Compose.constraintLayoutDSL)
