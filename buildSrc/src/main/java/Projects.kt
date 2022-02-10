@@ -19,7 +19,6 @@ object Deps {
             "androidx.compose.ui:ui-tooling-preview:$version"
         const val livedataRuntime =
             "androidx.compose.runtime:runtime-livedata:$version"
-        const val composeNavigation = "androidx.navigation:navigation-compose:2.4.0-beta02"
         const val composeActivity = "androidx.activity:activity-compose:1.4.0"
         const val composeViewBinding = "androidx.compose.ui:ui-viewbinding:$version"
 
