@@ -4,36 +4,24 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
-import com.topview.purejoy.common.app.CommonApplication
-import com.topview.purejoy.common.base.binding.BindingFragment
-import com.topview.purejoy.common.entity.User
 import com.topview.purejoy.common.music.service.MusicService
 import com.topview.purejoy.common.music.util.ExecutorInstance
+import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
 import com.topview.purejoy.common.router.CommonRouter
-import com.topview.purejoy.common.util.UserManager
 import com.topview.purejoy.common.util.clear
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.R
 import com.topview.purejoy.home.databinding.FragmentHomeMineBinding
 import com.topview.purejoy.home.router.HomeRouter
-import java.io.File
-
-import androidx.lifecycle.ViewModelProvider
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.mvvm.fragment.MVVMFragment
-import com.topview.purejoy.common.router.CommonRouter
-import com.topview.purejoy.home.R
-import com.topview.purejoy.home.databinding.FragmentHomeMineBinding
-import com.topview.purejoy.home.router.HomeRouter
 import com.topview.purejoy.home.util.getAndroidViewModelFactory
+import java.io.File
 
 
 @Route(path = HomeRouter.FRAGMENT_HOME_MINE)
