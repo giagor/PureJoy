@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.AbstractComposeView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -229,14 +228,7 @@ internal fun getPainter(request: Any?, remoteLoader: RemoteLoader) =
                     BitmapPainter(this)
                 }
             }
-            is Int -> {
-                if (this != 0) {
-                    painterResource(id = this)
-                } else {
-                    null
-                }
-            }
-            is String -> {
+            is String, Int -> {
                 remoteLoader.getRemotePainter(request = this)
             }
             is Painter -> {
