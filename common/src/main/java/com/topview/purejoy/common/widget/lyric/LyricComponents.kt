@@ -193,7 +193,6 @@ fun LyricContent(
                         )
 
                         with(loadState.lyricList.getOrNull(middleIndex)) {
-                            // 展示指示线的额外条件是歌词多于一行
                             if (showIndicator) {
                                 LyricIndicator(
                                     text = this?.fromTime?.let {

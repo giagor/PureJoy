@@ -34,9 +34,7 @@ class LyricParser(
             while (temp != null) {
                 val left = temp.indexOf("[")
                 val right = temp.indexOf("]")
-                if (left == -1 || right == -1 || right - left < 2) {
-                    continue
-                } else {
+                if (left > -1 && right - left >= 2) {
                     val tagContent = temp.substring(left + 1, right)
                     // 先尝试解析成时间信息
                     val time = parseTime(tagContent)
