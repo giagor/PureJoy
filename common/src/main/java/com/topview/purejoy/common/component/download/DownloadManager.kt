@@ -64,9 +64,8 @@ object DownloadManager {
     private var init = false
 
     internal val handler: Handler = Handler(Looper.getMainLooper())
-    internal var downloadConfiguration: DownloadConfiguration = DefaultDownloadConfiguration()
-    internal val downHttpHelper: DownloadHttpHelper =
-        DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
+    internal lateinit var downloadConfiguration: DownloadConfiguration
+    internal lateinit var downHttpHelper: DownloadHttpHelper
     internal val downDbHelper: DownloadDbHelper = DownloadDbHelperImpl()
     internal val downloadDispatcher: DownloadDispatcher = DownloadDispatcher()
 
@@ -89,9 +88,9 @@ object DownloadManager {
         }
 
         init = true
-        configuration?.let {
-            downloadConfiguration = configuration
-        }
+        // 初始化配置
+        downloadConfiguration = configuration ?: DefaultDownloadConfiguration(ContextProvider.getApplicationContext())
+        downHttpHelper = DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
         // 初始化数据库
         DbManager.downloadDatabase = Room.databaseBuilder(
             ContextProvider.getApplicationContext(),
