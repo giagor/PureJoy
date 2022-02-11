@@ -1,6 +1,5 @@
 package com.topview.purejoy.common.component.download
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.room.Room
@@ -16,6 +15,7 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.component.download.util.ContextProvider
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -80,10 +80,9 @@ object DownloadManager {
     /**
      * 初始化方法
      *
-     * @param applicationContext 通常是Application context
      * @param configuration 配置(可选项)
      * */
-    fun init(applicationContext: Context, configuration: DownloadConfiguration? = null) {
+    fun init(configuration: DownloadConfiguration? = null) {
         // 防止重复初始化
         if (init) {
             return
@@ -95,7 +94,7 @@ object DownloadManager {
         }
         // 初始化数据库
         DbManager.downloadDatabase = Room.databaseBuilder(
-            applicationContext,
+            ContextProvider.getApplicationContext(),
             DownloadDataBase::class.java, "DownloadDataBase"
         ).build()
     }

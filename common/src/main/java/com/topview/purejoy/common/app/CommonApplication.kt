@@ -44,7 +44,7 @@ class CommonApplication : Application() {
      * 对下载库进行初始化
      * */
     private fun initDownloadLibrary() {
-        DownloadManager.init(this)
+        DownloadManager.init()
     }
 
     /**
