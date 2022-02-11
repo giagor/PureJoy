@@ -47,19 +47,6 @@ object TaskHandler {
                             // 当做新任务处理，数据库中插入父任务和子任务的记录
                             handleNewTask(downloadTask)
                         } else {
-//                            // 父任务的资源长度和服务器返回的长度相同，再判断数据库中子任务的数量与当前线程数是否相同
-//                            val subTasks: List<SubDownloadTask> =
-//                                DownloadManager.downDbHelper.getSubDownloadTaskByParentId(parentId)
-//                            if (subTasks.size != downloadTask.threadNum) {
-//                                // 数据库中删除父任务和子任务，本地删除path相关的文件  
-//                                // 当做新任务处理，数据库中插入父任务和子任务的记录
-//                                clearTaskInfo(downloadTask.path, cacheTask)
-//                                handleNewTask(downloadTask)
-//                            } else {
-//                                // 复用之前的下载任务
-//                                handleExistingTask(downloadTask, cacheTask)
-//                            }
-
                             // 复用之前的下载任务
                             handleExistingTask(downloadTask, cacheTask)
                         }
