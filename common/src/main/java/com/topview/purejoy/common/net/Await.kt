@@ -31,7 +31,6 @@ suspend fun <T> Call<T>.awaitAsync(): T? {
 /**
  * 采用同步的方式进行Retrofit网络请求的处理
  * */
-@Deprecated("potential memory leak", ReplaceWith("Call<T>.awaitAsync()"))
 fun <T> Call<T>.awaitSync(): T? {
     return execute().body()
 }
