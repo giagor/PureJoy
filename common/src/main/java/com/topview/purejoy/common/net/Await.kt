@@ -15,6 +15,9 @@ import kotlin.coroutines.resumeWithException
  * */
 suspend fun <T> Call<T>.awaitAsync(): T? {
     return suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            cancel()
+        }
         enqueue(object : Callback<T> {
             override fun onFailure(call: Call<T>, t: Throwable) {
                 continuation.resumeWithException(t)
