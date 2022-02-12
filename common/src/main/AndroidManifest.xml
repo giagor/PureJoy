@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topview.purejoy.common">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application>
+        <activity
+            android:name=".component.webview.CommonWebViewActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".business.download.manage.DownloadManageActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+
+        <provider
+            android:name=".component.download.util.ContextProvider"
+            android:authorities="com.topview.purejoy.common.download"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name=".music.service.MusicService"
+            android:process=":music" />
+    </application>
+
+</manifest>

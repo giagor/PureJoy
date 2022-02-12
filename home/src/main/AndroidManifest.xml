@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topview.purejoy.home">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <application
+        android:theme="@style/Theme.PureJoy"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".search.SearchActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".tasks.login.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tasks.toplist.TopListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tasks.about.AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".main.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

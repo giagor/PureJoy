@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.topview.purejoy.video">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.VideoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false">
+        </activity>
+    </application>
+</manifest>

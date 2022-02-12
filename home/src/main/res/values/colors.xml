@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--底部栏的颜色-->
+    <color name="home_bottom_navi_selected_color">#FF6A6A</color>
+    <color name="home_bottom_navi_unselected_color">#696969</color>
+    
+    <!--搜索相关-->
+    <color name="home_search_song_name_color">#6A5ACD</color>
+    
+    <!--"我的"界面-->
+    <color name="home_mine_divider_color">#BEBEBE</color>
+    <color name="home_mine_login_text_color">#CD5555</color>
+
+    <!--"下载管理"界面-->
+    <color name="home_download_manage_divider_color">#BEBEBE</color>
+</resources>

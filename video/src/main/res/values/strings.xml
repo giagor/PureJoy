@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_not_song_tip">暂无相关歌曲</string>
+    <string name="video_not_description">暂无相关描述</string>
+    <string name="video_video_reload_tip">视频播放失败了，请点击重试</string>
+    <string name="video_speed_change">倍速</string>
+</resources>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="musicItem"
+            type="com.topview.purejoy.common.music.service.entity.MusicItem" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:orientation="horizontal"
+        android:id="@+id/music_item_layout"
+        android:layout_marginHorizontal="8dp">
+
+
+
+
+        <com.topview.purejoy.common.widget.RoundImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:draw_type="round_rect"
+            app:imageUrl="@{musicItem.al.picUrl}"
+            app:holder="@{@drawable/white_holder}"
+            app:error="@{@drawable/white_holder}"
+            app:round_rect_radius="16"
+
+            android:id="@+id/music_item_iv"/>
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_item_name_tx"
+                android:text="@{musicItem.name ?? @string/unknown}"
+                android:textColor="@color/black"
+                android:maxLines="1"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/orange"
+                    android:text="@string/unknown"
+                    android:layout_marginEnd="4dp"
+                    android:id="@+id/music_item_reason_tx"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/music_item_author_tx"
+                    android:text="@{musicItem.authors}"/>
+
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/music_item_mv_bt"
+            android:src="@drawable/mv_32"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="8dp"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/music_item_more_bt"
+            android:src="@drawable/music_recommend_more_24"
+            android:layout_gravity="center_vertical"/>
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.topview.purejoy.musiclibrary">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    
+    <application
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m"
+        android:requestLegacyExternalStorage="true">
+        <activity
+            android:name=".playlist.square.view.PlaylistSquareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".playlist.detail.view.PlaylistDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".playing.view.PlayingActivity"
+            android:exported="false"
+            android:theme="@style/slideAnimationActivity" />
+        <activity
+            android:name=".recommendation.music.view.DailyRecommendActivity"
+            android:exported="false" />
+
+
+    </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+</manifest>

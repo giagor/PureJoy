@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topview.purejoy.home.entity.Song"/>
+        <import type="android.view.View.OnClickListener"/>
+        <variable
+            name="searchSong"
+            type="Song" />
+        <variable
+            name="menuClickListener"
+            type="OnClickListener" />
+        <variable
+            name="mvClickListener"
+            type="OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="@dimen/common_padding_left"
+        android:paddingEnd="@dimen/common_padding_right"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/home_search_song_name_color"
+                android:textSize="15sp"
+                android:singleLine="true"
+                android:text="@{searchSong.name}"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:text="@{searchSong.artistName}"/>
+            
+        </LinearLayout>
+        
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/home_ic_search_mv"
+            android:layout_marginEnd="5dp"
+            app:onClickListener="@{mvClickListener}"
+            app:mvVisibility="@{searchSong}"/>
+        
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/home_ic_search_song_menu"
+            app:onClickListener="@{menuClickListener}"/>
+        
+    </LinearLayout>
+</layout>

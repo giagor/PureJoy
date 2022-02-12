@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="activitySlideInOutAnimation" parent="android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/in_animation</item>
+        <item name="android:activityOpenExitAnimation">@anim/out_animation</item>
+    </style>
+
+    <style name="slideAnimationActivity" parent="Theme.PureJoy">
+        <item name="android:windowAnimationStyle">@style/activitySlideInOutAnimation</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+    </style>
+</resources>
