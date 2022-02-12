@@ -1,11 +1,11 @@
 package com.topview.purejoy.common.net
 
+import kotlinx.coroutines.suspendCancellableCoroutine
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by giagor at 2021/03/15.
@@ -14,7 +14,7 @@ import kotlin.coroutines.suspendCoroutine
  * 要做好异常处理.
  * */
 suspend fun <T> Call<T>.awaitAsync(): T? {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         enqueue(object : Callback<T> {
             override fun onFailure(call: Call<T>, t: Throwable) {
                 continuation.resumeWithException(t)
@@ -31,6 +31,7 @@ suspend fun <T> Call<T>.awaitAsync(): T? {
 /**
  * 采用同步的方式进行Retrofit网络请求的处理
  * */
+@Deprecated("potential memory leak", ReplaceWith("Call<T>.awaitAsync()"))
 fun <T> Call<T>.awaitSync(): T? {
     return execute().body()
 }
