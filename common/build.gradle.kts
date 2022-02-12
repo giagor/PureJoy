@@ -41,6 +41,9 @@ android {
             arg("AROUTER_MODULE_NAME", project.name)
         }
     }
+    ksp {
+        arg(k = "room.schemaLocation", v = "$projectDir/schemas")
+    }
 }
 
 dependencies {
