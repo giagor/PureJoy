@@ -1,7 +1,7 @@
 package com.topview.purejoy.home.data.source
 
 import com.topview.purejoy.common.net.ServiceCreator
-import com.topview.purejoy.common.net.awaitAsync
+import com.topview.purejoy.common.net.awaitSync
 import com.topview.purejoy.home.data.api.HomeService
 import com.topview.purejoy.home.data.bean.*
 import com.topview.purejoy.home.entity.*
@@ -13,8 +13,8 @@ private const val SEARCH_PLAYLIST_TYPE = 1000
 class HomeRemoteStore {
     private val homeService = ServiceCreator.create(HomeService::class.java)
 
-    suspend fun getBanners(): List<HomeDiscoverBannerItem>? {
-        val bannerJson: BannerJson? = homeService.getBanners(BANNER_TYPE).awaitAsync()
+    fun getBanners(): List<HomeDiscoverBannerItem>? {
+        val bannerJson: BannerJson? = homeService.getBanners(BANNER_TYPE).awaitSync()
         if (bannerJson != null) {
             val banners = bannerJson.banners
             if (banners != null) {
@@ -28,9 +28,9 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun getDailyRecommendPlayList(limit: Int): List<PlayList>? {
+    fun getDailyRecommendPlayList(limit: Int): List<PlayList>? {
         val dailyRecommendPlayListJson: DailyRecommendPlayListJson? =
-            homeService.getDailyRecommendPlayList(limit).awaitAsync()
+            homeService.getDailyRecommendPlayList(limit).awaitSync()
         if (dailyRecommendPlayListJson != null) {
             val result = dailyRecommendPlayListJson.result
             if (result != null) {
@@ -46,9 +46,9 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun getRecommendNewSong(limit: Int): List<Song>? {
+    fun getRecommendNewSong(limit: Int): List<Song>? {
         val recommendNewSongJson: RecommendNewSongJson? =
-            homeService.getRecommendNewSong(limit).awaitAsync()
+            homeService.getRecommendNewSong(limit).awaitSync()
         if (recommendNewSongJson != null) {
             val result = recommendNewSongJson.result
             if (result != null) {
@@ -103,9 +103,9 @@ class HomeRemoteStore {
      * 搜索歌曲，第一次请求，返回的实体类SongPagerWrapper中，包含总歌曲数量的信息，方便
      * 分页加载
      * */
-    suspend fun getSearchSongByFirst(keyword: String, limit: Int): SongPagerWrapper? {
+    fun getSearchSongByFirst(keyword: String, limit: Int): SongPagerWrapper? {
         val searchSongJson: SearchSongJson? =
-            homeService.getSearchSongs(keyword, SEARCH_SONG_TYPE, 0, limit).awaitAsync()
+            homeService.getSearchSongs(keyword, SEARCH_SONG_TYPE, 0, limit).awaitSync()
         if (searchSongJson != null) {
             val result = searchSongJson.result
             if (result != null) {
@@ -119,9 +119,9 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun loadMoreSongs(keyword: String, offset: Int, limit: Int): List<Song>? {
+    fun loadMoreSongs(keyword: String, offset: Int, limit: Int): List<Song>? {
         val searchSongJson: SearchSongJson? =
-            homeService.getSearchSongs(keyword, SEARCH_SONG_TYPE, offset, limit).awaitAsync()
+            homeService.getSearchSongs(keyword, SEARCH_SONG_TYPE, offset, limit).awaitSync()
         if (searchSongJson != null) {
             val result = searchSongJson.result
             if (result != null) {
@@ -134,9 +134,9 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun getSearchPlayListByFirst(keyword: String, limit: Int): PlayListPagerWrapper? {
+    fun getSearchPlayListByFirst(keyword: String, limit: Int): PlayListPagerWrapper? {
         val searchPlayListJson: SearchPlayListJson? =
-            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, 0, limit).awaitAsync()
+            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, 0, limit).awaitSync()
         if (searchPlayListJson != null) {
             val result = searchPlayListJson.result
             if (result != null) {
@@ -150,9 +150,9 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun loadMorePlayLists(keyword: String, offset: Int, limit: Int): List<PlayList>? {
+    fun loadMorePlayLists(keyword: String, offset: Int, limit: Int): List<PlayList>? {
         val searchPlayListJson: SearchPlayListJson? =
-            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, offset, limit).awaitAsync()
+            homeService.getSearchPlayLists(keyword, SEARCH_PLAYLIST_TYPE, offset, limit).awaitSync()
         if (searchPlayListJson != null) {
             val result = searchPlayListJson.result
             if (result != null) {
@@ -165,8 +165,8 @@ class HomeRemoteStore {
         return null
     }
 
-    suspend fun requestSongUrl(id: Long): SongDetailJson? {
-        return homeService.requestSongUrl(id).awaitAsync()
+    fun requestSongUrl(id: Long): SongDetailJson? {
+        return homeService.requestSongUrl(id).awaitSync()
     }
 
     private fun parseSearchSongs(songJson: MutableList<SearchSongJson.Result.Song>): List<Song> {
