@@ -1,6 +1,5 @@
 package com.topview.purejoy.common.component.download
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.room.Room
@@ -16,6 +15,7 @@ import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHe
 import com.topview.purejoy.common.component.download.storage.helper.DownloadDbHelperImpl
 import com.topview.purejoy.common.component.download.task.BatchDownloadTask
 import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.component.download.util.ContextProvider
 import com.topview.purejoy.common.component.download.util.getDownloadPath
 
 /**
@@ -64,9 +64,8 @@ object DownloadManager {
     private var init = false
 
     internal val handler: Handler = Handler(Looper.getMainLooper())
-    internal var downloadConfiguration: DownloadConfiguration = DefaultDownloadConfiguration()
-    internal val downHttpHelper: DownloadHttpHelper =
-        DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
+    internal lateinit var downloadConfiguration: DownloadConfiguration
+    internal lateinit var downHttpHelper: DownloadHttpHelper
     internal val downDbHelper: DownloadDbHelper = DownloadDbHelperImpl()
     internal val downloadDispatcher: DownloadDispatcher = DownloadDispatcher()
 
@@ -80,22 +79,21 @@ object DownloadManager {
     /**
      * 初始化方法
      *
-     * @param applicationContext 通常是Application context
      * @param configuration 配置(可选项)
      * */
-    fun init(applicationContext: Context, configuration: DownloadConfiguration? = null) {
+    fun init(configuration: DownloadConfiguration? = null) {
         // 防止重复初始化
         if (init) {
             return
         }
 
         init = true
-        configuration?.let {
-            downloadConfiguration = configuration
-        }
+        // 初始化配置
+        downloadConfiguration = configuration ?: DefaultDownloadConfiguration(ContextProvider.getApplicationContext())
+        downHttpHelper = DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
         // 初始化数据库
         DbManager.downloadDatabase = Room.databaseBuilder(
-            applicationContext,
+            ContextProvider.getApplicationContext(),
             DownloadDataBase::class.java, "DownloadDataBase"
         ).build()
     }
