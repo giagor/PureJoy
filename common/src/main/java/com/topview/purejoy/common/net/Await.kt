@@ -10,7 +10,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * Created by giagor at 2021/03/15.
  *
- * 简化Retrofit请求时的异步调用流程，通过该扩展函数，只需在协程中调用 Call<...>.await() 即可获取数据，
+ * 简化Retrofit请求时的异步调用流程，通过该扩展函数，只需在协程中调用 [Call.awaitAsync] 即可获取数据，
  * 要做好异常处理.
  * */
 suspend fun <T> Call<T>.awaitAsync(): T? {
