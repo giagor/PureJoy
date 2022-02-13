@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.topview.purejoy.common.net.ServiceCreator
-import com.topview.purejoy.common.net.awaitSync
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.home.data.api.HomeVideoService
 import com.topview.purejoy.home.data.source.CategorySource
 import com.topview.purejoy.home.entity.ExternVideo
@@ -19,7 +19,7 @@ class HomeVideoRepository {
 
     suspend fun getCategoryArray(): Array<VideoCategoryTab> =
         withContext(Dispatchers.IO) {
-            val json = service.getCategoryList().awaitSync()
+            val json = service.getCategoryList().awaitAsync()
 
             json?.data?.let { categoryList ->
                 Array(

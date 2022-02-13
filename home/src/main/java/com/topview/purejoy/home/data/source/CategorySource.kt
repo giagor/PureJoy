@@ -2,7 +2,7 @@ package com.topview.purejoy.home.data.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.topview.purejoy.common.net.awaitSync
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.home.data.api.HomeVideoService
 import com.topview.purejoy.home.entity.ExternVideo
 import com.topview.purejoy.home.entity.RecommendTabId
@@ -32,9 +32,9 @@ class CategorySource(
                 val prevPage = if (page == 0) null else page - 1
 
                 val jsonData = if (isRecommend) {
-                    service.getRecommendVideo(page).awaitSync()
+                    service.getRecommendVideo(page).awaitAsync()
                 } else {
-                    service.getVideoByCategory(categoryId, page).awaitSync()
+                    service.getVideoByCategory(categoryId, page).awaitAsync()
                 }
                 if (jsonData == null) {
                     error("Cannot get json Data")
