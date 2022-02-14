@@ -22,7 +22,7 @@ class TopListViewModel: MVVMViewModel() {
 
     private var _loadState: MutableStateFlow<MusicItemLoadState> = MutableStateFlow(
         MusicItemLoadState(
-            pageState = PageState.Empty
+            value = PageState.Empty
         )
     )
     val loadState: StateFlow<MusicItemLoadState> = _loadState
@@ -76,17 +76,17 @@ class TopListViewModel: MVVMViewModel() {
     fun loadSongsByTopList(topList: TopList) {
         viewModelScope.rxLaunch<List<MusicItem>> {
             onRequest = {
-                _loadState.value = MusicItemLoadState(pageState = PageState.Loading)
+                _loadState.value = MusicItemLoadState(value = PageState.Loading)
                 repository.getSongs(topList)
             }
             onSuccess = {
                 _loadState.value = MusicItemLoadState(
-                    pageState = PageState.Success,
+                    value = PageState.Success,
                     data = it
                 )
             }
             onError = {
-                _loadState.value = MusicItemLoadState(pageState = PageState.Error)
+                _loadState.value = MusicItemLoadState(value = PageState.Error)
             }
         }
     }
