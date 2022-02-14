@@ -50,7 +50,7 @@ internal fun ClickablePlayIcon(
                     }
                 }
                 pageState = PageState.Success
-            } else if (loadState.pageState is PageState.Error) {
+            } else if (loadState.value is PageState.Error) {
                 pageState = PageState.Error
             }
         } else if (pageState is PageState.Success && ! playState) {
@@ -75,7 +75,7 @@ internal fun ClickablePlayIcon(
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 // 校验状态，只允许同时加载一个榜单的信息
-                                if (loadState.pageState !is PageState.Loading) {
+                                if (loadState.value !is PageState.Loading) {
                                     controller.playerController?.apply {
                                         if (isPlaying) {
                                             playOrPause()

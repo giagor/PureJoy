@@ -104,7 +104,7 @@ internal fun HorizontalVideoScreen(
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
         ) {
-            val content = createRef()
+            val (content, speedList) = createRefs()
             AndroidView(
                 factory = {
                     PlayerView(context).apply {
@@ -143,6 +143,20 @@ internal fun HorizontalVideoScreen(
                             }
                         )
                     }
+            )
+            // 倍速列表
+            HorizontalSpeedList(
+                state = state,
+                onItemClick = {
+                    // 更新倍速状态，关闭倍速列表
+                    state.playbackSpeed = it
+                    state.isSpeedListShowing = false
+                },
+                modifier = Modifier
+                    .constrainAs(speedList) {
+                        centerVerticallyTo(parent)
+                    }
+                    .fillMaxHeight()
             )
             if (state.isControlShowing) {
                 val (rightLock, title, bottomBanner, stateOfVideoLoad) = createRefs()
@@ -214,24 +228,6 @@ internal fun HorizontalVideoScreen(
                             centerVerticallyTo(parent)
                             end.linkTo(parent.end, 10.dp)
                         }
-                )
-            }
-            // 倍速列表
-            if (state.isSpeedListShowing) {
-                val speedList = createRef()
-                HorizontalSpeedList(
-                    state = state,
-                    onItemClick = {
-                        // 更新倍速状态，关闭倍速列表
-                        state.playbackSpeed = it
-                        state.isSpeedListShowing = false
-                    },
-                    modifier = Modifier
-                        .constrainAs(speedList) {
-                            centerVerticallyTo(parent)
-                            end.linkTo(parent.end)
-                        }
-                        .fillMaxHeight()
                 )
             }
             // 如果当前是Loading状态，显示网速控件
