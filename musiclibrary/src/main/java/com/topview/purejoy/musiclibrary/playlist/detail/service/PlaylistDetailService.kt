@@ -13,4 +13,8 @@ interface PlaylistDetailService {
     @GET("/song/detail")
     fun requestSongsDetails(@Query("ids") ids: String): Call<MusicResponse>
 
+    @GET("/playlist/track/all")
+    fun requestPLSongs(@Query("id") id: Long, @Query("limit") limit: Int,
+                            @Query("offset") offset: Int): Call<MusicResponse>
+
 }
