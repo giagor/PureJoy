@@ -1,5 +1,8 @@
 package com.topview.purejoy.video.ui.horizontal
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -27,36 +30,41 @@ internal fun HorizontalSpeedList(
     state: HorizontalVideoScreenState,
     onItemClick: (PlaySpeed) -> Unit,
 ) {
-
-    Surface(
-        modifier = modifier,
-        color = HalfAlphaBlack
+    AnimatedVisibility(
+        visible = state.isSpeedListShowing,
+        enter = expandHorizontally(),
+        exit = shrinkHorizontally()
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(horizontal = 15.dp)
+        Surface(
+            modifier = modifier,
+            color = HalfAlphaBlack
         ) {
-            LazyColumn {
-                val itemModifier = Modifier
-                    .padding(vertical = 15.dp, horizontal = 30.dp)
-                items(PlaySpeed.values()) {
-                    if (it == state.playbackSpeed) {
-                        Text(
-                            text = "${it}X",
-                            color = Pink,
-                            fontSize = 17.sp,
-                            modifier = itemModifier
-                        )
-                    } else {
-                        Text(
-                            text = "${it}X",
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            modifier = itemModifier
-                                .clickable {
-                                    onItemClick(it)
-                                }
-                        )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.padding(horizontal = 15.dp)
+            ) {
+                LazyColumn {
+                    val itemModifier = Modifier
+                        .padding(vertical = 15.dp, horizontal = 30.dp)
+                    items(PlaySpeed.values()) {
+                        if (it == state.playbackSpeed) {
+                            Text(
+                                text = "${it}X",
+                                color = Pink,
+                                fontSize = 17.sp,
+                                modifier = itemModifier
+                            )
+                        } else {
+                            Text(
+                                text = "${it}X",
+                                color = Color.White,
+                                fontSize = 17.sp,
+                                modifier = itemModifier
+                                    .clickable {
+                                        onItemClick(it)
+                                    }
+                            )
+                        }
                     }
                 }
             }
