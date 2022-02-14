@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -40,26 +41,27 @@ class VideoActivity: ComposeActivity() {
             ProvideWindowInsets(consumeWindowInsets = false) {
                 val videoItem = viewModel.getPagingVideoFlow().collectAsLazyPagingItems()
                 val videoLoadState by viewModel.videoLoadState.collectAsState()
+                val lifecycleOwner = LocalLifecycleOwner.current
 
-                // 注册生命周期回调
-                LocalLifecycleOwner.current.lifecycle.addObserver(object :
-                    DefaultLifecycleObserver {
-                    override fun onResume(owner: LifecycleOwner) {
-                        viewModel.play()
-                    }
-                    override fun onPause(owner: LifecycleOwner) {
-                        viewModel.pause()
-                    }
-                })
+                LaunchedEffect(Unit) {
+                    // 注册生命周期回调
+                    lifecycleOwner.lifecycle.addObserver(object :
+                        DefaultLifecycleObserver {
+                        override fun onResume(owner: LifecycleOwner) {
+                            viewModel.play()
+                        }
+                        override fun onPause(owner: LifecycleOwner) {
+                            viewModel.pause()
+                        }
+                    })
+                }
 
                 CompositionLocalProvider(
                     LocalExoPlayer provides viewModel.exoPlayer
                 ) {
                     VideoScreen(
                         items = videoItem,
-                        onPageChange = {
-                            viewModel.onPageChange(it)
-                        },
+                        onPageChange = viewModel::onPageChange,
                         onVideoSurfaceClick = {
                             if (videoLoadState is VideoLoadState.Playing) {
                                 viewModel.pause()
@@ -68,9 +70,7 @@ class VideoActivity: ComposeActivity() {
                             }
                         },
                         onRetryClick = viewModel::reloadVideo,
-                        onBackClick = {
-                            onBackPressed()
-                        },
+                        onBackClick = this::onBackPressed,
                     )
                 }
             }
