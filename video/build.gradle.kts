@@ -32,7 +32,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Deps.Compose.version
+        kotlinCompilerExtensionVersion = Deps.Compose.compilerVersion
     }
     kapt {
         arguments {
