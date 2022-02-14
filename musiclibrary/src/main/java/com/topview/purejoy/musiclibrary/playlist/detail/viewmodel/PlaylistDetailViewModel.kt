@@ -17,7 +17,9 @@ class PlaylistDetailViewModel(
     val response: MutableLiveData<PlaylistResponse?> = MutableLiveData(),
     val songsResponse: MutableLiveData<MusicResponse?> = MutableLiveData(),
     private val urlRepo: MusicURLRepository = MusicURLRepositoryImpl(),
-    val urlResponse: MutableLiveData<URLItemWrapper?> = MutableLiveData()
+    val urlResponse: MutableLiveData<URLItemWrapper?> = MutableLiveData(),
+    val limit: Int = 300,
+    @Volatile var loadItems: Boolean = false
 ) : MVVMViewModel() {
 
     private val TAG = "PlaylistVM"
@@ -32,14 +34,6 @@ class PlaylistDetailViewModel(
             }
             onSuccess = {
                 response.postValue(it)
-                val builder = StringBuilder()
-                for (i in it.playlist.trackIds) {
-                    if (builder.isNotEmpty()) {
-                        builder.append(',')
-                    }
-                    builder.append(i.id)
-                }
-                requestSongsDetails(builder.toString())
             }
         }
     }
@@ -70,6 +64,31 @@ class PlaylistDetailViewModel(
                 urlResponse.postValue(null)
             }
         }
+    }
+
+    fun requestPLSongWithPage(id: Long, size: Int) {
+        if (!loadItems && response.value != null) {
+            loadItems = true
+            val offset = size / limit
+            val total = response.value!!.playlist.trackIds.size
+            val max = total / limit
+            if (size < total) {
+                viewModelScope.rxLaunch<MusicResponse> {
+                    onRequest = {
+                        repo.requestPLSongs(id, limit, offset).awaitAsync()
+                    }
+                    onSuccess = {
+                        loadItems = false
+                        songsResponse.postValue(it)
+                    }
+                    onError = {
+                        loadItems = false
+                        songsResponse.postValue(null)
+                    }
+                }
+            }
+        }
+
     }
 
 }

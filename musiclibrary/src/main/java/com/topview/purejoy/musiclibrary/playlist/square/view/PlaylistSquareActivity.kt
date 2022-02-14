@@ -27,6 +27,9 @@ class PlaylistSquareActivity : NoBindingActivity<PlaylistSquareViewModel>() {
         super.onCreate(savedInstanceState)
         val toolBar: Toolbar = findViewById(R.id.playlist_square_tool_bar)
         toolBar.setTitle(R.string.playlist_square)
+        toolBar.setNavigationOnClickListener {
+            finish()
+        }
         val tabLayout: TabLayout = findViewById(R.id.playlist_square_tab_layout)
         val viewPager: ViewPager2 = findViewById(R.id.playlist_square_view_pager)
         val tm = TabLayoutMediator(tabLayout, viewPager) { tab, position ->

@@ -16,7 +16,7 @@ class DailyRecommendAdapter(
     var buttonClickListener: DailyRecommendItemClickListener? = null,
     var mvClickListener: DailyRecommendItemClickListener? = null) :
     CommonBindingAdapter<SongWithReason,
-            DailyRecommendAdapter.DailyHolder>(layoutId = R.layout.music_item) {
+            DailyRecommendAdapter.DailyHolder>(layoutId = R.layout.recommand_item) {
 
 
 
@@ -27,7 +27,7 @@ class DailyRecommendAdapter(
 
 
         override fun variableId(): Int {
-            return BR.musicItem
+            return BR.recommendItem
         }
     }
 

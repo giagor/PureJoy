@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="musicItem"
+            name="recommendItem"
             type="com.topview.purejoy.common.music.service.entity.MusicItem" />
     </data>
 
@@ -16,12 +16,18 @@
         android:id="@+id/music_item_layout"
         android:layout_marginHorizontal="8dp">
 
-        <com.topview.purejoy.musiclibrary.common.view.NumberView
+
+
+
+        <com.topview.purejoy.common.widget.RoundImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:number="0"
-            android:id="@+id/music_item_nv"/>
-
+            app:draw_type="round_rect"
+            app:round_rect_radius="16"
+            app:imageUrl="@{recommendItem.al.picUrl}"
+            app:holder="@{@drawable/white_holder}"
+            app:error="@{@drawable/white_holder}"
+            android:id="@+id/music_item_iv"/>
 
 
 
@@ -37,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/music_item_name_tx"
-                android:text="@{musicItem.name ?? @string/unknown}"
+                android:text="@{recommendItem.name ?? @string/unknown}"
                 android:textColor="@color/black"
                 android:maxLines="1"
                 android:textSize="18sp"/>
@@ -61,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/music_item_author_tx"
-                    android:text="@{musicItem.authors}"/>
+                    android:text="@{recommendItem.authors}"/>
 
 
 

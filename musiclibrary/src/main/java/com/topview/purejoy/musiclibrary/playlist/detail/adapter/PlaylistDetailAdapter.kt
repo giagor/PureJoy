@@ -11,6 +11,7 @@ import com.topview.purejoy.musiclibrary.BR
 import com.topview.purejoy.musiclibrary.R
 import com.topview.purejoy.musiclibrary.common.adapter.CommonBindingAdapter
 import com.topview.purejoy.musiclibrary.common.adapter.DataClickListener
+import com.topview.purejoy.musiclibrary.common.view.NumberView
 
 class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
         PlaylistDetailAdapter.PlaylistDetailHolder>(layoutId = R.layout.music_item) {
@@ -35,11 +36,12 @@ class PlaylistDetailAdapter() : CommonBindingAdapter<MusicItem,
         holder.getView<ImageView>(R.id.music_item_more_bt).setOnClickListener {
             buttonClickListener?.onClick(item, position)
         }
+        holder.getView<NumberView>(R.id.music_item_nv).number = position + 1
         val iv = holder.getView<ImageView>(R.id.music_item_mv_bt)
         if (item.hasMV()) {
             iv.visibility = View.VISIBLE
             iv.setOnClickListener {
-                mvClickListener?.onClick(item, position)
+                mvClickListener?.onClick(item, data.indexOf(item))
             }
         } else {
             iv.visibility = View.GONE
