@@ -16,19 +16,12 @@
         android:id="@+id/music_item_layout"
         android:layout_marginHorizontal="8dp">
 
-
-
-
-        <com.topview.purejoy.common.widget.RoundImageView
+        <com.topview.purejoy.musiclibrary.common.view.NumberView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:draw_type="round_rect"
-            app:imageUrl="@{musicItem.al.picUrl}"
-            app:holder="@{@drawable/white_holder}"
-            app:error="@{@drawable/white_holder}"
-            app:round_rect_radius="16"
+            app:number="0"
+            android:id="@+id/music_item_nv"/>
 
-            android:id="@+id/music_item_iv"/>
 
 
 
