@@ -81,7 +81,7 @@ internal fun TopListScreen(
                         }
                     )
                 }
-                when (musicLoadState.pageState) {
+                when (musicLoadState.value) {
                     is PageState.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),

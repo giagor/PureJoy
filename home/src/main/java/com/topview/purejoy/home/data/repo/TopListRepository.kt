@@ -8,7 +8,10 @@ import com.topview.purejoy.home.entity.TopList
 import com.topview.purejoy.home.entity.TopListTab
 import com.topview.purejoy.home.entity.topListIdMap
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 
 object TopListRepository {
@@ -82,32 +85,29 @@ object TopListRepository {
      * 将整体的榜单根据不同类别进行拆分
      */
     suspend fun collectTopListMap(list: List<TopList>): Map<TopListTab, List<TopList>> {
-        return withContext(Dispatchers.IO) {
-            val result = mutableMapOf<TopListTab, List<TopList>>()
-            var cacheList: List<TopList>
-            TopListTab.values().forEach { tab ->
-                cacheList = list.asFlow()
-                    .filter {
-                        topListIdMap[tab]?.contains(it.id) ?: false
-                    }
-                    .flowOn(Dispatchers.IO)
-                    .toList()
-                if (cacheList.isNotEmpty()) {
-                    result[tab] = cacheList
+        val result = mutableMapOf<TopListTab, List<TopList>>()
+        var cacheList: List<TopList>
+        TopListTab.values().forEach { tab ->
+            cacheList = list.asFlow()
+                .filter {
+                    topListIdMap[tab]?.contains(it.id) ?: false
                 }
+                .flowOn(Dispatchers.IO)
+                .toList()
+            if (cacheList.isNotEmpty()) {
+                result[tab] = cacheList
             }
-            result
         }
+        return result
     }
 
-    suspend fun getSongs(topList: TopList): List<MusicItem> =
-        withContext(Dispatchers.IO) {
-            val json = remoteStore.getLimitTopListSong(topList.id, null)
-            if (json == null || json.code != 200) {
-                error("cannot get the correct json object")
-            }
-            json.toMusicItems() ?: error("data is empty")
+    suspend fun getSongs(topList: TopList): List<MusicItem> {
+        val json = remoteStore.getLimitTopListSong(topList.id, null)
+        if (json == null || json.code != 200) {
+            error("cannot get the correct json object")
         }
+        return json.toMusicItems() ?: error("data is empty")
+    }
 
 
     private fun LimitSongJson.getPicUrlOfDefault(index: Int, default: String): String =

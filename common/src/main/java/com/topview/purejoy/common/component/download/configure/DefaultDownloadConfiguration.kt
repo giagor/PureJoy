@@ -52,6 +52,11 @@ open class DefaultDownloadConfiguration(
         const val THREE_CONNECTION_UPPER_LIMIT = 20 * 1024 * 1024
 
         /**
+         * 30MB
+         * */
+        const val FOUR_CONNECTION_UPPER_LIMIT = 30 * 1024 * 1024
+
+        /**
          * 5G网络时，下载线程数
          * */
         const val NORMAL_TASK_THREAD_COUNT_5G = 7
@@ -101,6 +106,10 @@ open class DefaultDownloadConfiguration(
 
         if (taskTotalLength < THREE_CONNECTION_UPPER_LIMIT) {
             return 3
+        }
+
+        if (taskTotalLength < FOUR_CONNECTION_UPPER_LIMIT) {
+            return 4
         }
 
         return normalTaskThreadCount

@@ -2,6 +2,8 @@ package com.topview.purejoy.musiclibrary.playlist.detail.view
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -11,12 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.topview.purejoy.common.music.view.bottom.MusicBottomView
-import com.topview.purejoy.common.music.view.bottom.MusicController
 import com.topview.purejoy.common.music.data.Wrapper
 import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.entity.wrap
 import com.topview.purejoy.common.music.util.getDisplaySize
+import com.topview.purejoy.common.music.view.bottom.MusicBottomView
+import com.topview.purejoy.common.music.view.bottom.MusicController
 import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.DownloadUtil
 import com.topview.purejoy.common.util.showToast
@@ -103,6 +105,8 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
         val playAllLayout: LinearLayout = findViewById(R.id.playlist_detail_play_all_layout)
         val countTx: TextView = findViewById(R.id.playlist_detail_song_count_tv)
         val recyclerView: RecyclerView = findViewById(R.id.playlist_detail_songs_rv)
+        val footLayout: View = LayoutInflater.from(this).inflate(
+            R.layout.loading_foot_view, null)
         val adapter = PlaylistDetailAdapter()
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -119,6 +123,7 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
                 descriptionTx.text = it.playlist.description
                 val t = "(${it.playlist.trackCount})"
                 countTx.text = t
+                viewModel.requestPLSongWithPage(playlistId, adapter.data.size)
             }
         }
 
@@ -154,6 +159,20 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
             handleClick(0, adapter.data)
         }
 
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                    !recyclerView.canScrollVertically(1)) {
+                    val b = viewModel.loadItems
+                    viewModel.requestPLSongWithPage(playlistId, adapter.data.size)
+                    if (viewModel.loadItems && !b) {
+                        adapter.addFooterView(footLayout)
+                    }
+                }
+
+            }
+        })
+
         adapter.itemClickListener = object : DataClickListener<MusicItem> {
             override fun onClick(value: MusicItem, position: Int) {
                 handleClick(position, adapter.data)
@@ -181,9 +200,19 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
             if (it == null) {
                 showToast(context = this, text = "Unknown Error")
             } else {
-                adapter.data.addAll(it.songs)
-                adapter.notifyItemRangeInserted(0, adapter.data.size)
+                val items = ArrayList<MusicItem>(it.songs)
+                val iterator = items.listIterator()
+                while (iterator.hasNext()) {
+                    val item = iterator.next()
+                    if (adapter.data.contains(item)) {
+                        iterator.remove()
+                    }
+                }
+                val insert = adapter.data.size
+                adapter.data.addAll(items)
+                adapter.notifyItemRangeInserted(insert, items.size)
             }
+            adapter.removeFooterView(footLayout)
         }
         bottomView.addMusicBottomBar(marginBottom = 0)
         viewModel.getDetails(playlistId)
@@ -203,9 +232,21 @@ class PlaylistDetailActivity : NoBindingActivity<PlaylistDetailViewModel>() {
         if (data.isNotEmpty()) {
             musicController.dataController?.clear()
             val list = mutableListOf<Wrapper>()
-            for (d in data) {
-                list.add(d.wrap())
+            if (data.size > viewModel.limit) {
+                val start = if (position + viewModel.limit / 2 >= data.size) {
+                    data.size - viewModel.limit
+                } else {
+                    Math.max(0, position - viewModel.limit / 2)
+                }
+                for (i in start until start + viewModel.limit) {
+                    list.add(data[i].wrap())
+                }
+            } else {
+                for (d in data) {
+                    list.add(d.wrap())
+                }
             }
+
             musicController.dataController?.addAll(list)
             musicController.playerController?.jumpTo(position)
             CommonRouter.routeToPlayingActivity()

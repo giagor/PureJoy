@@ -34,12 +34,15 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Deps.Compose.version
+        kotlinCompilerExtensionVersion = Deps.Compose.compilerVersion
     }
     kapt {
         arguments {
             arg("AROUTER_MODULE_NAME", project.name)
         }
+    }
+    ksp {
+        arg(k = "room.schemaLocation", v = "$projectDir/schemas")
     }
 }
 

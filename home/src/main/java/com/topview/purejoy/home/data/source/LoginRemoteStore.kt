@@ -1,7 +1,7 @@
 package com.topview.purejoy.home.data.source
 
 import com.topview.purejoy.common.net.ServiceCreator
-import com.topview.purejoy.common.net.awaitSync
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.home.data.api.LoginService
 import com.topview.purejoy.home.data.bean.LoginStatusJson
 import com.topview.purejoy.home.data.bean.PhoneExistJson
@@ -10,28 +10,28 @@ import com.topview.purejoy.home.data.bean.UserJson
 class LoginRemoteStore {
     private val loginService = ServiceCreator.create(LoginService::class.java)
 
-    fun requestCaptcha(phone: String) =
-        loginService.sendCaptcha(phone, getTimestamp()).awaitSync()
+    suspend fun requestCaptcha(phone: String) =
+        loginService.sendCaptcha(phone, getTimestamp()).awaitAsync()
 
-    fun loginWithCaptcha(
+    suspend fun loginWithCaptcha(
         phone: String,
         captcha: String
     ): UserJson? = loginService.loginWithCaptcha(
         phone,
         captcha,
         getTimestamp()
-    ).awaitSync()
+    ).awaitAsync()
 
-    fun checkExist(phone: String): PhoneExistJson? =
-        loginService.checkExist(phone, getTimestamp()).awaitSync()
+    suspend fun checkExist(phone: String): PhoneExistJson? =
+        loginService.checkExist(phone, getTimestamp()).awaitAsync()
 
 
-    fun loginWithPassword(
+    suspend fun loginWithPassword(
         phone: String,
         md5_password: String,
-    ): UserJson? = loginService.loginWithPassword(phone, md5_password, getTimestamp()).awaitSync()
+    ): UserJson? = loginService.loginWithPassword(phone, md5_password, getTimestamp()).awaitAsync()
 
-    fun registerOrChangePass(
+    suspend fun registerOrChangePass(
         phone: String,
         captcha: String,
         password: String
@@ -40,13 +40,13 @@ class LoginRemoteStore {
         phone = phone,
         password = password,
         timestamp = getTimestamp()
-    ).awaitSync()
+    ).awaitAsync()
 
-    fun checkLoginStatus(): LoginStatusJson? = loginService.checkLoginStatus(
+    suspend fun checkLoginStatus(): LoginStatusJson? = loginService.checkLoginStatus(
         getTimestamp()
-    ).awaitSync()
+    ).awaitAsync()
 
-    fun logout() = loginService.logout().awaitSync()
+    suspend fun logout() = loginService.logout().awaitAsync()
 
     private fun getTimestamp() = System.currentTimeMillis().toString()
 }

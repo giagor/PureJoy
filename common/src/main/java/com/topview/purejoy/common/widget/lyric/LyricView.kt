@@ -2,7 +2,9 @@ package com.topview.purejoy.common.widget.lyric
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -96,12 +98,14 @@ class LyricView
         typedArray.recycle()
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         CompositionLocalProvider(
             LocalLyricColors provides lyricColors,
             LocalLyricTypography provides lyricTypography,
-            LocalIndication provides NoIndication
+            LocalIndication provides NoIndication,
+            LocalOverScrollConfiguration provides null
         ) {
             LyricContent(
                 lyricState = lyricState,

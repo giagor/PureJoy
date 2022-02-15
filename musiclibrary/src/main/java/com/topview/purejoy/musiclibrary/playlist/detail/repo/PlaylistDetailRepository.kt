@@ -12,6 +12,8 @@ interface IPlaylistDetailRepository {
 
     fun requestSongDetails(ids: String): Call<MusicResponse>
 
+    fun requestPLSongs(id: Long, limit: Int, offset: Int): Call<MusicResponse>
+
 }
 
 class PlaylistDetailRepository(private val service: PlaylistDetailService =
@@ -22,6 +24,10 @@ class PlaylistDetailRepository(private val service: PlaylistDetailService =
 
     override fun requestSongDetails(ids: String): Call<MusicResponse> {
         return service.requestSongsDetails(ids)
+    }
+
+    override fun requestPLSongs(id: Long, limit: Int, offset: Int): Call<MusicResponse> {
+        return service.requestPLSongs(id, limit, offset)
     }
 
 }

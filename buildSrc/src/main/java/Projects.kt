@@ -5,29 +5,30 @@ object Build {
     const val targetSdkVersion = 31
     const val minimumSdkVersion = 21
 
-    const val versionCode = 1
-    const val versionName = "0.1.0"
+    const val versionCode = 2
+    const val versionName = "0.1.1"
 }
 
 object Deps {
     object Compose {
-        const val version = "1.0.5"
+        const val dependentiesVersion = "1.1.0"
+        const val compilerVersion = "1.0.5"
 
-        const val composeUi = "androidx.compose.ui:ui:$version"
-        const val composeMaterial = "androidx.compose.material:material:$version"
+        const val composeUi = "androidx.compose.ui:ui:$dependentiesVersion"
+        const val composeMaterial = "androidx.compose.material:material:$dependentiesVersion"
         const val composeUiToolingPreview =
-            "androidx.compose.ui:ui-tooling-preview:$version"
+            "androidx.compose.ui:ui-tooling-preview:$dependentiesVersion"
         const val livedataRuntime =
-            "androidx.compose.runtime:runtime-livedata:$version"
+            "androidx.compose.runtime:runtime-livedata:$dependentiesVersion"
         const val composeActivity = "androidx.activity:activity-compose:1.4.0"
-        const val composeViewBinding = "androidx.compose.ui:ui-viewbinding:$version"
+        const val composeViewBinding = "androidx.compose.ui:ui-viewbinding:$dependentiesVersion"
 
-        const val composeRuntime = "androidx.compose.runtime:runtime:$version"
-        const val uiDebugTool = "androidx.compose.ui:ui-tooling:$version"
-        const val junitTest = "androidx.compose.ui:ui-test-junit4:$version"
+        const val composeRuntime = "androidx.compose.runtime:runtime:$dependentiesVersion"
+        const val uiDebugTool = "androidx.compose.ui:ui-tooling:$dependentiesVersion"
+        const val junitTest = "androidx.compose.ui:ui-test-junit4:$dependentiesVersion"
 
         const val constraintLayoutDSL =
-            "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02"
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0"
         const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
     }
 
@@ -68,7 +69,7 @@ object Deps {
     }
 
     object Accompanist {
-        const val version = "0.20.3"
+        const val version = "0.23.0"
         const val accompanistInsets = "com.google.accompanist:accompanist-insets:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
         const val pagerIndicators = "com.google.accompanist:accompanist-pager-indicators:$version"

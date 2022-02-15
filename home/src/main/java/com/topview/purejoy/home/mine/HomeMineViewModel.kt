@@ -3,8 +3,8 @@ package com.topview.purejoy.home.mine
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import com.bumptech.glide.Glide
 import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.entity.User
@@ -12,6 +12,8 @@ import com.topview.purejoy.common.music.service.MusicService
 import com.topview.purejoy.common.music.util.ExecutorInstance
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
 import com.topview.purejoy.common.util.UserManager
+import com.topview.purejoy.common.util.clearWithFilter
+import com.topview.purejoy.common.util.getSubSize
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.home.data.repo.LoginRepository
 import java.io.File
@@ -39,35 +41,30 @@ class HomeMineViewModel : MVVMViewModel() {
         }
     }
 
-    @ExperimentalCoilApi
+
+    @OptIn(ExperimentalCoilApi::class)
     fun clearCache(context: Context, callback: (Long) -> Unit) {
         ExecutorInstance.getInstance().execute {
             var size = ExecutorInstance.getInstance().submit {
-                com.topview.purejoy.common.util.clear(
-                    File(
-                        context.cacheDir,
-                        MusicService.MUSIC_CACHE_DIR
-                    )
-                ) { f ->
-                    false
-                }
+                File(
+                    context.cacheDir,
+                    MusicService.MUSIC_CACHE_DIR
+                ).clearWithFilter { true }
             }.get()
             val gf = Glide.getPhotoCacheDir(context)
             gf?.let {
                 size += ExecutorInstance.getInstance().submit {
-                    com.topview.purejoy.common.util.clear(it) { f ->
-                        false
-                    }
+                    it.clearWithFilter { true }
                 }.get()
             }
-            val cf = ImageLoader(context).diskCache
-            cf?.let {
-                size += ExecutorInstance.getInstance().submit {
-                    com.topview.purejoy.common.util.clear(it.directory) { f ->
-                        false
-                    }
+            size += context.imageLoader.diskCache?.let {
+                ExecutorInstance.getInstance().submit {
+                    // can also use File.clearSubFile()
+                    val i = it.directory.getSubSize()
+                    it.clear()
+                    i
                 }.get()
-            }
+            } ?: 0L
             callback.invoke(size)
         }
     }

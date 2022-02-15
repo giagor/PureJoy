@@ -1,10 +1,15 @@
 package com.topview.purejoy.home.components.toplist
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +44,7 @@ internal fun TopListContent(
     var selectedIndex by remember { mutableStateOf(0) }
     // 缓存每个Item的高度的集合
     val heightMap: MutableMap<Int, Int> = remember {
-        mutableMapOf()
+        mutableMapOf(-1 to 0)
     }
     // 使用SnapShotFlow解决滚动高度更新过快造成重组过多带来的卡顿
     val flow = remember {
@@ -70,16 +75,27 @@ internal fun TopListContent(
                     // 因此把迭代结束值和默认值都设为-1
                     for (i in selectedIndex - 1 downTo -1) {
                         if (heightMap.getNotNullValue(i, -1) <= it) {
-                            // 若未发生跳变，不应当去修改selectedIndex的值
-                            if (i + 1 != selectedIndex) {
-                                selectedIndex = i + 1
-                            }
+                            selectedIndex = i + 1
                             // 直接结束循环体
                             break
                         }
                     }
                 }
             }
+        }
+    }
+
+    val tabArray = TopListTab.values()
+    // 避免selectedIndex改变的同时该lambda重新创建
+    val onTabClick: (Int) -> Unit = {
+        selectedIndex = it
+        scope.launch {
+            // 动画执行过程中不去监听滚动事件
+            observeScroll = false
+            scrollState.animateScrollTo(
+                heightMap.getNotNullValue(it - 1, 0)
+            )
+            observeScroll = true
         }
     }
 
@@ -91,65 +107,57 @@ internal fun TopListContent(
             ) {
                 TabIndicator(
                     selectedTabIndex = selectedIndex,
-                    onTabClick = {
-                        selectedIndex = it
-                        scope.launch {
-                            // 动画执行过程中不去监听滚动事件
-                            observeScroll = false
-                            scrollState.animateScrollTo(
-                                heightMap.getNotNullValue(it - 1, 0)
-                            )
-                            observeScroll = true
-                        }
-                    },
+                    onTabClick = onTabClick,
                     modifier = Modifier.padding(vertical = 15.dp),
                     backgroundColor = Gray245,
-                    tabArray = TopListTab.values()
+                    tabArray = tabArray
                 )
             }
             Column(modifier = Modifier.verticalScroll(scrollState)) {
-                TopListTab.values().forEachIndexed { index, tab ->
-                    val title = "${tab.content}榜"
-                    when {
-                        tab == TopListTab.Official -> {
-                            OfficialTopListContent(
-                                title = title,
-                                topLists = topListMap[TopListTab.Official]!!,
-                                onCardClick = onCardClick,
-                                modifier = Modifier.padding(bottom = dividerHeightDp.dp)
-                                    .onGloballyPositioned {
-                                        if (heightMap[index] == null) {
-                                            heightMap[index] = it.size.height + dividerHeightPx +
-                                                    heightMap.getNotNullValue(index - 1, 0)
-                                        }
+                tabArray.forEachIndexed { index, tab ->
+                    TopListTabColumnItem(
+                        modifier = Modifier
+                            .padding(bottom = dividerHeightDp.dp)
+                            .onGloballyPositioned {
+                                heightMap.apply {
+                                    get(index) ?: get(index - 1)?.apply {
+                                        heightMap[index] = it.size.height + dividerHeightPx + this
                                     }
-                            )
-                        }
-                        index < TopListTab.values().size - 1 -> {
-                            GridTopListContent(
-                                title = title,
-                                topLists = topListMap[tab]!!,
-                                onCardClick = onCardClick,
-                                modifier = Modifier.padding(bottom = dividerHeightDp.dp)
-                                    .onGloballyPositioned {
-                                        if (heightMap[index] == null) {
-                                            heightMap[index] = it.size.height + dividerHeightPx +
-                                                    heightMap.getNotNullValue(index - 1, 0)
-                                        }
-                                    }
-                            )
-                        }
-                        else -> {
-                            GridTopListContent(
-                                title = title,
-                                topLists = topListMap[tab]!!,
-                                onCardClick = onCardClick,
-                            )
-                        }
-                    }
+                                }
+                            },
+                        tab = tab,
+                        onCardClick = onCardClick,
+                        topListMap = topListMap
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun TopListTabColumnItem(
+    modifier: Modifier,
+    tab: TopListTab,
+    onCardClick: (TopList) -> Unit,
+    topListMap: Map<TopListTab, List<TopList>>
+) {
+    val title = "${tab.content}榜"
+    val topLists = topListMap[tab]!!
+    if (tab == TopListTab.Official) {
+        OfficialTopListContent(
+            title = title,
+            topLists = topLists,
+            onCardClick = onCardClick,
+            modifier = modifier
+        )
+    } else {
+       GridTopListContent(
+           title = title,
+           topLists = topLists,
+           onCardClick = onCardClick,
+           modifier = modifier
+       )
     }
 }
 

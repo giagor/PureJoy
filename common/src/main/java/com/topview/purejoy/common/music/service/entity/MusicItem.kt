@@ -145,11 +145,11 @@ class MusicItem(
         if (other !is MusicItem) {
             return false
         }
-        return id == other.id && name == other.name && getAuthors() == other.getAuthors() && al == other.al
+        return id == other.id && name == other.name
     }
 
     override fun hashCode(): Int {
-        return (id * 37 + 51 * name.hashCode() + 23 * ar.hashCode() + 11 * al.hashCode()).toInt()
+        return (id * 37 + 51 * name.hashCode()).toInt()
     }
 
     override fun toString(): String {

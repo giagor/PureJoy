@@ -3,7 +3,7 @@ package com.topview.purejoy.video.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.topview.purejoy.common.entity.Video
-import com.topview.purejoy.common.net.awaitSync
+import com.topview.purejoy.common.net.awaitAsync
 import com.topview.purejoy.video.data.api.VideoService
 import com.topview.purejoy.video.data.bean.toVideos
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ internal class VideoSource(
                     LoadResult.Page(initialList, prevPage, page + 1)
                 } else {
                     val response =
-                        videoService.getRelevantVideo(heuristicVideoId ?: "").awaitSync()
+                        videoService.getRelevantVideo(heuristicVideoId ?: "").awaitAsync()
                             ?: error("Cannot get json object")
                     if (response.code != 200) {
                         error("Response code is ${response.code}! message: " + response.message)
