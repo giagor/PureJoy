@@ -5,8 +5,8 @@ object Build {
     const val targetSdkVersion = 31
     const val minimumSdkVersion = 21
 
-    const val versionCode = 1
-    const val versionName = "0.1.0"
+    const val versionCode = 2
+    const val versionName = "0.1.1"
 }
 
 object Deps {
