@@ -1,5 +1,6 @@
 package com.topview.purejoy.home.search.content.playlist
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.topview.purejoy.common.mvvm.viewmodel.MVVMViewModel
@@ -14,55 +15,62 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
     /**
      * 记录初次搜索到的歌单
      * */
-    val searchPlayListByFirstRequestLiveData: MutableLiveData<List<PlayList>> by lazy {
+    private val _searchPlayListByFirstRequestLiveData: MutableLiveData<List<PlayList>> by lazy {
         MutableLiveData<List<PlayList>>()
     }
+    val searchPlayListByFirstRequestLiveData: LiveData<List<PlayList>> =
+        _searchPlayListByFirstRequestLiveData
+
 
     /**
      * 记录本次"加载更多"，获取到的歌单列表
      * */
-    val searchPlayListsLoadMoreLiveData: MutableLiveData<List<PlayList>> by lazy {
+    private val _searchPlayListsLoadMoreLiveData: MutableLiveData<List<PlayList>> by lazy {
         MutableLiveData<List<PlayList>>()
     }
+    val searchPlayListsLoadMoreLiveData: LiveData<List<PlayList>> = _searchPlayListsLoadMoreLiveData
 
     /**
      * 由于搜索使用分页加载，这里记录歌单的总数量
      * */
-    val searchPlayListCountLiveData: MutableLiveData<Int> by lazy {
+    private val _searchPlayListCountLiveData: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
+    val searchPlayListCountLiveData: LiveData<Int> = _searchPlayListCountLiveData
 
-    val loadingLiveData: MutableLiveData<Boolean> by lazy {
+    private val _loadingLiveData: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
+    val loadingLiveData: LiveData<Boolean> = _loadingLiveData
+
 
     fun getSearchPlayListByFirst(keyword: String, limit: Int) {
         viewModelScope.rxLaunch<PlayListPagerWrapper> {
             onRequest = {
-                loadingLiveData.value = true
+                _loadingLiveData.value = true
                 repository.getSearchPlayListByFirst(keyword, limit)
             }
 
             onSuccess = {
                 it.playlistCount?.let {
-                    searchPlayListCountLiveData.value = it
+                    _searchPlayListCountLiveData.value = it
                 }
 
                 it.playlists?.let { playlists ->
                     val searchResult = mutableListOf<PlayList>()
                     searchResult.addAll(playlists)
-                    searchPlayListByFirstRequestLiveData.value = searchResult
+                    _searchPlayListByFirstRequestLiveData.value = searchResult
                 }
-                loadingLiveData.value = false
+                _loadingLiveData.value = false
             }
 
             onError = {
-                loadingLiveData.value = false
+                _loadingLiveData.value = false
                 status.value = Status.SEARCH_PLAYLIST_FIRST_ERROR
             }
 
             onEmpty = {
-                loadingLiveData.value = false
+                _loadingLiveData.value = false
             }
         }
     }
@@ -74,7 +82,7 @@ class SearchContentPlayListViewModel : MVVMViewModel() {
             }
 
             onSuccess = {
-                searchPlayListsLoadMoreLiveData.value = it
+                _searchPlayListsLoadMoreLiveData.value = it
             }
 
             onError = {
