@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import kotlin.math.min
 
 /**
  * Created by giagor on 2021/12/18
@@ -42,49 +43,49 @@ open class DefaultDownloadConfiguration(
         const val ONE_CONNECTION_UPPER_LIMIT = 5 * 1024 * 1024
 
         /**
-         * 10MB
-         * */
-        const val TWO_CONNECTION_UPPER_LIMIT = 10 * 1024 * 1024
-
-        /**
          * 20MB
          * */
-        const val THREE_CONNECTION_UPPER_LIMIT = 20 * 1024 * 1024
+        const val TWO_CONNECTION_UPPER_LIMIT = 20 * 1024 * 1024
 
         /**
-         * 30MB
+         * 50MB
          * */
-        const val FOUR_CONNECTION_UPPER_LIMIT = 30 * 1024 * 1024
+        const val THREE_CONNECTION_UPPER_LIMIT = 50 * 1024 * 1024
+
+        /**
+         * 80MB
+         * */
+        const val FOUR_CONNECTION_UPPER_LIMIT = 80 * 1024 * 1024
 
         /**
          * 5G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_5G = 7
+        const val NORMAL_TASK_THREAD_COUNT_5G = 6
 
         /**
          * WIFI下，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_WIFI = 6
+        const val NORMAL_TASK_THREAD_COUNT_WIFI = 5
 
         /**
          * 默认情况下，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_DEFAULT = 6
+        const val NORMAL_TASK_THREAD_COUNT_DEFAULT = 5
 
         /**
          * 4G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_4G = 6
+        const val NORMAL_TASK_THREAD_COUNT_4G = 5
 
         /**
          * 3G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_3G = 5
+        const val NORMAL_TASK_THREAD_COUNT_3G = 4
 
         /**
          * 2G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_2G = 4
+        const val NORMAL_TASK_THREAD_COUNT_2G = 3
     }
 
     private val defaultOkClient: OkHttpClient = OkHttpClient.Builder()
@@ -101,15 +102,15 @@ open class DefaultDownloadConfiguration(
         }
 
         if (taskTotalLength < TWO_CONNECTION_UPPER_LIMIT) {
-            return 2
+            return min(2, normalTaskThreadCount)
         }
 
         if (taskTotalLength < THREE_CONNECTION_UPPER_LIMIT) {
-            return 3
+            return min(3, normalTaskThreadCount)
         }
 
         if (taskTotalLength < FOUR_CONNECTION_UPPER_LIMIT) {
-            return 4
+            return min(4, normalTaskThreadCount)
         }
 
         return normalTaskThreadCount
