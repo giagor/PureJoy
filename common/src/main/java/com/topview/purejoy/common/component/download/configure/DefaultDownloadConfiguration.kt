@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import kotlin.math.min
 
 /**
  * Created by giagor on 2021/12/18
@@ -101,15 +102,15 @@ open class DefaultDownloadConfiguration(
         }
 
         if (taskTotalLength < TWO_CONNECTION_UPPER_LIMIT) {
-            return 2
+            return min(2, normalTaskThreadCount)
         }
 
         if (taskTotalLength < THREE_CONNECTION_UPPER_LIMIT) {
-            return 3
+            return min(3, normalTaskThreadCount)
         }
 
         if (taskTotalLength < FOUR_CONNECTION_UPPER_LIMIT) {
-            return 4
+            return min(4, normalTaskThreadCount)
         }
 
         return normalTaskThreadCount
