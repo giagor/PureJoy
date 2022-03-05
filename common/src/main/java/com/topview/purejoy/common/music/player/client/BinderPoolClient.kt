@@ -28,6 +28,7 @@ open class BinderPoolClient(context: Context,
     protected val connectListeners: MutableList<() -> Unit> = mutableListOf()
     protected val disconnectListeners: MutableList<() -> Unit> = mutableListOf()
 
+    private val TAG = "BinderClient"
 
     private val connection: ServiceConnection by lazy {
         object : ServiceConnection {
@@ -41,7 +42,6 @@ open class BinderPoolClient(context: Context,
             override fun onServiceDisconnected(name: ComponentName?) {
                 state = DISCONNECT_STATE
                 disconnected()
-                pool?.asBinder()?.unlinkToDeath(deathRecipient, flags)
                 pool = null
             }
 

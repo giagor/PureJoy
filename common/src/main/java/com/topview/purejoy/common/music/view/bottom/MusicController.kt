@@ -131,14 +131,20 @@ open class MusicController {
         playState.postValue(playerController?.isPlaying ?: false)
         dataController?.let { controller ->
             ExecutorInstance.getInstance().execute {
-                val list = playItems.value ?: mutableListOf()
-                val data = controller.allItems()
-                for (d in data) {
-                    d.getMusicItem()?.let {
-                        list.add(it)
+                if (client.isConnected()) {
+                    kotlin.runCatching {
+                        val list = playItems.value ?: mutableListOf()
+                        val data = controller.allItems()
+                        for (d in data) {
+                            d.getMusicItem()?.let {
+                                list.add(it)
+                            }
+                        }
+                        playItems.postValue(list)
+                    }.onFailure {
+                        playItems.postValue(mutableListOf())
                     }
                 }
-                playItems.postValue(list)
             }
         }
         modeController?.currentMode()?.let {
