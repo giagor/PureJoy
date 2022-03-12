@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.telephony.TelephonyManager
+import com.topview.purejoy.common.component.download.util.Constant
 import okhttp3.OkHttpClient
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.SynchronousQueue
@@ -114,6 +115,8 @@ open class DefaultDownloadConfiguration(
             SynchronousQueue()
         )
     }
+
+    override fun getMaxConcurrentExecuteTasks(): Int = Constant.MAX_CONCURRENT_EXECUTE_TASK
 
     /**
      * 根据网络变化，动态调整下载任务的线程数

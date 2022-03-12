@@ -1,20 +1,21 @@
 package com.topview.purejoy.common.component.download.dispatcher
 
 import com.topview.purejoy.common.component.download.task.DownloadTask
+import com.topview.purejoy.common.component.download.util.Constant
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.min
 
 /**
  * Created by giagor on 2021/12/18
  *
  * 对下载任务进行调度
  * */
-class DownloadDispatcher {
-    /**
-     * 最多同时下载的任务
-     * */
-    private val maxDownloadCounts = 5
+class DownloadDispatcher(private var maxDownloadCounts: Int) {
+    init {
+        maxDownloadCounts = min(maxDownloadCounts, Constant.MAX_CONCURRENT_EXECUTE_TASK)
+    }
 
     /**
      * 存放任务的等待队列
