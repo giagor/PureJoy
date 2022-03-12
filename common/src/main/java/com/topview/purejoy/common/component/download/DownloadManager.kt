@@ -67,7 +67,7 @@ object DownloadManager {
     internal lateinit var downloadConfiguration: DownloadConfiguration
     internal lateinit var downHttpHelper: DownloadHttpHelper
     internal val downDbHelper: DownloadDbHelper = DownloadDbHelperImpl()
-    internal val downloadDispatcher: DownloadDispatcher = DownloadDispatcher()
+    internal lateinit var downloadDispatcher: DownloadDispatcher
 
     /**
      * 对于开始下载，且还未下载结束的任务的缓存
@@ -89,7 +89,11 @@ object DownloadManager {
 
         init = true
         // 初始化配置
-        downloadConfiguration = configuration ?: DefaultDownloadConfiguration(ContextProvider.getApplicationContext())
+        downloadConfiguration =
+            configuration ?: DefaultDownloadConfiguration(ContextProvider.getApplicationContext())
+        // 初始化调度器
+        downloadDispatcher =
+            DownloadDispatcher(downloadConfiguration.getMaxConcurrentExecuteTasks())
         downHttpHelper = DownloadHttpHelperImpl(downloadConfiguration.getDownloadOkClient())
         // 初始化数据库
         DbManager.downloadDatabase = Room.databaseBuilder(

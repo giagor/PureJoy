@@ -24,4 +24,9 @@ abstract class DownloadConfiguration {
      * 该线程池不用于下载，下载有另外的线程池负责。
      * */
     abstract fun getCommonThreadPool(): ExecutorService
+
+    /**
+     * 最多同时下载的任务个数
+     * */
+    abstract fun getMaxConcurrentExecuteTasks(): Int
 }
