@@ -38,54 +38,49 @@ open class DefaultDownloadConfiguration(
 
     private companion object {
         /**
-         * 5MB
-         * */
-        const val ONE_CONNECTION_UPPER_LIMIT = 5 * 1024 * 1024
-
-        /**
          * 20MB
          * */
-        const val TWO_CONNECTION_UPPER_LIMIT = 20 * 1024 * 1024
+        const val ONE_CONNECTION_UPPER_LIMIT = 20 * 1024 * 1024
 
         /**
-         * 50MB
+         * 60MB
          * */
-        const val THREE_CONNECTION_UPPER_LIMIT = 50 * 1024 * 1024
+        const val TWO_CONNECTION_UPPER_LIMIT = 60 * 1024 * 1024
 
         /**
-         * 80MB
+         * 90MB
          * */
-        const val FOUR_CONNECTION_UPPER_LIMIT = 80 * 1024 * 1024
+        const val THREE_CONNECTION_UPPER_LIMIT = 90 * 1024 * 1024
 
         /**
          * 5G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_5G = 6
+        const val NORMAL_TASK_THREAD_COUNT_5G = 5
 
         /**
          * WIFI下，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_WIFI = 5
+        const val NORMAL_TASK_THREAD_COUNT_WIFI = 4
 
         /**
          * 默认情况下，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_DEFAULT = 5
+        const val NORMAL_TASK_THREAD_COUNT_DEFAULT = 4
 
         /**
          * 4G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_4G = 5
+        const val NORMAL_TASK_THREAD_COUNT_4G = 4
 
         /**
          * 3G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_3G = 4
+        const val NORMAL_TASK_THREAD_COUNT_3G = 3
 
         /**
          * 2G网络时，下载线程数
          * */
-        const val NORMAL_TASK_THREAD_COUNT_2G = 3
+        const val NORMAL_TASK_THREAD_COUNT_2G = 2
     }
 
     private val defaultOkClient: OkHttpClient = OkHttpClient.Builder()
@@ -107,10 +102,6 @@ open class DefaultDownloadConfiguration(
 
         if (taskTotalLength < THREE_CONNECTION_UPPER_LIMIT) {
             return min(3, normalTaskThreadCount)
-        }
-
-        if (taskTotalLength < FOUR_CONNECTION_UPPER_LIMIT) {
-            return min(4, normalTaskThreadCount)
         }
 
         return normalTaskThreadCount
