@@ -1,12 +1,10 @@
 package com.topview.purejoy.home.entity
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.topview.purejoy.common.component.image.ImageUtil
 import com.topview.purejoy.common.router.CommonRouter
 import com.topview.purejoy.common.util.showToast
 import com.topview.purejoy.common.widget.banner.BannerItem
@@ -22,10 +20,13 @@ data class HomeDiscoverBannerItem(val imgUrl: String?, val link: String?) : Bann
         )
         val imageView: ImageView = view.findViewById(R.id.common_iv_banner_card_image)
         imgUrl?.let {
-            Glide.with(imageView.context as Activity)
-                .load(it)
-                .apply(RequestOptions().override(imageView.width, imageView.height))
-                .into(imageView)
+            ImageUtil.getImageLoader().loadImage(
+                context = imageView.context,
+                url = it,
+                width = imageView.width,
+                height = imageView.height,
+                iv = imageView
+            )
         }
         // 展示轮播图的网页内容
         imageView.setOnClickListener { iv ->
