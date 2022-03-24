@@ -6,7 +6,7 @@ import com.topview.purejoy.common.music.player.impl.MediaListenerMangerImpl
 import com.topview.purejoy.common.music.player.impl.listener.ModeFilter
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
 
-class ModeControllerImpl(val listenerManager: MediaListenerManger = MediaListenerMangerImpl(),
+class ModeControllerImpl(override val listenerManager: MediaListenerManger = MediaListenerMangerImpl(),
                          override var current: Int
 ) : ModeController {
 
@@ -14,5 +14,12 @@ class ModeControllerImpl(val listenerManager: MediaListenerManger = MediaListene
         current = MediaModeSetting.getInstance().getNextMode(current)
         listenerManager.invokeChangeListener(current, ModeFilter)
         return current
+    }
+
+    override fun setMode(mode: Int) {
+        if (MediaModeSetting.getInstance().getPosition(mode) == null)
+            throw IllegalArgumentException("Mode $mode is not existed!")
+        current = mode
+        listenerManager.invokeChangeListener(current, ModeFilter)
     }
 }
