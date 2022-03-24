@@ -21,6 +21,7 @@ import com.topview.purejoy.common.music.player.impl.ipc.IPCDataControllerImpl
 import com.topview.purejoy.common.music.player.impl.ipc.IPCListenerControllerImpl
 import com.topview.purejoy.common.music.player.service.MediaService
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
+import com.topview.purejoy.common.music.player.setting.PlayerSetting
 import com.topview.purejoy.common.music.player.util.DataSource
 import com.topview.purejoy.common.music.player.util.cast
 import com.topview.purejoy.common.music.player.util.castAs
@@ -144,9 +145,7 @@ class MusicService : MediaService<MusicItem>() {
 
 
 
-    override fun onLoadItem(itemIndex: Int, item: Item, callback: Loader.Callback<Item>) {
-        viewModel.requestMusicURL(item.cast()!!, itemIndex, callback)
-    }
+
 
     override fun showForeground(value: MusicItem, state: Boolean) {
         musicNotification.updateNotification(value, state)
@@ -158,7 +157,7 @@ class MusicService : MediaService<MusicItem>() {
         }
     }
 
-    override fun cacheStrategy(): CacheStrategy {
+    private fun cacheStrategy(): CacheStrategy {
         val file = File(applicationContext.cacheDir, MUSIC_CACHE_DIR)
         if (!file.exists()) {
             file.mkdirs()
@@ -186,13 +185,23 @@ class MusicService : MediaService<MusicItem>() {
         return cs
     }
 
-    override fun operatorCallback(): OperatorCallback {
-        return object : OperatorCallback {
+
+
+
+
+    override fun onDestroy() {
+        unregisterReceiver(receiver)
+        super.onDestroy()
+    }
+
+
+    override fun providePlayerSetting(): PlayerSetting<MusicItem> {
+        val callback = object : OperatorCallback {
             override fun callback(operator: Operator, code: Int, success: Any?, fail: Any?) {
                 when(operator) {
                     Operator.ADD -> {
                         if (code == OperatorCallback.SUCCESS_CODE) {
-                            itemTransformation.transform(success!!.castAs()!!)?.let {
+                            MusicItemTransformation.transform(success!!.castAs()!!)?.let {
                                 Toast.makeText(applicationContext,
                                     "${it.name}成功添加到播放列表中", Toast.LENGTH_SHORT).show()
                             }
@@ -208,17 +217,12 @@ class MusicService : MediaService<MusicItem>() {
             }
 
         }
+        return PlayerSetting(MusicItemTransformation, WrapperTransformation)
+            .cacheStrategy(cacheStrategy()).operatorCallback(callback)
     }
 
-
-
-    override fun onDestroy() {
-        unregisterReceiver(receiver)
-        super.onDestroy()
-    }
-
-    override fun transformation(): ItemTransformation<MusicItem> {
-        return MusicItemTransformation
+    override fun loadItem(itemIndex: Int, item: Item): Item {
+        return viewModel.requestMusicURLSync(item.castAs()!!, itemIndex)
     }
 
     companion object {
@@ -227,9 +231,5 @@ class MusicService : MediaService<MusicItem>() {
         const val POSITION_KEY = "position"
         const val MODE_KEY = "mode"
         const val MAX_KEY = "max"
-    }
-
-    override fun wrapperTransformation(): IWrapperTransformation<MusicItem> {
-        return WrapperTransformation
     }
 }

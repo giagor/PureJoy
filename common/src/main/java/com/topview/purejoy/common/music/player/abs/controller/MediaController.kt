@@ -1,24 +1,23 @@
 package com.topview.purejoy.common.music.player.abs.controller
 
-interface MediaController {
+import com.topview.purejoy.common.music.data.Item
+import com.topview.purejoy.common.music.player.abs.Loader
+import com.topview.purejoy.common.music.player.abs.MediaListenerManger
+import com.topview.purejoy.common.music.player.abs.core.MusicPlayer
+import com.topview.purejoy.common.music.player.abs.core.Position
+import java.lang.ref.WeakReference
+
+interface MediaController<T : Item> : MusicPlayer<T> {
     // 播放上一首音乐
     fun last()
     // 播放下一首音乐
     fun next()
-    // 根据音乐播放器的状态来暂停或恢复音乐的播放
-    fun playOrPause()
-    // 获取当前播放音乐的总时长
-    fun duration(): Int
-    // 移动到指定位置播放
-    fun seekTo(progress: Int)
-    // 获取音乐播放器的播放状态
-    fun isPlaying(): Boolean
-    // 重置音乐播放器
-    fun reset()
-    // 获取当前播放进度
-    fun progress(): Int
-    // 释放资源
-    fun release()
+
+    var position: Position
+
+    var loader: WeakReference<Loader>
+
+    var listenerManger: MediaListenerManger
 
     /**
      * @param index 想要播放歌曲的位置

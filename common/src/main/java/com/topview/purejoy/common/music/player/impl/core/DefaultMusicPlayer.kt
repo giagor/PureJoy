@@ -5,12 +5,12 @@ import android.os.Handler
 import android.os.Looper
 import com.topview.purejoy.common.music.player.abs.core.MusicPlayer
 
-class MusicPlayerImpl(
-    var preparedListener: MusicPlayer.PreparedListener? = null,
+class DefaultMusicPlayer(
+    override var preparedListener: MusicPlayer.PreparedListener? = null,
     private val handler: Handler = Handler(Looper.getMainLooper()),
-    var completeListener: MusicPlayer.CompleteListener? = null,
-    var errorListener: MusicPlayer.ErrorListener? = null
-) : MusicPlayer {
+    override var completeListener: MusicPlayer.CompleteListener? = null,
+    override var errorListener: MusicPlayer.ErrorListener<String>? = null
+) : MusicPlayer<String> {
     private val player = MediaPlayer()
     @Volatile
     private var isPrepared: Boolean = false
@@ -31,9 +31,10 @@ class MusicPlayerImpl(
             }
         }
         player.setOnErrorListener { _, what, extra ->
-            reset()
             handler.post {
-                errorListener?.onError(what, extra)
+                if(errorListener?.onError(this, what, extra) != true) {
+                    reset()
+                }
             }
             return@setOnErrorListener true
         }
@@ -69,9 +70,9 @@ class MusicPlayerImpl(
         isPrepared = false
     }
 
-    override fun setDataSource(url: String) {
+    override fun setDataSource(source: String) {
         reset()
-        player.setDataSource(url)
+        player.setDataSource(source)
         player.prepareAsync()
     }
 
