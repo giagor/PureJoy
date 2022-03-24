@@ -19,51 +19,52 @@ import com.topview.purejoy.common.music.player.util.cast
 import java.lang.ref.WeakReference
 
 open class MediaControllerImpl<T : Item>(
-    private val player: MusicPlayer,
+    private val player: MusicPlayer<String>,
     private val list: MutableList<T> = mutableListOf(),
-    var position: Position,
-    var listenerManger: MediaListenerManger,
-    var loader: WeakReference<Loader>,
+    override var position: Position,
+    override var listenerManger: MediaListenerManger,
+    override var loader: WeakReference<Loader>,
     handler: Handler = Handler(Looper.myLooper()!!),
-    var itemCallback: Loader.Callback<Item>? = null,
-    var preparedListener: PreparedListener<T>? = null,
-    var errorListener: ErrorListener<T>? = null,
-    var completeListener: CompleteListener<T>? = null,
-    var cacheStrategy: CacheStrategy? = null
-) : MediaController {
+//    var itemCallback: Loader.Callback<Item>? = null,
+    var cacheStrategy: CacheStrategy? = null,
+//    var loadErrorListener: LoadErrorListener<T>? = null,
+    override var preparedListener: MusicPlayer.PreparedListener? = null,
+    override var completeListener: MusicPlayer.CompleteListener? = null,
+    override var errorListener: MusicPlayer.ErrorListener<T>? = null
+) : MediaController<T> {
 
     private val TAG = "MediaController"
 
-    private val callback = DefaultCallback(onSuccess = { index, item ->
-        callbackSuccess(index, item)
-        itemCallback?.callback(index, item)
-    }, handler)
+//    private val callback = DefaultCallback(onSuccess = { index, item ->
+//        callbackSuccess(index, item)
+////        itemCallback?.callback(index, item)
+//    }, handler)
 
-    open fun callbackSuccess(itemIndex: Int, item: Item) {
-        if (list[position.current()] == item) {
-            item.cast<T> {
-                list[position.current()] = it
-                if (it.url() == null) {
-                    errorListener?.onError(it)
-                }
-            }
-            if (item.url() != null) {
-                setDataSource(item)
-            }
-        } else {
-            val index = list.indexOf(item)
-            if (index != -1) {
-                item.cast<T> {
-                    list[index] = it
-                }
-            }
-        }
-    }
+//    open fun callbackSuccess(itemIndex: Int, item: Item) {
+//        if (list[position.current()] == item) {
+//            item.cast<T> {
+//                list[position.current()] = it
+//                if (it.url() == null) {
+//                    loadErrorListener?.onError(it)
+//                }
+//            }
+//            if (item.url() != null) {
+//                setDataSourceInternal(item)
+//            }
+//        } else {
+//            val index = list.indexOf(item)
+//            if (index != -1) {
+//                item.cast<T> {
+//                    list[index] = it
+//                }
+//            }
+//        }
+//    }
 
     override fun last() {
         if (list.isNotEmpty()) {
             val last = position.current()
-            setDataSource(list[position.last()])
+            setDataSourceInternal(list[position.last()])
             if (isItemChange(last)) {
                 notifyItemChange()
             }
@@ -81,7 +82,7 @@ open class MediaControllerImpl<T : Item>(
     override fun next() {
         if (list.isNotEmpty()) {
             val last = position.current()
-            setDataSource(list[position.next()])
+            setDataSourceInternal(list[position.next()])
             if (isItemChange(last)) {
                 notifyItemChange()
             }
@@ -89,13 +90,13 @@ open class MediaControllerImpl<T : Item>(
 
     }
 
-    private fun setDataSource(item: Item) {
+    private fun setDataSourceInternal(item: Item) {
         if (player.isPlaying()) {
             player.playOrPause()
         }
         if (TextUtils.isEmpty(item.url())) {
             val index = list.indexOf(item)
-            loader.get()?.onLoadItem(index, item, callback)
+            loader.get()?.onLoadItem(index, item)
         } else {
             val path = cacheStrategy?.getRecord(item.url()!!)
             player.setDataSource(path ?: item.url()!!)
@@ -106,7 +107,7 @@ open class MediaControllerImpl<T : Item>(
         if (player.isPrepared()) {
             player.playOrPause()
         } else {
-            setDataSource(list[position.current()])
+            setDataSourceInternal(list[position.current()])
             notifyItemChange()
         }
         listenerManger.invokeChangeListener(player.isPlaying(), PlayStateFilter)
@@ -120,17 +121,17 @@ open class MediaControllerImpl<T : Item>(
         player.seekTo(progress)
     }
 
-    private class DefaultCallback(
-        val onSuccess: (Int, Item) -> Unit,
-        val handler: Handler) : Loader.Callback<Item> {
-        override fun callback(itemIndex: Int, value: Item) {
-            handler.post {
-                onSuccess.invoke(itemIndex, value)
-            }
-        }
-
-
-    }
+//    private class DefaultCallback(
+//        val onSuccess: (Int, Item) -> Unit,
+//        val handler: Handler) : Loader.Callback<Item> {
+//        override fun callback(itemIndex: Int, value: Item) {
+//            handler.post {
+//                onSuccess.invoke(itemIndex, value)
+//            }
+//        }
+//
+//
+//    }
 
     override fun isPlaying(): Boolean {
         return player.isPlaying()
@@ -138,6 +139,10 @@ open class MediaControllerImpl<T : Item>(
 
     override fun reset() {
         player.reset()
+    }
+
+    override fun setDataSource(source: T) {
+        setDataSourceInternal(source)
     }
 
     override fun progress(): Int {
@@ -152,8 +157,12 @@ open class MediaControllerImpl<T : Item>(
         val p = TempPosition(max = position.max, current = index)
         position.with(p)
         val item = list[position.current()]
-        setDataSource(item)
+        setDataSourceInternal(item)
         notifyItemChange()
+    }
+
+    override fun isPrepared(): Boolean {
+        return player.isPrepared()
     }
 
     private class TempPosition(override var max: Int, val current: Int) : Position {
