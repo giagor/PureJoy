@@ -3,10 +3,11 @@ package com.topview.purejoy.common.music.player.impl.ipc
 import android.os.Handler
 import android.os.Looper
 import com.topview.purejoy.common.IPCPlayerController
+import com.topview.purejoy.common.music.data.Item
 import com.topview.purejoy.common.music.player.abs.controller.MediaController
 
-class IPCPlayerControllerImpl(
-    val realController: MediaController,
+class IPCPlayerControllerImpl<T : Item>(
+    val realController: MediaController<T>,
     val handler: Handler = Handler(Looper.getMainLooper())
 ) : IPCPlayerController.Stub() {
 
@@ -49,7 +50,7 @@ class IPCPlayerControllerImpl(
     }
 
     override fun jumpTo(index: Int) {
-        handler.post { 
+        handler.post {
             realController.jumpTo(index)
         }
     }
