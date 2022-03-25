@@ -108,17 +108,6 @@ abstract class MediaService<T : Item> : Service(), Loader {
     private fun initPlayerController(source: MutableList<T>,
                                      position: Position
     ): IPCPlayerControllerImpl<T> {
-        val player = setting.basePlayer ?: DefaultMusicPlayer()
-        val listenerManger = MediaListenerMangerImpl()
-        val mediaController = setting.player ?: MediaControllerImpl(
-            player = player,
-            position = position,
-            listenerManger = listenerManger,
-            loader = WeakReference(this),
-            handler = mainHandler,
-            list = source,
-            cacheStrategy = setting.cacheStrategy
-        )
         val config = setting.errorSetting
         val errorSetting = if (config == null) {
             ErrorSetting(handler = object : ErrorHandler<T> {
@@ -136,49 +125,92 @@ abstract class MediaService<T : Item> : Service(), Loader {
             }, config.record)
         }
         setting.errorSetting = config
-        player.completeListener = object : MusicPlayer.CompleteListener {
-            override fun completed() {
-                mainHandler.post {
-                    ensureSecurity(source, mediaController.position) {
-                        mediaController.completeListener?.completed()
-                    }
-                    mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
-                    mediaController.next()
+        val p = setting.player
+        if (p != null) {
+            val pl = p.preparedListener
+            val cl = p.completeListener
+            val el = p.errorListener
+            p.preparedListener = pl ?: object : MusicPlayer.PreparedListener {
+                override fun prepared() {
+                    p.listenerManger.invokeChangeListener(true, PlayStateFilter)
                 }
             }
-        }
-        player.preparedListener = object : MusicPlayer.PreparedListener {
-            override fun prepared() {
-                mainHandler.post {
-                    ensureSecurity(source, mediaController.position) {
-                        mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
-                        mediaController.preparedListener?.prepared()
-                    }
+            p.completeListener = cl ?: object : MusicPlayer.CompleteListener {
+                override fun completed() {
+                    p.listenerManger.invokeChangeListener(false, PlayStateFilter)
+                    p.next()
                 }
             }
-
-        }
-        player.errorListener = object : MusicPlayer.ErrorListener<String> {
-            override fun onError(player: MusicPlayer<String>, what: Int, extra: Int): Boolean {
-                ensureSecurity(source, mediaController.position) {
-                    val value = source[mediaController.position.current()]
-                    val count = errorSetting.errorCount(value)
-                    mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
-                    if (mediaController.errorListener?.onError(mediaController, what, extra) != true) {
+            p.errorListener = el ?: object : MusicPlayer.ErrorListener<T> {
+                override fun onError(player: MusicPlayer<T>, what: Int, extra: Int): Boolean {
+                    ensureSecurity(source, p.position) {
+                        val value = source[p.position.current()]
+                        val count = errorSetting.errorCount(value)
+                        p.listenerManger.invokeChangeListener(false, PlayStateFilter)
                         player.reset()
                         if (count >= errorSetting.retryCount) {
                             errorSetting.handler.onError(value)
                         } else {
                             errorSetting.record[value] = count + 1
-                            mediaController.playOrPause()
+                            p.playOrPause()
                         }
                     }
+                    return true
                 }
-                return true
             }
-        }
+            return IPCPlayerControllerImpl(p, mainHandler)
+        } else {
+            val player = setting.basePlayer ?: DefaultMusicPlayer()
+            val listenerManger = MediaListenerMangerImpl()
+            val mediaController = MediaControllerImpl(
+                player = player,
+                position = position,
+                listenerManger = listenerManger,
+                loader = WeakReference(this),
+                list = source,
+                cacheStrategy = setting.cacheStrategy
+            )
 
-        return IPCPlayerControllerImpl(realController = mediaController, handler = mainHandler)
+            player.completeListener = player.completeListener ?: object : MusicPlayer.CompleteListener {
+                override fun completed() {
+                    mainHandler.post {
+                        mediaController.completeListener?.completed()
+                        mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
+                        mediaController.next()
+                    }
+                }
+            }
+            player.preparedListener = player.preparedListener ?: object : MusicPlayer.PreparedListener {
+                override fun prepared() {
+                    mainHandler.post {
+                        mediaController.listenerManger.invokeChangeListener(true, PlayStateFilter)
+                        mediaController.preparedListener?.prepared()
+                    }
+                }
+
+            }
+            player.errorListener = player.errorListener ?: object : MusicPlayer.ErrorListener<String> {
+                override fun onError(player: MusicPlayer<String>, what: Int, extra: Int): Boolean {
+                    ensureSecurity(source, mediaController.position) {
+                        val value = source[mediaController.position.current()]
+                        val count = errorSetting.errorCount(value)
+                        mediaController.listenerManger.invokeChangeListener(false, PlayStateFilter)
+                        if (mediaController.errorListener?.onError(mediaController, what, extra) != true) {
+                            player.reset()
+                            if (count >= errorSetting.retryCount) {
+                                errorSetting.handler.onError(value)
+                            } else {
+                                errorSetting.record[value] = count + 1
+                                mediaController.playOrPause()
+                            }
+                        }
+                    }
+                    return true
+                }
+            }
+
+            return IPCPlayerControllerImpl(realController = mediaController, handler = mainHandler)
+        }
     }
 
     /**
