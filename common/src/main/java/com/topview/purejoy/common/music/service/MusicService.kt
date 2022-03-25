@@ -9,11 +9,8 @@ import com.topview.purejoy.common.IPCPlayerController
 import com.topview.purejoy.common.app.CommonApplication
 import com.topview.purejoy.common.music.data.Item
 import com.topview.purejoy.common.music.data.Wrapper
-import com.topview.purejoy.common.music.player.abs.Loader
 import com.topview.purejoy.common.music.player.abs.cache.CacheLoader
 import com.topview.purejoy.common.music.player.abs.cache.CacheStrategy
-import com.topview.purejoy.common.music.player.abs.transformation.IWrapperTransformation
-import com.topview.purejoy.common.music.player.abs.transformation.ItemTransformation
 import com.topview.purejoy.common.music.player.impl.Operator
 import com.topview.purejoy.common.music.player.impl.OperatorCallback
 import com.topview.purejoy.common.music.player.impl.ipc.BinderPool
@@ -23,7 +20,6 @@ import com.topview.purejoy.common.music.player.service.MediaService
 import com.topview.purejoy.common.music.player.setting.MediaModeSetting
 import com.topview.purejoy.common.music.player.setting.PlayerSetting
 import com.topview.purejoy.common.music.player.util.DataSource
-import com.topview.purejoy.common.music.player.util.cast
 import com.topview.purejoy.common.music.player.util.castAs
 import com.topview.purejoy.common.music.service.entity.MusicItem
 import com.topview.purejoy.common.music.service.notification.MusicNotification
