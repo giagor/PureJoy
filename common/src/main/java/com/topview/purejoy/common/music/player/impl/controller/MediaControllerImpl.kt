@@ -1,7 +1,5 @@
 package com.topview.purejoy.common.music.player.impl.controller
 
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import com.topview.purejoy.common.music.data.Item
 import com.topview.purejoy.common.music.player.abs.Loader
@@ -10,12 +8,8 @@ import com.topview.purejoy.common.music.player.abs.cache.CacheStrategy
 import com.topview.purejoy.common.music.player.abs.controller.MediaController
 import com.topview.purejoy.common.music.player.abs.core.MusicPlayer
 import com.topview.purejoy.common.music.player.abs.core.Position
-import com.topview.purejoy.common.music.player.abs.listener.CompleteListener
-import com.topview.purejoy.common.music.player.abs.listener.ErrorListener
-import com.topview.purejoy.common.music.player.abs.listener.PreparedListener
 import com.topview.purejoy.common.music.player.impl.listener.ItemFilter
 import com.topview.purejoy.common.music.player.impl.listener.PlayStateFilter
-import com.topview.purejoy.common.music.player.util.cast
 import java.lang.ref.WeakReference
 
 open class MediaControllerImpl<T : Item>(
@@ -24,10 +18,7 @@ open class MediaControllerImpl<T : Item>(
     override var position: Position,
     override var listenerManger: MediaListenerManger,
     override var loader: WeakReference<Loader>,
-    handler: Handler = Handler(Looper.myLooper()!!),
-//    var itemCallback: Loader.Callback<Item>? = null,
     var cacheStrategy: CacheStrategy? = null,
-//    var loadErrorListener: LoadErrorListener<T>? = null,
     override var preparedListener: MusicPlayer.PreparedListener? = null,
     override var completeListener: MusicPlayer.CompleteListener? = null,
     override var errorListener: MusicPlayer.ErrorListener<T>? = null
@@ -35,31 +26,7 @@ open class MediaControllerImpl<T : Item>(
 
     private val TAG = "MediaController"
 
-//    private val callback = DefaultCallback(onSuccess = { index, item ->
-//        callbackSuccess(index, item)
-////        itemCallback?.callback(index, item)
-//    }, handler)
 
-//    open fun callbackSuccess(itemIndex: Int, item: Item) {
-//        if (list[position.current()] == item) {
-//            item.cast<T> {
-//                list[position.current()] = it
-//                if (it.url() == null) {
-//                    loadErrorListener?.onError(it)
-//                }
-//            }
-//            if (item.url() != null) {
-//                setDataSourceInternal(item)
-//            }
-//        } else {
-//            val index = list.indexOf(item)
-//            if (index != -1) {
-//                item.cast<T> {
-//                    list[index] = it
-//                }
-//            }
-//        }
-//    }
 
     override fun last() {
         if (list.isNotEmpty()) {
@@ -121,17 +88,7 @@ open class MediaControllerImpl<T : Item>(
         player.seekTo(progress)
     }
 
-//    private class DefaultCallback(
-//        val onSuccess: (Int, Item) -> Unit,
-//        val handler: Handler) : Loader.Callback<Item> {
-//        override fun callback(itemIndex: Int, value: Item) {
-//            handler.post {
-//                onSuccess.invoke(itemIndex, value)
-//            }
-//        }
-//
-//
-//    }
+
 
     override fun isPlaying(): Boolean {
         return player.isPlaying()
