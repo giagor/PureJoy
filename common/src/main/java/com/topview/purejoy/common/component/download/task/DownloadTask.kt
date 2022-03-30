@@ -424,15 +424,19 @@ class DownloadTask(
 
     /**
      * 触发任务的下载
+     *
+     * @return 本次操作是否有效
      * */
-    fun download() {
+    fun download(): Boolean {
         if (!triggerDownload) {
             triggerDownload = true
             status = DownloadStatus.PREPARE_DOWNLOAD
             callObserversPrepareDownload()
             DownloadManager.putTask(tag, this)
             TaskHandler.handleTask(this)
+            return true
         }
+        return false
     }
 
     /**
